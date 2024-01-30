@@ -1,7 +1,7 @@
 import React from "react";
 
 const SomeOther = () => {
-  return <h1>New commit lets see whether this works</h1>;
+  return <h1>enough</h1>;
 };
 
 export default SomeOther;
