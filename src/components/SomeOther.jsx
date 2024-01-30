@@ -1,7 +1,7 @@
 import React from "react";
 
 const SomeOther = () => {
-  return <h1>Sevinda</h1>;
+  return <h1>Sevinda new</h1>;
 };
 
 export default SomeOther;
