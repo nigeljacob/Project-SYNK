@@ -1,7 +1,8 @@
 import React from "react";
+import Sasri from "./Sasri";
 
 const SomeOther = () => {
-  return <h1>nec12334 </h1>;
+  return <><Sasri /></>;
 };
 
 export default SomeOther;
