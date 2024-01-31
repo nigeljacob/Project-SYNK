@@ -1,4 +1,48 @@
 body {
     background: #1e1e1e;
     background: linear-gradient(to bottom, rgba(45,104,129,1) 0%, rgba(30,30,30,1) 16%, rgba(30,30,30,1) 100%);
+    background-repeat: none;
+    overflow: hidden;
+}
+
+.titleBar {
+    height: 30px;
+    width: 100%;
+    top: 0;
+    -webkit-app-select: none; 
+    -webkit-app-region: drag;
+    z-index: 2000;
+    position: absolute;
+}
+
+.settingsButton {
+    position: absolute;
+    right: 0;
+    margin: 10px;
+}
+
+.SettingIcon {
+    width: 20px;
+    height: 20px;
+    color: #c8c8c8;
+}
+
+.main {
+    display: flex;
+}
+
+/* Fragment Styling */
+
+.home,
+.chat,
+.teams {
+  display: flex;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  overflow-y: scroll;
+  flex: 2;
+  color: white;
+  background: none;
 }

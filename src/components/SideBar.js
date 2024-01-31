@@ -1,8 +1,9 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import { SideBarData } from './SideBarData';
 import * as MDIcons from 'react-icons/md';
 import * as BSIcons from 'react-icons/bs';
+import * as IOIcons5 from 'react-icons/io5';
 import "./SideBar.css"
 
 function SideBar() {
@@ -15,7 +16,7 @@ function SideBar() {
         <div className='Profile'>
             <div>
             <div className='profilePicture'>
-                <img />
+                <IOIcons5.IoPerson className='profilePerson' />
             </div>
             <div className='userStatus'>
 
@@ -36,10 +37,14 @@ function SideBar() {
         <ul className='navItems'>
             {SideBarData.map((item, index) => {
                 return(
+                    <div className='itemWrapper'>
+                        <NavLink to={item.path} className={({ isActive }) => (isActive ? 'active' : 'nav_item')} >
                     <div className = {item.cName} key={index}>
                         {item.icon}
                         <span>{item.title}</span>
                     </div> 
+                    </NavLink>
+                    </div>
                 )
             })}
         </ul>

@@ -33,6 +33,16 @@
     height: 60px;
     border-radius: 50%;
     background: #181818;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+.profilePerson {
+    opacity: 0.8;
+    width: 40px;
+    height: 40px;
+
 }
 
 .userStatus {
@@ -82,23 +92,35 @@
     margin-top: 30px;
 }
 
+
 .nav_item{
     display: flex;
     align-items: center;
-    margin-top: 10px;
     height: 50px;
     width: 105%;
     border-radius: 0px 10px 10px 0px;
+    color: #C8C8C8;
+    text-decoration: none;
+}
+
+.itemWrapper {
+    margin: 5px 0px 5px 0px;
 }
 
 .nav_item:hover {
     background: #0f0f0f;
-    border-left: 2px solid #5bceff;
 }
 
 .active {
     background: #0f0f0f;
     border-left: 2px solid #5bceff;
+    color: #C8C8C8;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    height: 50px;
+    width: 105%;
+    border-radius: 0px 10px 10px 0px;
 }
 
 .nav_item a{

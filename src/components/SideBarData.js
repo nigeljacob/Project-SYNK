@@ -7,7 +7,7 @@ export const SideBarData = [
     {
         title: "Activity",
         icon: <MDIcons.MdOutlineWindow className='MenuIcon'/>,
-        path: "/Home",
+        path: "/",
         cName: "nav_item"
     },
     {
