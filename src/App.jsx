@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes as Switch, Route } from "react-router-d
 import Activity from "./Pages/Activity"
 import Chat from "./Pages/Chats";
 import Teams from "./Pages/Teams";
-import * as IOIcons from "react-icons/io5"
+import * as MDIcons from "react-icons/md"
 
 function App() {
   return (
@@ -21,7 +21,7 @@ function App() {
         </Switch>
       </Router>
       <div className="settingsButton">
-          <IOIcons.IoSettings className="SettingIcon" />
+          <MDIcons.MdOutlineSettings className="SettingIcon" />
       </div>
       </div>
     </>

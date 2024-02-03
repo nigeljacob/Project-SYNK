@@ -3,6 +3,7 @@ body {
     background: linear-gradient(to bottom, rgba(45,104,129,1) 0%, rgba(30,30,30,1) 16%, rgba(30,30,30,1) 100%);
     background-repeat: none;
     overflow: hidden;
+    z-index: -1000;
 }
 
 .titleBar {
@@ -38,11 +39,71 @@ body {
 .teams {
   display: flex;
   height: 100vh;
-  align-items: center;
-  justify-content: center;
-  font-size: 3rem;
   overflow-y: scroll;
-  flex: 2;
   color: white;
   background: none;
+  display: flex;
+  flex: 2;
 }
+
+.home, .chat{
+    transform: translateX(-10px);
+    user-select: none;
+}
+
+.sideBar {
+    position: relative;
+    height: 100vh;
+    width: 200px;
+    background: #121212;
+    transition: 0.3s all ease-in-out;
+}
+
+.closeButton {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: #272727;
+    height: 40px;
+    padding: 2px 1px 2px 1px;
+    border-radius: 5px;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    margin-bottom: 30px;
+    transform: translateX(10px);
+    cursor: pointer;
+    z-index: 1000;
+    transition: 0.3s all ease-in-out;
+}
+
+.closeButton:hover{
+    padding: 2px 3px 3px 2px;
+}
+
+.show_SideBar {
+    transform: translateX(0);
+}
+
+.rotateIcon180 {
+    rotate: 180deg;
+}
+
+.rotateIcon0 {
+    rotate: 0deg;
+}
+
+.hide_SideBar {
+    transform: translateX(-180px);
+}
+
+.activityContent {
+    margin-top: 50px;
+    margin-left: 20px;
+    transition: 0.3s all ease-in-out;
+}
+
+.activityContent h1 {
+    font-size: 25px;
+}
+

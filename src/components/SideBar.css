@@ -15,6 +15,7 @@
     color: white;
     min-height: 100vh;
     border-radius: 0px 10px 10px 0px;
+    z-index: 1000;
 }
 
 .Profile {

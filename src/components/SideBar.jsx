@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { SideBarData } from './SideBarData';
 import * as MDIcons from 'react-icons/md';
@@ -7,6 +7,9 @@ import * as IOIcons5 from 'react-icons/io5';
 import "./SideBar.css"
 
 function SideBar() {
+    setInterval(function() {
+        document.getElementById("time").innerHTML = getTime();
+    }, 3000);
   return (
     <>
     <div>
@@ -50,7 +53,7 @@ function SideBar() {
         </ul>
         <div className='bottomButtons'>
             <h3 id='time'>
-                4:55 pm
+                {getTime()}
             </h3>
             <div className='notificationButton'>
                 <Link>
@@ -61,6 +64,13 @@ function SideBar() {
       </div>
     </>
   )
+}
+
+function getTime() {
+    const locale = 'en';
+    const today = new Date();
+    let time = today.toLocaleTimeString(locale, { hour: 'numeric', hour12: true, minute: 'numeric' })
+    return time;
 }
 
 export default SideBar
