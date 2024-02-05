@@ -1,9 +1,14 @@
+* {
+    box-sizing: border-box;
+  }
+
 .teams{
     flex-direction: column;
     margin-left: 20px;
     font-size: 15px;
     font-family: 'Poppins', sans-serif;
     padding-top: 70px;
+    margin-right: 20px;
 }
 
 .teams h2{
@@ -13,4 +18,10 @@
 
 .teamsYouOwn, .teamsYourIn, .pendingTeams {
     height: 300px;
+}
+
+.teamsYourIn, .teamsYouOwn, .pendingTeams{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 10%));
+    height: fit-content;
 }

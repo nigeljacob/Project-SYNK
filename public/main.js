@@ -11,14 +11,13 @@ function createWindow() {
   const win = new BrowserWindow({
     width: mainWindowState.width,
     height: mainWindowState.height,
-    minWidth: 800,
+    minWidth: 1000,
     title: "SYNK",
     minHeight: 600,
     titleBarStyle: "hidden",
     titleBarOverlay: {
       color: "rgba(0,0,0,0)",
       symbolColor: "#ffffff",
-      // height: 30,
     },
     frame: false,
     show: false,
