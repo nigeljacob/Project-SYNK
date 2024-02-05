@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import * as IOIcons from "react-icons/io";
+import './Activity.css';
 
 function Home() {
 
@@ -18,6 +19,16 @@ function Home() {
   return (
     <div className='home'>
       <div className={SideBarResult}>
+        <div className='allButton'>
+          <div className='dot'></div>
+          <h2>All</h2>
+        </div>
+        <h2 id='teamsHeading'>Teams</h2>
+        <div className='taskTeams'>
+
+
+        </div>
+        {/* close button */}
         <div className='closeButton' onClick={event => {
           setIsOpen(!isOpen);
           sidebarToggler(!isOpen);
@@ -26,7 +37,13 @@ function Home() {
         </div>
         </div>
       <div className={MainContentResult}>
-      <h1>Good <span>Morning</span> <span>Nigel</span> !</h1>
+      <h1>Good <span>Morning</span> <span id='displayName'>Nigel</span> !</h1>
+      <div className='reminderTask'>
+        
+      </div>
+      <div className='tasks'>
+        
+      </div>
       </div>
     </div>
   );

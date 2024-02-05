@@ -1,0 +1,16 @@
+.teams{
+    flex-direction: column;
+    margin-left: 20px;
+    font-size: 15px;
+    font-family: 'Poppins', sans-serif;
+    padding-top: 70px;
+}
+
+.teams h2{
+    font-weight: 300;
+    font-size: 18px;
+}
+
+.teamsYouOwn, .teamsYourIn, .pendingTeams {
+    height: 300px;
+}
