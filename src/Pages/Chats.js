@@ -33,7 +33,7 @@ function Chats() {
 }
 
 function sidebarToggler(boolean) {
-  if(boolean == true) {
+  if(boolean === true) {
     localStorage.setItem("sideBarStatus", "true");
   } else {
     localStorage.setItem("sideBarStatus", "false");
@@ -42,7 +42,7 @@ function sidebarToggler(boolean) {
 
 function getPreviousSetting(name) {
   let setting = localStorage.getItem(name);
-  if(setting == "true") {
+  if(setting === "true") {
     return true
   } else {
     return false

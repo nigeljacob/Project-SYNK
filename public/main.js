@@ -1,13 +1,11 @@
 const { app, BrowserWindow } = require("electron");
 const { useEffect } = require("react");
-const windowStateKeeper = require('electron-window-state');
-
+const windowStateKeeper = require("electron-window-state");
 
 function createWindow() {
-
   let mainWindowState = windowStateKeeper({
     defaultWidth: 1000,
-    defaultHeight: 800
+    defaultHeight: 800,
   });
 
   const win = new BrowserWindow({
@@ -16,36 +14,40 @@ function createWindow() {
     minWidth: 800,
     title: "SYNK",
     minHeight: 600,
-    titleBarStyle: 'hidden',
-    titleBarOverlay: true,
+    titleBarStyle: "hidden",
+    titleBarOverlay: {
+      color: "rgba(0,0,0,0)",
+      symbolColor: "#ffffff",
+      // height: 30,
+    },
     frame: false,
     show: false,
-    icon: '/loader.gif',
+    icon: "/loader.gif",
     webPreferences: {
       enableRemoteModule: true,
-      contextIsolation: true, 
+      contextIsolation: true,
       nodeIntegration: false,
     },
   });
 
   const splashScreen = new BrowserWindow({
-    width: 500, 
-    height: 300, 
-    frame: false, 
+    width: 500,
+    height: 300,
+    frame: false,
     alwaysOnTop: true,
     resizable: false,
 
     webPreferences: {
-      webSecurity: false
-    }
-});
+      webSecurity: false,
+    },
+  });
 
   splashScreen.loadFile("./public/preload.html");
   splashScreen.setIcon("./public/logo.png");
   splashScreen.center();
   splashScreen.show();
 
-  win.setBackgroundColor('#1e1e1e');
+  win.setBackgroundColor("#1e1e1e");
   win.setMenu(null);
   win.setIcon("./public/logo.png");
 
@@ -54,20 +56,19 @@ function createWindow() {
     win.loadURL("http://localhost:3000");
     win.show();
   }, 7000);
-
 }
 
 function getSize(name) {
-  if(name == "width") {
-    try{
+  if (name == "width") {
+    try {
       return localStorage.getItem("width");
-    } catch(e) {
+    } catch (e) {
       return 1000;
     }
   } else {
-    try{
+    try {
       return localStorage.getItem("height");
-    } catch(e) {
+    } catch (e) {
       return 800;
     }
   }

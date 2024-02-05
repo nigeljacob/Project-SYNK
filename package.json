@@ -22,11 +22,11 @@
   "main": "public/main.js",
   "homepage": "./",
   "mac": {
-    "icon": "./public/logo.png", 
+    "icon": "./public/logo.png",
     "category": "public.app-category.utilities"
   },
   "win": {
-    "icon": "./public/logo.png" 
+    "icon": "./public/logo.png"
   },
   "files": [
     "./build/**/*",
@@ -64,5 +64,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "webpack": "^5.90.1",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1"
   }
 }
