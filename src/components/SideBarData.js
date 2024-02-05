@@ -1,7 +1,7 @@
-import React from 'react'
-import * as MDIcons from 'react-icons/md';
-import * as IOIcons from 'react-icons/io';
+import React from 'react';
 import * as FaIcons6 from 'react-icons/fa6';
+import * as IOIcons from 'react-icons/io';
+import * as MDIcons from 'react-icons/md';
 
 export const SideBarData = [
     {
