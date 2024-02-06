@@ -7,7 +7,7 @@ import {
 import "./App.css";
 import Activity from "./Pages/Activity";
 import Chat from "./Pages/Chats";
-import Teams from "./Pages/Teams";
+import Teams from "./Pages/Teams"
 import TeamMemberDashboard from "./Pages/TeamMemberDashboard";
 import SideBar from "./components/SideBar";
 
@@ -29,7 +29,7 @@ function App() {
   return (
     <>
       <div className="titleBar"></div>
-      <div className="main">
+      <div className="main" id="main">
         <Router>
           <SideBar />
           <Switch>

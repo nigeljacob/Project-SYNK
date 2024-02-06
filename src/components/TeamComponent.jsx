@@ -5,7 +5,7 @@ import * as FaIcons from "react-icons/fa";
 import { Link } from 'react-router-dom';
 
 function TeamComponent({team}) {
-  const isAvailable = team.teamProfile != "";
+  const isAvailable = team.teamProfile !== "";
   const nameList = team.teamName.split(" ");
   const isLarger = nameList.length > 1;
   return (
@@ -27,7 +27,7 @@ function TeamComponent({team}) {
         </div>
         <div className="teamTitle">
           <h3 id="teamName">{team.teamName}</h3>
-          <h5 id="membersLength">{team.teamMemberList.length + 1} Members</h5>
+          <h5 id="membersLength">{team.teamMemberList.length} Members</h5>
         </div>
       </div>
       <p id="teamDesc">{team.teamDescription}</p>
