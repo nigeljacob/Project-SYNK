@@ -21,7 +21,7 @@ function Teams() {
                 )
             })}
       </div>
-
+      
       <h2>Teams your in</h2>
       <div className='teamsYourIn'>
       {teamsList.map((item, index) => {
