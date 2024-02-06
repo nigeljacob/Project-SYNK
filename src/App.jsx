@@ -7,8 +7,8 @@ import {
 import "./App.css";
 import Activity from "./Pages/Activity";
 import Chat from "./Pages/Chats";
-import Teams from "./Pages/Teams";
 import TeamMemberDashboard from "./Pages/TeamMemberDashboard";
+import Teams from "./Pages/Teams";
 import SideBar from "./components/SideBar";
 
 let result = "";
@@ -36,7 +36,10 @@ function App() {
             <Route path="/" exact Component={Activity} />
             <Route path="/Chats" Component={Chat} />
             <Route path="/Teams" Component={Teams} />
-            <Route path="/memberDashboard" Component={TeamMemberDashboard} />
+            <Route
+              path="/memberDashboard/:teamName"
+              Component={TeamMemberDashboard}
+            />
           </Switch>
         </Router>
         <div className={result}>
