@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import * as IOIcons from "react-icons/io";
+import "./Activity.css";
+import "./TeamMemberDashboard.css";
 
 const TeamMemberDashboard = () => {
   var sideBarStatus = true;
@@ -29,33 +31,38 @@ const TeamMemberDashboard = () => {
     "Nigel Jacob",
   ];
 
+  const taskDetails = [
+    { taskDesc: "Finish the individual report", taskStatus: "Completed" },
+    { taskDesc: "Finish the group report", taskStatus: "Completed" },
+    { taskDesc: "Do the UI mockups", taskStatus: "Completed" },
+    { taskDesc: "Create a logo for our brand", taskStatus: "In Progress" },
+  ];
+
   return (
     <div className="home">
-      <div className={SideBarResult + " text-center"}>
-        <h2 className="pl-[10px] text-[20px] mt-[40px] font-bold">
-          SDGP Group
-        </h2>
-        <p className="text-[15px] mt-[3px]">5 members</p>
-        <p className="text-[15px] mt-[7px] text-[#5BCEFF] mb-[30px]">info</p>
+      <div className={SideBarResult + " sidebar-main"}>
+        <h2>SDGP Group</h2>
+        <p className="members">5 members</p>
+        <p className="info-text">info</p>
 
-        <div className="ml-[30px] h-[1px] w-[150px] bg-[#272727] my-[10px]"></div>
+        <div className="line margin-left"></div>
 
         {infoData.map((info) => (
           <div className="pl-[30px]">
-            <p className="text-left text-[15px]">{info}</p>
-            <div className="h-[1px] w-[150px] bg-[#272727] my-[10px]"></div>
+            <p className="side-text text-left margin-left">{info}</p>
+            <div className="line margin-left"></div>
           </div>
         ))}
 
-        <div className="pl-[30px] mt-[28px] text-left">
-          <h2 className="font-bold">Members</h2>
+        <div className="text-left margin-left margin-top">
+          <h2 className="">Members</h2>
 
-          <div className="h-[1px] w-[150px] bg-[#272727] mt-[20px] mb-[10px]"></div>
+          <div className="line"></div>
 
           {members.map((info) => (
             <>
-              <p className="text-left text-[15px]">{info}</p>
-              <div className="h-[1px] w-[150px] bg-[#272727] my-[10px]"></div>
+              <p className="side-text">{info}</p>
+              <div className="line"></div>
             </>
           ))}
         </div>
@@ -72,24 +79,49 @@ const TeamMemberDashboard = () => {
       </div>
 
       <div className={MainContentResult}>
-        <div className="bg-[#115D68] px-[35px] py-[15px] flex items-center justify-between w-[900px] rounded-2xl">
-          <div className="flex items-center">
+        <div className="deadline-container">
+          <div className="clock-container">
             <img src="/images/clock.svg" alt="clock" />
-            <div className="ml-[30px]">
-              <p className="font-bold text-[25px]">Task Deadline Today</p>
-              <p className="text-[15px]">
-                Task assigned to you by leader from SDGP GROUP dues today
-              </p>
+            <div className="deadline-text-container">
+              <h2>Task Deadline Today</h2>
+              <p>Task assigned to you by leader from SDGP GROUP dues today</p>
             </div>
           </div>
 
-          <button className="bg-[#181818] py-[13px] px-[25px] rounded-xl">
-            Continue
-          </button>
+          <button className="continue-btn">Continue</button>
         </div>
 
-        <div className="mt-[55px] ml-[10px]">
-          <p className="font-bold text-[30px]">Your Tasks</p>
+        <div className="mt-[55px] ml-[10px] tasks-container">
+          <h2>Your Tasks</h2>
+          {taskDetails.map((task, index) => (
+            <div className="single-task-container">
+              <p>{index + 1 + ". " + task.taskDesc}</p>
+
+              <div className="status-container">
+                <select
+                  name="status"
+                  className={
+                    task.taskStatus === "Completed"
+                      ? "green-status"
+                      : "yellow-status"
+                  }
+                >
+                  <option value="start" disabled selected hidden>
+                    {task.taskStatus}
+                  </option>
+                  <option value="inProgress">
+                    In Progress
+                  </option>
+                  <option value="completed">Completed</option>
+                </select>
+                {task.taskStatus !== "Completed" ? (
+                  <div className="status">In Progress</div>
+                ) : (
+                  <div className="status">Completed</div>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>
