@@ -73,8 +73,25 @@ const TeamMemberDashboard = () => {
       </div>
 
       <div className={MainContentResult}>
-        <div className=""></div>
-        <div className="tasks">hey</div>
+        <div className="bg-[#115D68] px-[35px] py-[15px] flex items-center justify-between w-[900px] rounded-2xl">
+          <div className="flex items-center">
+            <img src="/images/clock.svg" alt="clock" />
+            <div className="ml-[30px]">
+              <p className="font-bold text-[25px]">Task Deadline Today</p>
+              <p className="text-[15px]">
+                Task assigned to you by leader from SDGP GROUP dues today
+              </p>
+            </div>
+          </div>
+
+          <button className="bg-[#181818] py-[13px] px-[25px] rounded-xl">
+            Continue
+          </button>
+        </div>
+
+        <div className="mt-[55px] ml-[10px]">
+          <p className="font-bold text-[30px]">Your Tasks</p>
+        </div>
       </div>
     </div>
   );
