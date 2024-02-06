@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import * as IOIcons from "react-icons/io";
+import TaskDetails from "../components/TaskDetails";
 import "./Activity.css";
 import "./TeamMemberDashboard.css";
 
@@ -93,35 +94,26 @@ const TeamMemberDashboard = () => {
 
         <div className="mt-[55px] ml-[10px] tasks-container">
           <h2>Your Tasks</h2>
-          {taskDetails.map((task, index) => (
-            <div className="single-task-container">
-              <p>{index + 1 + ". " + task.taskDesc}</p>
-
-              <div className="status-container">
-                <select
-                  name="status"
-                  className={
-                    task.taskStatus === "Completed"
-                      ? "green-status"
-                      : "yellow-status"
-                  }
-                >
-                  <option value="start" disabled selected hidden>
-                    {task.taskStatus}
-                  </option>
-                  <option value="inProgress">
-                    In Progress
-                  </option>
-                  <option value="completed">Completed</option>
-                </select>
-                {task.taskStatus !== "Completed" ? (
-                  <div className="status">In Progress</div>
-                ) : (
-                  <div className="status">Completed</div>
-                )}
-              </div>
-            </div>
-          ))}
+          <TaskDetails
+            index="1"
+            taskDesc="Finish the individual report"
+            taskStatus="Completed"
+          />
+          <TaskDetails
+            index="2"
+            taskDesc="Finish the group report"
+            taskStatus="Completed"
+          />
+          <TaskDetails
+            index="3"
+            taskDesc="Do the UI mockups"
+            taskStatus="Completed"
+          />
+          <TaskDetails
+            index="4"
+            taskDesc="Create a logo for our brand"
+            taskStatus="In Progress"
+          />
         </div>
       </div>
     </div>
