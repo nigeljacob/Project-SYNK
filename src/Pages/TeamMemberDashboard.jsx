@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import * as IOIcons from "react-icons/io";
-import "./Activity.css";
 
 const TeamMemberDashboard = () => {
   var sideBarStatus = true;
