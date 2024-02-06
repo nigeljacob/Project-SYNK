@@ -8,7 +8,7 @@ import "./App.css";
 import Activity from "./Pages/Activity";
 import Chat from "./Pages/Chats";
 import TeamMemberDashboard from "./Pages/TeamMemberDashboard";
-import Teams from "./Pages/Teams";
+import Teams from "./Pages/Teams"
 import SideBar from "./components/SideBar";
 
 let result = "";
@@ -29,17 +29,14 @@ function App() {
   return (
     <>
       <div className="titleBar"></div>
-      <div className="main">
+      <div className="main" id="main">
         <Router>
           <SideBar />
           <Switch>
             <Route path="/" exact Component={Activity} />
             <Route path="/Chats" Component={Chat} />
             <Route path="/Teams" Component={Teams} />
-            <Route
-              path="/memberDashboard/:teamName"
-              Component={TeamMemberDashboard}
-            />
+            <Route path="/memberDashboard" Component={TeamMemberDashboard} />
           </Switch>
         </Router>
         <div className={result}>
