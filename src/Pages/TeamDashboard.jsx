@@ -6,7 +6,9 @@ import { useLocation } from "react-router";
 import TeamMemberDashboard from "./TeamMemberDashboard"
 import Chat from "./TeamChat"
 import TeamYourProgress from "./TeamYourProgress";
+import TeamLeaderDashboard from "./TeamLeaderDashboard"
 import reactElementToJSXString from 'react-element-to-jsx-string';
+
 
 const TeamDashboard = () => {
   const location = useLocation();
@@ -16,6 +18,8 @@ const TeamDashboard = () => {
   let teamMembersList = currentTeam._teamMemberList;
 
   var sideBarStatus = true;
+
+  var currentUser = "Nigel"
 
   try {
     sideBarStatus = getPreviousSetting("sideBarStatus");
@@ -32,21 +36,23 @@ const TeamDashboard = () => {
     : "activityContent extendMainContent";
   const IconResult = isOpen ? "rotateIcon0" : "rotateIcon180";
 
-  const [element, setElement] = useState(<TeamMemberDashboard  />);
-
   const handleItemClick = (element) => {
     setElement(element);
-    if(reactElementToJSXString(element) === "<TeamMemberDashboard />") {
-      document.getElementById("teamActivity").style.color = "#5bceff"
-      document.getElementById("teamActivity").querySelector("#dot").style.visibility = "visible"
-    } else if (reactElementToJSXString(element) === "<TeamChat />") {
-      document.getElementById("teamChat").style.color = "#5bceff"
-      document.getElementById("teamChat").querySelector("#dot").style.visibility = "visible"
-    } else if (reactElementToJSXString(element) === "<TeamYourProgress />") {
-      document.getElementById("teamProgress").style.color = "#5bceff"
-      document.getElementById("teamProgress").querySelector("#dot").style.visibility = "visible"
-      
-    } 
+    try {
+      if(reactElementToJSXString(element) === "<TeamMemberDashboard />" || reactElementToJSXString(element) === "<TeamLeaderDashboard />") {
+        document.getElementById("teamActivity").style.color = "#5bceff"
+        document.getElementById("teamActivity").querySelector("#dot").style.visibility = "visible"
+      } else if (reactElementToJSXString(element) === "<TeamChat />") {
+        document.getElementById("teamChat").style.color = "#5bceff"
+        document.getElementById("teamChat").querySelector("#dot").style.visibility = "visible"
+      } else if (reactElementToJSXString(element) === "<TeamYourProgress />") {
+        document.getElementById("teamProgress").style.color = "#5bceff"
+        document.getElementById("teamProgress").querySelector("#dot").style.visibility = "visible"
+        
+      } 
+    } catch (e) {
+
+    }
   };
 
   const infoData = [
@@ -67,6 +73,18 @@ const TeamDashboard = () => {
     }
   ];
 
+  let dashboard = <TeamLeaderDashboard />
+
+  if(currentUser === currentTeam._teamLeader) {
+    infoData[0]["element"] = <TeamLeaderDashboard />
+    dashboard = <TeamLeaderDashboard />
+  } else {
+    infoData[0]["element"] = <TeamMemberDashboard />
+    dashboard = <TeamMemberDashboard />
+  }
+
+  const [element, setElement] = useState(dashboard);
+
   return (
     <div className="home">
       <div className={SideBarResult + " sidebar-main"}>
@@ -78,7 +96,7 @@ const TeamDashboard = () => {
 
         {infoData.map((info) => (
           <div className={info.className} id={info.className} onClick={event => {
-            if(reactElementToJSXString(element) === "<TeamMemberDashboard />") {
+            if(reactElementToJSXString(element) === "<TeamMemberDashboard />" || reactElementToJSXString(element) === "<TeamLeaderDashboard />") {
               document.getElementById("teamActivity").style.color = "#ffffff";
               document.getElementById("teamActivity").querySelector("#dot").style.visibility = "hidden"
             } else if (reactElementToJSXString(element) === "<TeamChat />") {
@@ -108,7 +126,13 @@ const TeamDashboard = () => {
 
           {teamMembersList.map((info) => (
             <>
-              <p className="side-text">{info}</p>
+              <div className="memberContainer">
+                {info == currentTeam._teamLeader ? (
+                  <h3 className="Leader">{info} (L)</h3>
+                ) : (
+                  <p className="side-text">{info}</p>
+                )}
+              </div>
               <div className="line"></div>
             </>
           ))}

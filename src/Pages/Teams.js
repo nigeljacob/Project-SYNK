@@ -8,17 +8,17 @@ let teamInList = [];
 let teamPendingList = [];
 
 for(let i = 0; i < 5; i++ ) {
-  let team = new Team("T0001", "SDGP Group", "https://t4.ftcdn.net/jpg/03/64/21/11/360_F_364211147_1qgLVxv1Tcq0Ohz3FawUfrtONzz8nq3e.jpg", "A hassle-free team collaboration system for leaders to keep in touch with members and check in with progress" , "Nigel Jacob", ["Milni", "Sevinda", "Sasri", "Nigel", "Sevinda"], "2024/02/05", []);
+  let team = new Team("T0001", "SDGP Group", "https://t4.ftcdn.net/jpg/03/64/21/11/360_F_364211147_1qgLVxv1Tcq0Ohz3FawUfrtONzz8nq3e.jpg", "A hassle-free team collaboration system for leaders to keep in touch with members and check in with progress" , "Nigel", ["Milni", "Sevinda", "Sasri", "Nigel", "Sevinda"], "2024/02/05", []);
   teamOwnList.push(team);
 }
 
 for(let i = 0; i < 2; i++ ) {
-  let team = new Team("T0001", "On Life", "", "A hassle-free team collaboration system for leaders to keep in touch with members and check in with progress" , "Nigel Jacob", ["Milni", "Sevinda", "Sasri", "Nigel", "Sevinda"], "2024/02/05", []);
+  let team = new Team("T0001", "On Life", "", "A hassle-free team collaboration system for leaders to keep in touch with members and check in with progress" , "Milni", ["Milni", "Sevinda", "Sasri", "Nigel", "Sevinda"], "2024/02/05", []);
   teamInList.push(team);
 }
 
 for(let i = 0; i < 3; i++ ) {
-  let team = new Team("T0001", "SDGP Group", "", "A hassle-free team collaboration system for leaders to keep in touch with members and check in with progress" , "Nigel Jacob", ["Milni", "Sevinda", "Sasri", "Nigel", "Sevinda"], "2024/02/05", []);
+  let team = new Team("T0001", "SDGP Group", "", "A hassle-free team collaboration system for leaders to keep in touch with members and check in with progress" , "Sasri", ["Milni", "Sevinda", "Sasri", "Nigel", "Sevinda"], "2024/02/05", []);
   teamPendingList.push(team);
 }
 

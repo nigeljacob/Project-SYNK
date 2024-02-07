@@ -66,6 +66,10 @@
   visibility: visible;
 }
 
+.Leader {
+  color: #5bceff;
+}
+
 .dot {
   position: absolute;
   width: 10px;
