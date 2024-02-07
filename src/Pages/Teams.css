@@ -23,7 +23,7 @@
 
 .teamsYourIn, .teamsYouOwn, .pendingTeams{
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 10%));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 10%));
     height: fit-content;
     user-select: none;
 }
@@ -31,6 +31,10 @@
 .pendingTeams {
     opacity: 0.5;
     margin-bottom: 20px;
+}
+
+.pendingTeams{
+    pointer-events: none;
 }
 
 .joinButtons{
@@ -63,6 +67,7 @@
     font-size: 15px;
     font-weight: 300;
     text-align: center;
+    user-select: none;
 }
 
 .popupLayout{
