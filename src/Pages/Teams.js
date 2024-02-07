@@ -13,7 +13,7 @@ for(let i = 0; i < 5; i++ ) {
 }
 
 for(let i = 0; i < 2; i++ ) {
-  let team = new Team("T0001", "SDGP Group", "", "A hassle-free team collaboration system for leaders to keep in touch with members and check in with progress" , "Nigel Jacob", ["Milni", "Sevinda", "Sasri", "Nigel", "Sevinda"], "2024/02/05", []);
+  let team = new Team("T0001", "On Life", "", "A hassle-free team collaboration system for leaders to keep in touch with members and check in with progress" , "Nigel Jacob", ["Milni", "Sevinda", "Sasri", "Nigel", "Sevinda"], "2024/02/05", []);
   teamInList.push(team);
 }
 

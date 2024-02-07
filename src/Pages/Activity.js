@@ -14,7 +14,9 @@ function Home() {
   
   const [isOpen, setIsOpen] = useState(sideBarStatus);
   const SideBarResult = isOpen ? "sideBar show_SideBar" : "sideBar hide_SideBar";
-  const MainContentResult = isOpen ? "activityContent show_SideBar" : "activityContent hide_SideBar";
+  const MainContentResult = isOpen
+    ? "activityContent bringBackMainContent"
+    : "activityContent extendMainContent";
   const IconResult = isOpen ? "rotateIcon0" : "rotateIcon180";
   return (
     <div className='home'>

@@ -2,13 +2,13 @@ import * as MDIcons from "react-icons/md";
 import {
   Route,
   BrowserRouter as Router,
-  Routes as Switch,
+  Routes,
 } from "react-router-dom";
 import "./App.css";
 import Activity from "./Pages/Activity";
 import Chat from "./Pages/Chats";
 import Teams from "./Pages/Teams"
-import TeamMemberDashboard from "./Pages/TeamMemberDashboard";
+import TeamDashboard from "./Pages/TeamDashboard";
 import SideBar from "./components/SideBar";
 
 let result = "";
@@ -32,12 +32,12 @@ function App() {
       <div className="main" id="main">
         <Router>
           <SideBar />
-          <Switch>
-            <Route path="/" exact Component={Activity} />
-            <Route path="/Chats" Component={Chat} />
-            <Route path="/Teams" Component={Teams} />
-            <Route path="/memberDashboard" Component={TeamMemberDashboard} />
-          </Switch>
+          <Routes>
+            <Route path="/" exact element={<Activity />} />
+            <Route path="/Chats" element={<Chat />} />
+            <Route path="/Teams" element={<Teams />} />
+            <Route path="/memberDashboard" element={<TeamDashboard />} />
+          </Routes>
         </Router>
         <div className={result}>
           <MDIcons.MdOutlineSettings className="SettingIcon" />

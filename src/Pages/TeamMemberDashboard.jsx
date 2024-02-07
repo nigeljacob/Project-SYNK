@@ -1,86 +1,17 @@
-import React, { useState } from "react";
-import * as IOIcons from "react-icons/io";
-import TaskDetails from "../components/TaskDetails";
-import "./Activity.css";
-import "./TeamMemberDashboard.css";
+import React from 'react'
+import { useLocation } from 'react-router';
+import TaskDetails from "../components/TaskDetails.jsx"
 
 const TeamMemberDashboard = () => {
-  var sideBarStatus = true;
+    const location = useLocation();
+    const state = location.state;
+    const currentTeam = state["Team"];
 
-  try {
-    sideBarStatus = getPreviousSetting("sideBarStatus");
-  } catch (e) {
-    sideBarStatus = true;
-  }
-
-  const [isOpen, setIsOpen] = useState(sideBarStatus);
-  const SideBarResult = isOpen
-    ? "sideBar show_SideBar"
-    : "sideBar hide_SideBar";
-  const MainContentResult = isOpen
-    ? "activityContent show_SideBar"
-    : "activityContent hide_SideBar";
-  const IconResult = isOpen ? "rotateIcon0" : "rotateIcon180";
-
-  const infoData = ["Team Activity", "Chat", "Your Progress"];
-
-  const members = [
-    "Milni Nanayakkara",
-    "Sevinda Perera",
-    "Sasri Weeransinghe",
-    "Inuka Perera",
-    "Nigel Jacob",
-  ];
-
-  const taskDetails = [
-    { taskDesc: "Finish the individual report", taskStatus: "Completed" },
-    { taskDesc: "Finish the group report", taskStatus: "Completed" },
-    { taskDesc: "Do the UI mockups", taskStatus: "Completed" },
-    { taskDesc: "Create a logo for our brand", taskStatus: "In Progress" },
-  ];
+    let taskList = currentTeam._taskList;
 
   return (
-    <div className="home">
-      <div className={SideBarResult + " sidebar-main"}>
-        <h2>SDGP Group</h2>
-        <p className="members">5 members</p>
-        <p className="info-text">info</p>
-
-        <div className="line margin-left"></div>
-
-        {infoData.map((info) => (
-          <div className="pl-[30px]">
-            <p className="side-text text-left margin-left">{info}</p>
-            <div className="line margin-left"></div>
-          </div>
-        ))}
-
-        <div className="text-left margin-left margin-top">
-          <h2 className="">Members</h2>
-
-          <div className="line"></div>
-
-          {members.map((info) => (
-            <>
-              <p className="side-text">{info}</p>
-              <div className="line"></div>
-            </>
-          ))}
-        </div>
-
-        <div
-          className="closeButton"
-          onClick={(event) => {
-            setIsOpen(!isOpen);
-            sidebarToggler(!isOpen);
-          }}
-        >
-          <IOIcons.IoMdArrowDropleft className={IconResult} />
-        </div>
-      </div>
-
-      <div className={MainContentResult}>
-        <div className="deadline-container">
+    <>
+       <div className="deadline-container">
           <div className="clock-container">
             <img src="/images/clock.svg" alt="clock" />
             <div className="deadline-text-container">
@@ -94,47 +25,23 @@ const TeamMemberDashboard = () => {
 
         <div className="mt-[55px] ml-[10px] tasks-container">
           <h2>Your Tasks</h2>
-          <TaskDetails
-            index="1"
-            taskDesc="Finish the individual report"
-            taskStatus="Completed"
-          />
-          <TaskDetails
-            index="2"
-            taskDesc="Finish the group report"
-            taskStatus="Completed"
-          />
-          <TaskDetails
-            index="3"
-            taskDesc="Do the UI mockups"
-            taskStatus="Completed"
-          />
-          <TaskDetails
-            index="4"
-            taskDesc="Create a logo for our brand"
-            taskStatus="In Progress"
-          />
+          {taskList.length > 0 ? (
+            taskList.map((item) => {
+              // Render the item here
+              return (
+                <TaskDetails
+                index="1"
+                taskDesc="Finish the individual report"
+                taskStatus="Completed"
+              />
+              );
+            })
+          ) : (
+            <p className='tasksNotAvailable'>No tasks has been assigned to you yet</p>
+          )}
         </div>
-      </div>
-    </div>
-  );
-};
-
-function sidebarToggler(boolean) {
-  if (boolean === true) {
-    localStorage.setItem("sideBarStatus", "true");
-  } else {
-    localStorage.setItem("sideBarStatus", "false");
-  }
+    </>
+  )
 }
 
-function getPreviousSetting(name) {
-  let setting = localStorage.getItem(name);
-  if (setting === "true") {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-export default TeamMemberDashboard;
+export default TeamMemberDashboard

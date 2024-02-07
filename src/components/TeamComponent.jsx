@@ -57,7 +57,7 @@ function TeamComponent({team}) {
       </div>
 
       <div className="buttons">
-        <Link to= {{ pathname: "/memberDashboard", state: team }} className="teamButton">
+        <Link to= '/memberDashboard' state = {{Team: team}} className="teamButton">
           <div>
             <h3>View Team</h3>  
           </div>

@@ -39,13 +39,51 @@
   text-align: left;
 }
 
+#teamActivity{
+  color: #5bceff;
+}
+
+#teamActivity, #teamChat, #teamProgress {
+  position: relative;
+  cursor: pointer;
+}
+
+#teamActivity:hover, #teamChat:hover, #teamProgress:hover {
+  opacity: 0.8;
+}
+
+.barContent{
+  display: flex;
+  align-items: center;
+}
+
+#teamActivity p, #teamChat p, #teamProgress p {
+  flex: 2;
+  width: 100%;
+}
+
+#teamActivity .dot {
+  visibility: visible;
+}
+
+.dot {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #5bceff;
+  margin-right: 20px;
+  right: 0;
+  visibility: hidden;
+}
+
 .deadline-container {
   background-color: #115d68;
   padding: 15px 35px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 900px;
+  width: 100%;
   border-radius: 20px;
   margin-top: 10px;
 }
@@ -78,6 +116,13 @@
 .tasks-container {
   margin-top: 55px;
   margin-left: 10px;
+}
+
+.tasksNotAvailable {
+  width: 100%;
+  margin-top: 30px;
+  color: #a7a7a7;
+  text-align: center;
 }
 
 .single-task-container {

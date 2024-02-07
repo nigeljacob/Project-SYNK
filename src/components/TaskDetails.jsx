@@ -1,4 +1,4 @@
-import "../Pages/TeamMemberDashboard.css";
+import "../Pages/TeamDashboard.css";
 
 const TaskDetails = ({ index, taskDesc, taskStatus }) => {
   return (
