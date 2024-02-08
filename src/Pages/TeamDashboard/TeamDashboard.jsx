@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import * as IOIcons from "react-icons/io";
-import "./Activity.css";
+import "../MainActivity/Activity.css";
 import "./TeamDashboard.css";
 import { useLocation } from "react-router";
-import TeamMemberDashboard from "./TeamMemberDashboard"
-import Chat from "./TeamChat"
-import TeamYourProgress from "./TeamYourProgress";
-import TeamLeaderDashboard from "./TeamLeaderDashboard"
+import TeamMemberDashboard from "./TeamMemberActivity/TeamMemberDashboard"
+import Chat from "./TeamChat/TeamChat"
+import TeamYourProgress from "./TeamPersonalProgress/TeamYourProgress";
+import TeamLeaderDashboard from "./TeamLeaderActivity/TeamLeaderDashboard"
 import reactElementToJSXString from 'react-element-to-jsx-string';
 
 

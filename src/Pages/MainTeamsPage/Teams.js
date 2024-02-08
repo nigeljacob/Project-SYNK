@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Teams.css';
-import Team from "../Team.js"
-import TeamComponent from "../components/TeamComponent.jsx"
+import Team from "../../Classes/Team.js"
+import TeamComponent from "../../components/TeamComponent/TeamComponent.jsx"
 
 let teamOwnList = [];
 let teamInList = [];

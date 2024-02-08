@@ -1,6 +1,7 @@
 import React from 'react'
 import { useLocation } from 'react-router';
-import TaskDetails from "../components/TaskDetails.jsx"
+import TaskDetails from "../../../components/TaskComponent/TaskDetails.jsx"
+import clockImage from "../../../assets/images/clock.svg";
 
 const TeamMemberDashboard = () => {
     const location = useLocation();
@@ -13,7 +14,7 @@ const TeamMemberDashboard = () => {
     <>
        <div className="deadline-container">
           <div className="clock-container">
-            <img src="/images/clock.svg" alt="clock" />
+            <img src={clockImage} alt="clock" />
             <div className="deadline-text-container">
               <h2>Task Deadline Today</h2>
               <p>Task assigned to you by leader from SDGP GROUP dues today</p>
