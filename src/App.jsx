@@ -5,11 +5,11 @@ import {
   Routes,
 } from "react-router-dom";
 import "./App.css";
-import Activity from "./Pages/Activity";
-import Chat from "./Pages/Chats";
-import Teams from "./Pages/Teams"
-import TeamDashboard from "./Pages/TeamDashboard";
-import SideBar from "./components/SideBar";
+import Activity from "./Pages/MainActivity/Activity";
+import Chat from "./Pages/MainChat/Chats";
+import Teams from "./Pages/MainTeamsPage/Teams"
+import TeamDashboard from "./Pages/TeamDashboard/TeamDashboard";
+import SideBar from "./layout/SideNavBar/SideBar";
 
 let result = "";
 
