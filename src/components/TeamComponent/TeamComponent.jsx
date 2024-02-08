@@ -52,7 +52,10 @@ function TeamComponent({team}) {
               </div>
             </div>
           )
+        } else {
+          return null;
         }
+
       })}
       </div>
 

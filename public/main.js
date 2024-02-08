@@ -1,6 +1,6 @@
-const { app, BrowserWindow } = require("electron");
-const { useEffect } = require("react");
+const { Tray, app, BrowserWindow, Menu } = require("electron");
 const windowStateKeeper = require("electron-window-state");
+const path = require("path");
 
 function createWindow() {
   let mainWindowState = windowStateKeeper({
@@ -9,6 +9,8 @@ function createWindow() {
   });
 
   const win = new BrowserWindow({
+    x: mainWindowState.x,
+    y: mainWindowState.y,
     width: mainWindowState.width,
     height: mainWindowState.height,
     minWidth: 1000,
@@ -21,7 +23,7 @@ function createWindow() {
     },
     frame: false,
     show: false,
-    icon: "/loader.gif",
+    icon: "/logo.png",
     webPreferences: {
       enableRemoteModule: true,
       contextIsolation: true,
@@ -42,44 +44,23 @@ function createWindow() {
   });
 
   splashScreen.loadFile("./public/preload.html");
-  splashScreen.setIcon("./public/logo.png");
+  splashScreen.setIcon(path.join(__dirname, "logo.png"));
   splashScreen.center();
   splashScreen.show();
 
   win.setBackgroundColor("#1e1e1e");
   win.setMenu(null);
-  win.setIcon("./public/logo.png");
 
   setTimeout(function () {
     splashScreen.close();
     win.loadURL("http://localhost:3000");
+    win.setIcon(path.join(__dirname, "logo.png"));
     win.show();
   }, 7000);
-}
 
-function getSize(name) {
-  if (name == "width") {
-    try {
-      return localStorage.getItem("width");
-    } catch (e) {
-      return 1000;
-    }
-  } else {
-    try {
-      return localStorage.getItem("height");
-    } catch (e) {
-      return 800;
-    }
-  }
 }
 
 app.on("ready", createWindow);
-
-app.on("window-all-closed", function () {
-  if (process.platform != "darwin") {
-    app.quit();
-  }
-});
 
 app.on("activate", function () {
   if (BrowserWindow.getAllWindows().length == 0) createWindow();

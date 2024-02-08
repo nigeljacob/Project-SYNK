@@ -10,6 +10,7 @@
     "concurrently": "^8.2.2",
     "cross-env": "^7.0.3",
     "electron": "^28.2.0",
+    "electron-packager": "^17.1.2",
     "electron-window-state": "^5.0.3",
     "path-browserify": "^1.0.1",
     "react": "^18.2.0",
@@ -47,7 +48,8 @@
     "eject": "react-scripts eject",
     "electron:serve": "concurrently -k \"cross-env BROWSER=none yarn start\" \"yarn electron:start\"",
     "electron:build": "yarn build && electron-builder -c.extraMetadata.main=build/main.js",
-    "electron:start": "electron ."
+    "electron:start": "electron .",
+    "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/icons/mac/icon.icns --prune=true --out=release-builds"
   },
   "eslintConfig": {
     "extends": [

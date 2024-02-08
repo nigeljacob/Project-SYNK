@@ -127,7 +127,7 @@ const TeamDashboard = () => {
           {teamMembersList.map((info) => (
             <>
               <div className="memberContainer">
-                {info == currentTeam._teamLeader ? (
+                {info === currentTeam._teamLeader ? (
                   <h3 className="Leader">{info} (L)</h3>
                 ) : (
                   <p className="side-text">{info}</p>
