@@ -1,26 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import * as MDIcons from "react-icons/md";
-import {
-  Route,
-  BrowserRouter as Router,
-  Routes,
-} from "react-router-dom";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import "./App.css";
 import Activity from "./Pages/MainActivity/Activity";
 import Chat from "./Pages/MainChat/Chats";
-import Teams from "./Pages/MainTeamsPage/Teams"
+import Teams from "./Pages/MainTeamsPage/Teams";
 import TeamDashboard from "./Pages/TeamDashboard/TeamDashboard";
 import SideBar from "./layout/SideNavBar/SideBar";
 
 let result = "";
 
 function App() {
-
   const [user, setUser] = useState("Nigel");
 
   const handleLogin = (user) => {
-    setUser(user)
-  }
+    setUser(user);
+  };
 
   const detectOS = () => {
     const userAgent = navigator.userAgent || navigator.vendor || window.opera;
@@ -34,19 +29,19 @@ function App() {
 
   detectOS();
 
-  if(user == null) {
-    return(
+  if (user == null) {
+    return (
       <>
-      <Router>
-        <Routes>
-          <Route path="/" exact element={<Chat />} />
-          <Route path="/createAccount" element={<Chat />} />
-        </Routes>
-      </Router>
+        <Router>
+          <Routes>
+            <Route path="/" exact element={<Chat />} />
+            <Route path="/createAccount" element={<Chat />} />
+          </Routes>
+        </Router>
       </>
     );
   } else {
-    console.log(user)
+    console.log(user);
     return (
       <>
         <div className="titleBar"></div>
@@ -61,7 +56,7 @@ function App() {
             </Routes>
           </Router>
           <div className={result}>
-            <MDIcons.MdOutlineSettings className="SettingIcon"/>
+            <MDIcons.MdOutlineSettings className="SettingIcon" />
           </div>
         </div>
       </>
