@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import * as MDIcons from "react-icons/md";
 import {
   Route,
@@ -14,6 +15,13 @@ import SideBar from "./layout/SideNavBar/SideBar";
 let result = "";
 
 function App() {
+
+  const [user, setUser] = useState("Nigel");
+
+  const handleLogin = (user) => {
+    setUser(user)
+  }
+
   const detectOS = () => {
     const userAgent = navigator.userAgent || navigator.vendor || window.opera;
 
@@ -26,25 +34,39 @@ function App() {
 
   detectOS();
 
-  return (
-    <>
-      <div className="titleBar"></div>
-      <div className="main" id="main">
-        <Router>
-          <SideBar />
-          <Routes>
-            <Route path="/" exact element={<Activity />} />
-            <Route path="/Chats" element={<Chat />} />
-            <Route path="/Teams" element={<Teams />} />
-            <Route path="/memberDashboard" element={<TeamDashboard />} />
-          </Routes>
-        </Router>
-        <div className={result}>
-          <MDIcons.MdOutlineSettings className="SettingIcon" />
+  if(user == null) {
+    return(
+      <>
+      <Router>
+        <Routes>
+          <Route path="/" exact element={<Chat />} />
+          <Route path="/createAccount" element={<Chat />} />
+        </Routes>
+      </Router>
+      </>
+    );
+  } else {
+    console.log(user)
+    return (
+      <>
+        <div className="titleBar"></div>
+        <div className="main" id="main">
+          <Router>
+            <SideBar />
+            <Routes>
+              <Route path="/" exact element={<Activity />} />
+              <Route path="/Chats" element={<Chat />} />
+              <Route path="/Teams" element={<Teams />} />
+              <Route path="/memberDashboard" element={<TeamDashboard />} />
+            </Routes>
+          </Router>
+          <div className={result}>
+            <MDIcons.MdOutlineSettings className="SettingIcon"/>
+          </div>
         </div>
-      </div>
-    </>
-  );
+      </>
+    );
+  }
 }
 
 export default App;
