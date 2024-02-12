@@ -55,7 +55,7 @@ function App() {
               <Route path="/" exact element={<Activity />} />
               <Route path="/Chats" element={<Chat />} />
               <Route path="/Teams" element={<Teams />} />
-              <Route path="/memberDashboard" element={<TeamDashboard />} />
+              <Route path="/memberDashboard" element={<TeamDashboard user={user}/>} />
             </Routes>
           </Router>
           <div className={result}>
