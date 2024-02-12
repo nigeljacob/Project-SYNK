@@ -58,7 +58,7 @@ const TeamDashboard = ({user}) => {
   const handleItemClick = (element) => {
     setElement(element);
     try {
-      if(reactElementToJSXString(element) === "<TeamMemberDashboard />" || reactElementToJSXString(element) === "<TeamLeaderDashboard />") {
+      if(reactElementToJSXString(element) === "<TeamMemberDashboard viewTaskTrigger={viewTaskPopup} setViewTaskTrigger={setViewTaskPopup}/>" || reactElementToJSXString(element) === "<TeamLeaderDashboard />") {
         document.getElementById("teamActivity").style.color = "#5bceff"
         document.getElementById("teamActivity").querySelector("#dot").style.visibility = "visible"
       } else if (reactElementToJSXString(element) === "<TeamChat />") {
@@ -77,8 +77,7 @@ const TeamDashboard = ({user}) => {
   const infoData = [
     {
       title: "Team Activity",
-      element: <TeamMemberDashboard 
-      />,
+      element: <TeamMemberDashboard viewTaskTrigger={viewTaskPopup} setViewTaskTrigger={setViewTaskPopup}/>,
       className: "teamActivity"
     },
     {
@@ -100,11 +99,8 @@ const TeamDashboard = ({user}) => {
     dashboard = <TeamLeaderDashboard />
     buttonClass = "tw-w-7 tw-h-7 tw-mr-[10px] tw-cursor-pointer hover:tw-text-[#5bceff]";
   } else {
-    infoData[0]["element"] = <TeamMemberDashboard />
-    dashboard = <TeamMemberDashboard    
-        viewTaskTrigger={viewTaskPopup}     
-        setViewTaskTrigger={setViewTaskPopup}
-    />
+    infoData[0]["element"] = <TeamMemberDashboard viewTaskTrigger={viewTaskPopup} setViewTaskTrigger={setViewTaskPopup}/>
+    dashboard = <TeamMemberDashboard viewTaskTrigger={viewTaskPopup} setViewTaskTrigger={setViewTaskPopup}/>
     buttonClass = "tw-w-7 tw-h-7 tw-mr-[10px] tw-cursor-pointer hover:tw-text-[#5bceff] hide_Button";
   }
 
@@ -121,7 +117,7 @@ const TeamDashboard = ({user}) => {
 
         {infoData.map((info) => (
           <div className={info.className} id={info.className} onClick={event => {
-            if(reactElementToJSXString(element) === "<TeamMemberDashboard />" || reactElementToJSXString(element) === "<TeamLeaderDashboard />") {
+            if(reactElementToJSXString(element) === "<TeamMemberDashboard viewTaskTrigger={viewTaskPopup} setViewTaskTrigger={setViewTaskPopup}/>" || reactElementToJSXString(element) === "<TeamLeaderDashboard />") {
               document.getElementById("teamActivity").style.color = "#ffffff";
               document.getElementById("teamActivity").querySelector("#dot").style.visibility = "hidden"
             } else if (reactElementToJSXString(element) === "<TeamChat />") {

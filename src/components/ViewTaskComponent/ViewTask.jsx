@@ -281,7 +281,7 @@ export default function ViewTask(props) {
                       <Command>
                         <CommandInput placeholder="Search Applications on your computer" />
 
-                        <ScrollArea className="tw-h-[203px]">
+                        <ScrollArea className="tw-h-[170px]">
                           <CommandEmpty>No application found.</CommandEmpty>
 
                           <CommandGroup>

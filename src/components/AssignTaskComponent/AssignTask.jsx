@@ -25,12 +25,9 @@ export default function AssignTask(props) {
   };
 
   return props.trigger ? (
-    <div className="tw-justify-center tw-items-center">
-          <Card
-          className={`tw-relative tw-w-[400px] tw-border-2 tw-border-primary/80 tw-shadow-[0_0_16px_#5bceff] tw-bg-zinc-900 animate__animated ${
-            props.trigger ? "animate__fadeIn" : "animate__fadeOut"
-          }`}
-        >
+    <div className="tw-justify-center tw-items-center tw-shadow-[0_0_16px_#5bceff]">
+<Card
+          className="tw-w-[400px] tw-border-2 tw-border-primary/80  tw-bg-zinc-900">
           <CardHeader>
             <CardTitle className="tw-text-gray-300 tw-items-center">
               Assign a task to {props.currentUser}
@@ -43,29 +40,40 @@ export default function AssignTask(props) {
                   <Label htmlFor="name" className="tw-text-left tw-text-gray-300">
                     Task name:
                   </Label>
-                  <Input id="name" className="bg-transparent text-gray-300" />
+                  <Input id="name" className="tw-bg-transparent tw-text-gray-300" />
                 </div>
-                <div className="flex flex-col space-y-1.5 text-left text-gray-300 ">
+                <div className="tw-flex tw-flex-col tw-space-y-1.5 tw-text-left tw-text-gray-300 ">
                   <Label htmlFor="framework">Task description:</Label>
-                  <Textarea className="bg-transparent text-gray-300"></Textarea>
+                  <Textarea className="tw-bg-transparent tw-text-gray-300"></Textarea>
 
+                  {/* <Select>
+                    <SelectTrigger id="framework">
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent position="popper">
+                      <SelectItem value="next">Next.js</SelectItem>
+                      <SelectItem value="sveltekit">SvelteKit</SelectItem>
+                      <SelectItem value="astro">Astro</SelectItem>
+                      <SelectItem value="nuxt">Nuxt.js</SelectItem>
+                    </SelectContent>
+                  </Select> */}
                 </div>
-                <div className="flex flex-col space-y-1.5">
-                  <Label htmlFor="name" className="text-left text-gray-300">
+                <div className="tw-flex tw-flex-col tw-space-y-1.5">
+                  <Label htmlFor="name" className="tw-text-left tw-text-gray-300">
                     Deadline:
                   </Label>
-
+                  {/* <br></br> */}
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button
                         variant={"secondary"}
                         className={cn(
-                          "tw-w-auto tw-justify-start tw-text-left tw-font-normal tw-bg-background tw-text-gray-300 tw-border tw-border-input tw-hover:bg-secondary/10 tw-ml-[10px]",
-                          !date && "text-muted-foreground"
+                          "tw-w-auto tw-justify-start tw-text-left tw-font-normal tw-text-gray-300 tw-border tw-border-input tw-hover:bg-secondary/10 tw-bg-background tw-important",
+                          !date && "tw-text-muted-foreground"
                         )}
                       >
                         <CalendarIcon className="tw-mr-2 tw-h-4 tw-w-4" />
-                        {date ? format(date, "PPP") : <span>Pick a date</span>}
+                        {date ? format(date, "PPP") : <div>Pick a date</div>}
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="tw-w-auto tw-p-0 tw-bg-background">
