@@ -44,7 +44,6 @@
 }
 
 #teamActivity, #teamChat, #teamProgress {
-  position: relative;
   cursor: pointer;
 }
 
@@ -127,4 +126,8 @@
   margin-top: 30px;
   color: #a7a7a7;
   text-align: center;
+}
+
+.hide_Button{
+  visibility: hidden;
 }

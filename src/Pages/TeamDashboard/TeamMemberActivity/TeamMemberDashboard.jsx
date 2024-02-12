@@ -8,7 +8,8 @@ const TeamMemberDashboard = () => {
     const state = location.state;
     const currentTeam = state["Team"];
 
-    let taskList = currentTeam._taskList;
+    // let taskList = currentTeam._taskList;
+    let taskList = [{}]
 
   return (
     <>

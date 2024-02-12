@@ -65,7 +65,6 @@ function TeamComponent({team}) {
             <h3>View Team</h3>  
           </div>
         </Link>
-        <CIIcons.CiMenuKebab className='menuButton' />
       </div>   
     </div>
   )

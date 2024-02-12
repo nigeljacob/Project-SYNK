@@ -13,7 +13,7 @@ for(let i = 0; i < 5; i++ ) {
 }
 
 for(let i = 0; i < 2; i++ ) {
-  let team = new Team("T0001", "On Life", "", "A hassle-free team collaboration system for leaders to keep in touch with members and check in with progress" , "Milni", ["Milni", "Sevinda", "Sasri", "Nigel", "Sevinda"], "2024/02/05", []);
+  let team = new Team("T0001", "On Life", "", "A hassle-free team collaboration system for leaders to keep in touch with members and check in with progress" , "Milni", ["Milni", "Sevinda", "Sasri", "Nigel", "Sevinda Perera"], "2024/02/05", []);
   teamInList.push(team);
 }
 
@@ -96,8 +96,7 @@ function Teams() {
           </div>
       </div>
     </div>
-
-    <div className={SideBarResult} id='popupLayout' onClick={event => {
+<div className={SideBarResult} id='popupLayout' onClick={event => {
       
         let popupLayout = document.getElementById("popupLayout");
         let joinPopup = document.getElementById('JoinTeamPopup');
@@ -114,6 +113,7 @@ function Teams() {
         setIsOpen(!isOpen);
 
     }}>
+    
         <div className='JoinTeamPopup' id='JoinTeamPopup'>
             
         </div>
