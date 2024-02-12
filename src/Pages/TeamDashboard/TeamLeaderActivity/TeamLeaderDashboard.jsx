@@ -1,9 +1,14 @@
-import React from 'react'
+import React, {useState} from 'react'
+import './TeamLeaderDashboard.css'
+import { Button } from '../../../shadCN-UI/ui/button';
+import AssignTask from '../../../components/AssignTaskComponent/AssignTask';
+import '../../MainTeamsPage/Teams.css'
 
 const TeamLeaderDashboard = () => {
+  
   return (
-    <div>
-      <h1>leader...</h1>
+    <div className='teamLeaderDashboard'>
+    <h1>Leader</h1>
     </div>
   )
 }

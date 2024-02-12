@@ -142,13 +142,15 @@
 }
 
 .teamButton{
-    width: 92%;
+    width: 100%;
+    height: 30px;
     display: flex;
     background: #0b0b0b;
     justify-content: center;
     align-items: center;
     padding: 5px;
     border-radius: 5px;
+    -webkit-user-drag: none;
 }
 
 .teamButton h3{

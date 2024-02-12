@@ -8,18 +8,32 @@ import Chat from "./TeamChat/TeamChat"
 import TeamYourProgress from "./TeamPersonalProgress/TeamYourProgress";
 import TeamLeaderDashboard from "./TeamLeaderActivity/TeamLeaderDashboard"
 import reactElementToJSXString from 'react-element-to-jsx-string';
+import { Button } from '../../shadCN-UI/ui/button';
+import AssignTask from '../../components/AssignTaskComponent/AssignTask';
 
 
-const TeamDashboard = () => {
+const TeamDashboard = ({user}) => {
+
+  const [assignTaskPopup, setAssignTaskPopup] = useState(false);
+  const [viewTaskPopup, setViewTaskPopup] = useState(false);
+
+  const [isPopupOpen, setPopupOpen] = useState(false);
+  const popupResult = isPopupOpen ? "popupLayout show_popup" : "popupLayout hide_popup";
+
+  var buttonClass = "tw-w-7 tw-h-7 tw-mr-[10px] tw-cursor-pointer hover:tw-text-[#5bceff]"
+
+  
   const location = useLocation();
   const state = location.state;
   const currentTeam = state["Team"];
 
   let teamMembersList = currentTeam._teamMemberList;
 
-  var sideBarStatus = true;
+  let sideBarStatus = true;
 
-  var currentUser = "Nigel"
+  const [selectedUser, setSelectedUser] = useState("");
+
+  var currentUser = user
 
   try {
     sideBarStatus = getPreviousSetting("sideBarStatus");
@@ -78,9 +92,11 @@ const TeamDashboard = () => {
   if(currentUser === currentTeam._teamLeader) {
     infoData[0]["element"] = <TeamLeaderDashboard />
     dashboard = <TeamLeaderDashboard />
+    buttonClass = "tw-w-7 tw-h-7 tw-mr-[10px] tw-cursor-pointer hover:tw-text-[#5bceff]";
   } else {
     infoData[0]["element"] = <TeamMemberDashboard />
     dashboard = <TeamMemberDashboard />
+    buttonClass = "tw-w-7 tw-h-7 tw-mr-[10px] tw-cursor-pointer hover:tw-text-[#5bceff] hide_Button";
   }
 
   const [element, setElement] = useState(dashboard);
@@ -126,12 +142,27 @@ const TeamDashboard = () => {
 
           {teamMembersList.map((info) => (
             <>
-              <div className="memberContainer">
+              <div className="memberContainer tw-flex tw-items-center tw-w-full tw-justify-between">
                 {info === currentTeam._teamLeader ? (
                   <h3 className="Leader">{info} (L)</h3>
                 ) : (
                   <p className="side-text">{info}</p>
                 )}
+                <IOIcons.IoIosAdd className={buttonClass} onClick={event => {
+            let popupLayout = document.getElementById("popupLayout");
+              if(isPopupOpen) {
+                popupLayout.style.background = "rgba(0,0,0,0)"
+              } else {
+                popupLayout.style.visibility = "visible";
+                setTimeout(() => {
+                  popupLayout.style.background = "rgba(0,0,0,0.7)"
+                }, 100);
+              }
+            
+              setPopupOpen(!isPopupOpen);
+              setAssignTaskPopup(true);
+              setSelectedUser(info);
+          }} />
               </div>
               <div className="line"></div>
             </>
@@ -152,6 +183,15 @@ const TeamDashboard = () => {
       <div className={MainContentResult}>
         {element}
       </div>
+
+
+      <div className={popupResult} id='popupLayout'>
+        <AssignTask
+          trigger={assignTaskPopup}
+          setTrigger={setPopupOpen}
+          currentUser = {selectedUser}
+        />
+  </div> 
     </div>
   );
 };
