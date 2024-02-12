@@ -20,6 +20,10 @@ const TeamDashboard = ({user}) => {
 
   const [isPopupOpen, setPopupOpen] = useState(false);
   const popupResult = isPopupOpen ? "popupLayout show_popup" : "popupLayout hide_popup";
+  const popupResult2 = viewTaskPopup ? "popupLayout show_popup" : "popupLayout hide_popup";
+
+  
+
 
   var buttonClass = "tw-w-7 tw-h-7 tw-mr-[10px] tw-cursor-pointer hover:tw-text-[#5bceff]"
 
@@ -97,7 +101,8 @@ const TeamDashboard = ({user}) => {
     buttonClass = "tw-w-7 tw-h-7 tw-mr-[10px] tw-cursor-pointer hover:tw-text-[#5bceff]";
   } else {
     infoData[0]["element"] = <TeamMemberDashboard />
-    dashboard = <TeamMemberDashboard         
+    dashboard = <TeamMemberDashboard    
+        viewTaskTrigger={viewTaskPopup}     
         setViewTaskTrigger={setViewTaskPopup}
     />
     buttonClass = "tw-w-7 tw-h-7 tw-mr-[10px] tw-cursor-pointer hover:tw-text-[#5bceff] hide_Button";
@@ -196,12 +201,12 @@ const TeamDashboard = ({user}) => {
           currentUser = {selectedUser}
         />
   </div> 
-      {/* <div className={popupResult}> */}
+      <div className={popupResult2} id='popupLayout2'>
       <ViewTask
               trigger={viewTaskPopup}
               setTrigger={setViewTaskPopup}
             ></ViewTask>
-      {/* </div>  */}
+      </div> 
      </div>
   );
 };

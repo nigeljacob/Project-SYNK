@@ -163,7 +163,8 @@ export default function ViewTask(props) {
     </Card> */}
     {/* <h1 className="tw-position">Harro there!!!</h1>
     <Button onClick={() => props.setTrigger(false)}>Close</Button> */}
-    <div className="tw-fixed tw-inset-0 tw-bg-black tw-bg-opacity-60 tw-flex tw-justify-center tw-items-center tw-min-h-screen ">
+    {/* <div className="tw-fixed tw-inset-0 tw-bg-black tw-bg-opacity-60 tw-flex tw-justify-center tw-items-center tw-min-h-screen "> */}
+    <div className="tw-fixed tw-inset-0  tw-flex tw-justify-center tw-items-center">
       {/* <div className="tw-relative"> */}
       {/* <div
           className={`tw-absolute tw-inset-0 tw-bg-primary tw-blur-[8px] tw-animate__animated ${

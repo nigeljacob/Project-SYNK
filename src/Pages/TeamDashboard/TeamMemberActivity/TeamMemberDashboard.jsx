@@ -36,6 +36,8 @@ const TeamMemberDashboard = (props) => {
                 taskDesc="Finish the individual report"
                 taskStatus="Completed"
                 setViewTaskTrigger={props.setViewTaskTrigger}
+                viewTaskTrigger={props.viewTaskTrigger}     
+
               />
               );
             })

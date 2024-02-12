@@ -1,7 +1,7 @@
 import "./TaskDetails.css";
+import "../../Pages/TeamDashboard/TeamDashboard"
 
-
-const TaskDetails = ({ index, taskDesc, taskStatus, setViewTaskTrigger }) => {
+const TaskDetails = ({ index, taskDesc, taskStatus, setViewTaskTrigger, viewTaskTrigger }) => {
   return (
     <div className="single-task-container">
       <p>{index + ". " + taskDesc}</p>
@@ -23,7 +23,18 @@ const TaskDetails = ({ index, taskDesc, taskStatus, setViewTaskTrigger }) => {
           <div className="status">In Progress</div>
         ) : (
           <div >
-            <button className="status" onClick={event => {setViewTaskTrigger(true)}}>Completed</button>
+            <button className="status" onClick={event => {
+            let popupLayout = document.getElementById("popupLayout2");
+              if(viewTaskTrigger) {
+                popupLayout.style.background = "rgba(0,0,0,0)"
+              } else {
+                popupLayout.style.visibility = "visible";
+                setTimeout(() => {
+                  popupLayout.style.background = "rgba(0,0,0,0.7)"
+                }, 100);
+            setViewTaskTrigger(true);
+
+            }}}>Completed</button>
           </div>
         )}
       </div>
