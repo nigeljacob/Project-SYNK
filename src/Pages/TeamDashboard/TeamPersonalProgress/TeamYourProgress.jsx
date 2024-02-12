@@ -3,7 +3,7 @@ import React from 'react'
 const TeamYourProgress = () => {
   return (
     <div>
-      <h3>knfijbn;fjb;ijb;ijbijb;ijfb</h3>
+      <h3>MY PROGRES</h3>
     </div>
   )
 }
