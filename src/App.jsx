@@ -7,11 +7,14 @@ import Chat from "./Pages/MainChat/Chats";
 import Teams from "./Pages/MainTeamsPage/Teams";
 import TeamDashboard from "./Pages/TeamDashboard/TeamDashboard";
 import SideBar from "./layout/SideNavBar/SideBar";
+import Login from "./Pages/Login/Login";
+import CreateAccount from "./Pages/CreateAccount/CreateAccount";
 
 let result = "";
 
 function App() {
-  const [user, setUser] = useState("Nigel");
+  // const [user, setUser] = useState("Nigel");
+  const [user, setUser] = useState(null);
 
   const handleLogin = (user) => {
     setUser(user);
@@ -34,8 +37,8 @@ function App() {
       <>
         <Router>
           <Routes>
-            <Route path="/" exact element={<Chat />} />
-            <Route path="/createAccount" element={<Chat />} />
+            <Route path="/" exact element={<Login />} />
+            <Route path="/createAccount" element={<CreateAccount />} />
           </Routes>
         </Router>
       </>
