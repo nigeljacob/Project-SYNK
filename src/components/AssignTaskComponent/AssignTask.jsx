@@ -25,14 +25,14 @@ export default function AssignTask(props) {
   };
 
   return props.trigger ? (
-    <div>
-     <Card
+    <div className="tw-justify-center tw-items-center">
+          <Card
           className={`tw-relative tw-w-[400px] tw-border-2 tw-border-primary/80 tw-shadow-[0_0_16px_#5bceff] tw-bg-zinc-900 animate__animated ${
             props.trigger ? "animate__fadeIn" : "animate__fadeOut"
           }`}
         >
           <CardHeader>
-            <CardTitle className="tw-text-gray-300">
+            <CardTitle className="tw-text-gray-300 tw-items-center">
               Assign a task to {props.currentUser}
             </CardTitle>
           </CardHeader>

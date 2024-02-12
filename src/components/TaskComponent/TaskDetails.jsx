@@ -1,6 +1,7 @@
 import "./TaskDetails.css";
 
-const TaskDetails = ({ index, taskDesc, taskStatus }) => {
+
+const TaskDetails = ({ index, taskDesc, taskStatus, setViewTaskTrigger }) => {
   return (
     <div className="single-task-container">
       <p>{index + ". " + taskDesc}</p>
@@ -21,7 +22,9 @@ const TaskDetails = ({ index, taskDesc, taskStatus }) => {
         {taskStatus !== "Completed" ? (
           <div className="status">In Progress</div>
         ) : (
-          <div className="status">Completed</div>
+          <div >
+            <button className="status" onClick={event => {setViewTaskTrigger(true)}}>Completed</button>
+          </div>
         )}
       </div>
     </div>

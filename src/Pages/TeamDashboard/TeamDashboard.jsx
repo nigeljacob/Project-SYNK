@@ -10,10 +10,11 @@ import TeamLeaderDashboard from "./TeamLeaderActivity/TeamLeaderDashboard"
 import reactElementToJSXString from 'react-element-to-jsx-string';
 import { Button } from '../../shadCN-UI/ui/button';
 import AssignTask from '../../components/AssignTaskComponent/AssignTask';
+import ViewTask from '../../components/ViewTaskComponent/ViewTask';
 
 
 const TeamDashboard = ({user}) => {
-
+  
   const [assignTaskPopup, setAssignTaskPopup] = useState(false);
   const [viewTaskPopup, setViewTaskPopup] = useState(false);
 
@@ -72,7 +73,8 @@ const TeamDashboard = ({user}) => {
   const infoData = [
     {
       title: "Team Activity",
-      element: <TeamMemberDashboard />,
+      element: <TeamMemberDashboard 
+      />,
       className: "teamActivity"
     },
     {
@@ -95,7 +97,9 @@ const TeamDashboard = ({user}) => {
     buttonClass = "tw-w-7 tw-h-7 tw-mr-[10px] tw-cursor-pointer hover:tw-text-[#5bceff]";
   } else {
     infoData[0]["element"] = <TeamMemberDashboard />
-    dashboard = <TeamMemberDashboard />
+    dashboard = <TeamMemberDashboard         
+        setViewTaskTrigger={setViewTaskPopup}
+    />
     buttonClass = "tw-w-7 tw-h-7 tw-mr-[10px] tw-cursor-pointer hover:tw-text-[#5bceff] hide_Button";
   }
 
@@ -192,7 +196,13 @@ const TeamDashboard = ({user}) => {
           currentUser = {selectedUser}
         />
   </div> 
-    </div>
+      {/* <div className={popupResult}> */}
+      <ViewTask
+              trigger={viewTaskPopup}
+              setTrigger={setViewTaskPopup}
+            ></ViewTask>
+      {/* </div>  */}
+     </div>
   );
 };
 
