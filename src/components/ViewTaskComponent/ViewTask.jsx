@@ -172,10 +172,7 @@ export default function ViewTask(props) {
           }`}
         ></div> */}
       <Card
-        className={`tw-relative tw-w-[470px] tw-border-2 tw-border-primary/80 tw-shadow-[0_0_16px_#5bceff] tw-bg-zinc-900 tw-animate__animated ${
-          props.trigger ? "tw-animate__fadeIn" : "tw-animate__fadeOut"
-        }`}
-      >
+        className="tw-relative tw-w-[470px] tw-shadow-[0_0_16px_#5bceff] tw-border-2 tw-border-primary/80  tw-bg-zinc-900">
         <CardHeader>
           <CardTitle className="tw-text-gray-300">
             Task Assigned: {taskName}

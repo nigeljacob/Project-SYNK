@@ -18,9 +18,10 @@ const TeamDashboard = ({user}) => {
   const [assignTaskPopup, setAssignTaskPopup] = useState(false);
   const [viewTaskPopup, setViewTaskPopup] = useState(false);
 
-  const [isPopupOpen, setPopupOpen] = useState(false);
-  const popupResult = isPopupOpen ? "popupLayout show_popup" : "popupLayout hide_popup";
-  const popupResult2 = viewTaskPopup ? "popupLayout show_popup" : "popupLayout hide_popup";
+  const [isAssignTaskOpen, setAssignTaskOpen] = useState(false);
+  const [isViewTaskOpen, setViewTaskOpen] = useState(false);
+  // const popupResult = viewTaskPopup ? "popupLayout show_popup" : "popupLayout hide_popup";
+  // const popupResult2 = viewTaskPopup ? "popupLayout show_popup" : "popupLayout hide_popup";
 
   
 
@@ -155,7 +156,7 @@ const TeamDashboard = ({user}) => {
                 )}
                 <IOIcons.IoIosAdd className={buttonClass} onClick={event => {
             let popupLayout = document.getElementById("popupLayout");
-              if(isPopupOpen) {
+              if(isAssignTaskOpen) {
                 popupLayout.style.background = "rgba(0,0,0,0)"
               } else {
                 popupLayout.style.visibility = "visible";
@@ -164,7 +165,7 @@ const TeamDashboard = ({user}) => {
                 }, 100);
               }
             
-              setPopupOpen(!isPopupOpen);
+              setAssignTaskOpen(!isAssignTaskOpen);
               setAssignTaskPopup(true);
               setSelectedUser(info);
           }} />
@@ -190,14 +191,14 @@ const TeamDashboard = ({user}) => {
       </div>
 
 
-      <div className={popupResult} id='popupLayout'>
+      <div className={isAssignTaskOpen ? "popupLayout show_popup" : "popupLayout hide_popup"} id='popupLayout'>
         <AssignTask
           trigger={assignTaskPopup}
-          setTrigger={setPopupOpen}
+          setTrigger={setAssignTaskOpen}
           currentUser = {selectedUser}
         />
   </div> 
-      <div className={popupResult2} id='popupLayout2'>
+      <div className={viewTaskPopup ? "popupLayout show_popup" : "popupLayout hide_popup"} id='popupLayout2'>
       <ViewTask
               trigger={viewTaskPopup}
               setTrigger={setViewTaskPopup}
