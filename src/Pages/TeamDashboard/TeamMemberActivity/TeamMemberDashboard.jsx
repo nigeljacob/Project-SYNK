@@ -3,8 +3,8 @@ import { useLocation } from 'react-router';
 import TaskDetails from "../../../components/TaskComponent/TaskDetails.jsx"
 import clockImage from "../../../assets/images/clock.svg";
 
-const TeamMemberDashboard = () => {
-    const location = useLocation();
+const TeamMemberDashboard = (props) => {
+  const location = useLocation();
     const state = location.state;
     const currentTeam = state["Team"];
 
@@ -35,6 +35,9 @@ const TeamMemberDashboard = () => {
                 index="1"
                 taskDesc="Finish the individual report"
                 taskStatus="Completed"
+                setViewTaskTrigger={props.setViewTaskTrigger}
+                viewTaskTrigger={props.viewTaskTrigger}     
+
               />
               );
             })
