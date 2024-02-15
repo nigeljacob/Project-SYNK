@@ -97,7 +97,7 @@ const TeamDashboard = ({ user }) => {
     },
   ];
 
-  let dashboard = <TeamLeaderDashboard team = {currentTeam}/>;
+  let dashboard = <TeamLeaderDashboard team = {currentTeam} sideBarStatus = {isOpen}/>;
 
   if (currentUser === currentTeam._teamLeader) {
     infoData[0]["element"] = (
@@ -105,6 +105,7 @@ const TeamDashboard = ({ user }) => {
         viewTaskTrigger={viewTaskPopup}
         setViewTaskTrigger={setViewTaskPopup}
         team = {currentTeam}
+        sideBarStatus = {isOpen}
       />
     );
     dashboard = (
@@ -112,6 +113,7 @@ const TeamDashboard = ({ user }) => {
         viewTaskTrigger={viewTaskPopup}
         setViewTaskTrigger={setViewTaskPopup}
         team = {currentTeam}
+        sideBarStatus = {isOpen}
       />
     );
     buttonClass =

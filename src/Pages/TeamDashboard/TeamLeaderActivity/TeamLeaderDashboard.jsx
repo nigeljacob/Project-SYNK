@@ -1,3 +1,4 @@
+import { useState } from "react";
 import DeadlineComponent from "../../../components/ActivityDeadlineComponent/DeadlineComponent.jsx";
 import TaskDetails from "../../../components/TaskComponent/TaskDetails.jsx";
 import TeamProgressComponent from "../../../components/TeamProgressComponent/TeamProgressComponent.jsx";
@@ -7,6 +8,10 @@ import "./TeamLeaderDashboard.css";
 const TeamLeaderDashboard = (props) => {
 
   let currentTeam = props.team;
+
+  const SideBarStatus = useState(props.sideBarStatus);
+
+  const progressContainerClassName = SideBarStatus ? "progress_container" : "progress_container_sideBarClosed";
 
   const teamMemberList = currentTeam._teamMemberList;
   
@@ -27,7 +32,7 @@ const TeamLeaderDashboard = (props) => {
       />
       <div className="tasks-container">
         <h2 className="tw-font-bold tw-text-[30px]">Team Progress</h2>
-        <div className="progress_container">
+        <div className={progressContainerClassName} >
           {teamMembers.map((member, index) => (
               <TeamProgressComponent key={index} className="card" />
           ))}
