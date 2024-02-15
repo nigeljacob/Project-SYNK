@@ -67,19 +67,8 @@ body {
   flex: 2;
 }
 
-.teamDashboard {
-  display: flex;
-  height: 100vh;
-  overflow-y: hidden;
-  color: white;
-  background: none;
-  display: flex;
-  flex: 2;
-}
-
 .home,
-.chat,
-.teamDashboard {
+.chat {
   transform: translateX(-10px);
   user-select: none;
   margin-right: -12px;

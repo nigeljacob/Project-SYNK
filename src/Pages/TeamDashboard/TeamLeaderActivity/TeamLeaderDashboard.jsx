@@ -1,10 +1,10 @@
-import DeadlineComponent from "../../../components/ActivityDeadlineComponent/DeadlineComponent.jsx";
-import TaskDetails from "../../../components/TaskComponent/TaskDetails.jsx";
-import TeamProgressComponent from "../../../components/TeamProgressComponent/TeamProgressComponent.jsx";
-import "../../MainTeamsPage/Teams.css";
-import "./TeamLeaderDashboard.css";
+import React, {useState} from 'react'
+import './TeamLeaderDashboard.css'
+import '../../MainTeamsPage/Teams.css'
+import TaskDetails from "../../../components/TaskComponent/TaskDetails.jsx"
 
 const TeamLeaderDashboard = (props) => {
+  
   return (
     <div className="teamLeaderDashboard">
       <h1>Leader</h1>
@@ -39,7 +39,7 @@ const TeamLeaderDashboard = (props) => {
         />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default TeamLeaderDashboard;
+export default TeamLeaderDashboard

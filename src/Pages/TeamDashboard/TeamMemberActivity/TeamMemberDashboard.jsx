@@ -1,44 +1,52 @@
-import { useLocation } from "react-router";
-import DeadlineComponent from "../../../components/ActivityDeadlineComponent/DeadlineComponent.jsx";
-import TaskDetails from "../../../components/TaskComponent/TaskDetails.jsx";
+import React from 'react'
+import { useLocation } from 'react-router';
+import TaskDetails from "../../../components/TaskComponent/TaskDetails.jsx"
+import clockImage from "../../../assets/images/clock.svg";
 
 const TeamMemberDashboard = (props) => {
   const location = useLocation();
-  const state = location.state;
-  const currentTeam = state["Team"];
+    const state = location.state;
+    const currentTeam = state["Team"];
 
-  // let taskList = currentTeam._taskList;
-  let taskList = [{}];
+    // let taskList = currentTeam._taskList;
+    let taskList = [{}]
 
   return (
     <>
-      <DeadlineComponent
-        taskDeadlineDate="Task Deadline Today"
-        taskDetailsParagraph="Task assigned to you by leader from SDGP GROUP dues today"
-      />
-      <div className="tasks-container">
-        <h2 className="tw-font-bold tw-text-[30px]">Your Tasks</h2>
-        {taskList.length > 0 ? (
-          taskList.map((item) => {
-            // Render the item here
-            return (
-              <TaskDetails
+       <div className="deadline-container">
+          <div className="clock-container">
+            <img src={clockImage} alt="clock" />
+            <div className="deadline-text-container">
+              <h2>Task Deadline Today</h2>
+              <p>Task assigned to you by leader from SDGP GROUP dues today</p>
+            </div>
+          </div>
+
+          <button className="continue-btn">Continue</button>
+        </div>
+
+        <div className="mt-[55px] ml-[10px] tasks-container">
+          <h2>Your Tasks</h2>
+          {taskList.length > 0 ? (
+            taskList.map((item) => {
+              // Render the item here
+              return (
+                <TaskDetails
                 index="1"
                 taskDesc="Finish the individual report"
                 taskStatus="Completed"
                 setViewTaskTrigger={props.setViewTaskTrigger}
-                viewTaskTrigger={props.viewTaskTrigger}
-              />
-            );
-          })
-        ) : (
-          <p className="tasksNotAvailable">
-            No tasks has been assigned to you yet
-          </p>
-        )}
-      </div>
-    </>
-  );
-};
+                viewTaskTrigger={props.viewTaskTrigger}     
 
-export default TeamMemberDashboard;
+              />
+              );
+            })
+          ) : (
+            <p className='tasksNotAvailable'>No tasks has been assigned to you yet</p>
+          )}
+        </div>
+    </>
+  )
+}
+
+export default TeamMemberDashboard
