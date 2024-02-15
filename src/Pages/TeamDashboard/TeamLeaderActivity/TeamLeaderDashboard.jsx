@@ -1,10 +1,10 @@
-import React, {useState} from 'react'
-import './TeamLeaderDashboard.css'
-import '../../MainTeamsPage/Teams.css'
-import TaskDetails from "../../../components/TaskComponent/TaskDetails.jsx"
+import DeadlineComponent from "../../../components/ActivityDeadlineComponent/DeadlineComponent.jsx";
+import TaskDetails from "../../../components/TaskComponent/TaskDetails.jsx";
+import TeamProgressComponent from "../../../components/TeamProgressComponent/TeamProgressComponent.jsx";
+import "../../MainTeamsPage/Teams.css";
+import "./TeamLeaderDashboard.css";
 
 const TeamLeaderDashboard = (props) => {
-  
   return (
     <div className="teamLeaderDashboard">
       <h1>Leader</h1>
@@ -12,9 +12,9 @@ const TeamLeaderDashboard = (props) => {
         taskDeadlineDate="Task Deadline Today"
         taskDetailsParagraph="Task assigned to you by leader from SDGP GROUP dues today"
       />
-      <div className="tasks-container">
+      <div className="tasks-container tw-w-[calc(100vw-700px)]">
         <h2 className="tw-font-bold tw-text-[30px]">Team Progress</h2>
-        <div className="tw-flex tw-flex-wrap tw-flex-col tw-gap-5 tw-overflow-x-auto tw-w-[calc(100vw-700px)]">
+        <div className="tw-flex tw-flex-wrap tw-flex-col tw-gap-5 tw-overflow-x-auto">
           <TeamProgressComponent />
           <TeamProgressComponent />
           <TeamProgressComponent />
@@ -39,7 +39,7 @@ const TeamLeaderDashboard = (props) => {
         />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default TeamLeaderDashboard
+export default TeamLeaderDashboard;
