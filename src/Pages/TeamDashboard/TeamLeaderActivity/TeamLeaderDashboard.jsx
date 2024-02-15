@@ -5,22 +5,32 @@ import "../../MainTeamsPage/Teams.css";
 import "./TeamLeaderDashboard.css";
 
 const TeamLeaderDashboard = (props) => {
+
+  let currentTeam = props.team;
+
+  const teamMemberList = currentTeam._teamMemberList;
+  
+  let teamMembers = [];
+
+  for(let i = 0; i < teamMemberList.length; i++) {
+    if(teamMemberList[i] != currentTeam._teamLeader) {
+      teamMembers.push(teamMemberList[i]);
+    }
+  }
+
   return (
     <div className="teamLeaderDashboard">
       <h1>Leader</h1>
       <DeadlineComponent
-        taskDeadlineDate="Task Deadline Today"
+        taskDeadlineDate= "Finish Report"
         taskDetailsParagraph="Task assigned to you by leader from SDGP GROUP dues today"
       />
-      <div className="tasks-container tw-w-[calc(100vw-700px)]">
+      <div className="tasks-container">
         <h2 className="tw-font-bold tw-text-[30px]">Team Progress</h2>
-        <div className="tw-flex tw-flex-wrap tw-flex-col tw-gap-5 tw-overflow-x-auto">
-          <TeamProgressComponent />
-          <TeamProgressComponent />
-          <TeamProgressComponent />
-          <TeamProgressComponent />
-          <TeamProgressComponent />
-          <TeamProgressComponent />
+        <div className="progress_container">
+          {teamMembers.map((member, index) => (
+              <TeamProgressComponent key={index} className="card" />
+          ))}
         </div>
         <h2 className="tw-font-bold tw-text-[30px]">Your Tasks</h2>
         <TaskDetails
