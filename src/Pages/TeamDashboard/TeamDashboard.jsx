@@ -3,27 +3,25 @@ import * as IOIcons from "react-icons/io";
 import "../MainActivity/Activity.css";
 import "./TeamDashboard.css";
 import { useLocation } from "react-router";
-import TeamMemberDashboard from "./TeamMemberActivity/TeamMemberDashboard"
-import Chat from "./TeamChat/TeamChat"
+import TeamMemberDashboard from "./TeamMemberActivity/TeamMemberDashboard";
+import Chat from "./TeamChat/TeamChat";
 import TeamYourProgress from "./TeamPersonalProgress/TeamYourProgress";
-import TeamLeaderDashboard from "./TeamLeaderActivity/TeamLeaderDashboard"
-import reactElementToJSXString from 'react-element-to-jsx-string';
-import { Button } from '../../shadCN-UI/ui/button';
-import AssignTask from '../../components/AssignTaskComponent/AssignTask';
-import ViewTask from '../../components/ViewTaskComponent/ViewTask';
+import TeamLeaderDashboard from "./TeamLeaderActivity/TeamLeaderDashboard";
+import reactElementToJSXString from "react-element-to-jsx-string";
+import { Button } from "../../shadCN-UI/ui/button";
+import AssignTask from "../../components/AssignTaskComponent/AssignTask";
+import ViewTask from "../../components/ViewTaskComponent/ViewTask";
 
-
-const TeamDashboard = ({user}) => {
-  
+const TeamDashboard = ({ user }) => {
   const [assignTaskPopup, setAssignTaskPopup] = useState(false);
   const [viewTaskPopup, setViewTaskPopup] = useState(false);
 
   const [isAssignTaskOpen, setAssignTaskOpen] = useState(false);
   const [isViewTaskOpen, setViewTaskOpen] = useState(false);
 
-  var buttonClass = "tw-w-7 tw-h-7 tw-mr-[10px] tw-cursor-pointer hover:tw-text-[#5bceff]"
+  var buttonClass =
+    "tw-w-7 tw-h-7 tw-mr-[10px] tw-cursor-pointer hover:tw-text-[#5bceff]";
 
-  
   const location = useLocation();
   const state = location.state;
   const currentTeam = state["Team"];
@@ -34,7 +32,7 @@ const TeamDashboard = ({user}) => {
 
   const [selectedUser, setSelectedUser] = useState("");
 
-  var currentUser = user
+  var currentUser = user;
 
   try {
     sideBarStatus = getPreviousSetting("sideBarStatus");
@@ -54,56 +52,89 @@ const TeamDashboard = ({user}) => {
   const handleItemClick = (element) => {
     setElement(element);
     try {
-      if(reactElementToJSXString(element).includes("<TeamMemberDashboard") || reactElementToJSXString(element).includes("<TeamLeaderDashboard")) {
-        document.getElementById("teamActivity").style.color = "#5bceff"
-        document.getElementById("teamActivity").querySelector("#dot").style.visibility = "visible"
+      if (
+        reactElementToJSXString(element).includes("<TeamMemberDashboard") ||
+        reactElementToJSXString(element).includes("<TeamLeaderDashboard")
+      ) {
+        document.getElementById("teamActivity").style.color = "#5bceff";
+        document
+          .getElementById("teamActivity")
+          .querySelector("#dot").style.visibility = "visible";
       } else if (reactElementToJSXString(element) === "<TeamChat />") {
-        document.getElementById("teamChat").style.color = "#5bceff"
-        document.getElementById("teamChat").querySelector("#dot").style.visibility = "visible"
+        document.getElementById("teamChat").style.color = "#5bceff";
+        document
+          .getElementById("teamChat")
+          .querySelector("#dot").style.visibility = "visible";
       } else if (reactElementToJSXString(element) === "<TeamYourProgress />") {
-        document.getElementById("teamProgress").style.color = "#5bceff"
-        document.getElementById("teamProgress").querySelector("#dot").style.visibility = "visible"
-        
-      } 
-    } catch (e) {
-
-    }
+        document.getElementById("teamProgress").style.color = "#5bceff";
+        document
+          .getElementById("teamProgress")
+          .querySelector("#dot").style.visibility = "visible";
+      }
+    } catch (e) {}
   };
 
   const infoData = [
     {
       title: "Team Activity",
-      element: <TeamMemberDashboard viewTaskTrigger={viewTaskPopup} setViewTaskTrigger={setViewTaskPopup}/>,
-      className: "teamActivity"
+      element: (
+        <TeamMemberDashboard
+          viewTaskTrigger={viewTaskPopup}
+          setViewTaskTrigger={setViewTaskPopup}
+        />
+      ),
+      className: "teamActivity",
     },
     {
       title: "Chat",
       element: <Chat />,
-      className: "teamChat"
+      className: "teamChat",
     },
     {
       title: "Your Progress",
       element: <TeamYourProgress />,
-      className: "teamProgress"
-    }
+      className: "teamProgress",
+    },
   ];
 
-  let dashboard = <TeamLeaderDashboard />
+  let dashboard = <TeamLeaderDashboard />;
 
-  if(currentUser === currentTeam._teamLeader) {
-    infoData[0]["element"] = <TeamLeaderDashboard viewTaskTrigger={viewTaskPopup} setViewTaskTrigger={setViewTaskPopup}/>
-    dashboard = <TeamLeaderDashboard viewTaskTrigger={viewTaskPopup} setViewTaskTrigger={setViewTaskPopup}/>
-    buttonClass = "tw-w-7 tw-h-7 tw-mr-[10px] tw-cursor-pointer hover:tw-text-[#5bceff]";
+  if (currentUser === currentTeam._teamLeader) {
+    infoData[0]["element"] = (
+      <TeamLeaderDashboard
+        viewTaskTrigger={viewTaskPopup}
+        setViewTaskTrigger={setViewTaskPopup}
+      />
+    );
+    dashboard = (
+      <TeamLeaderDashboard
+        viewTaskTrigger={viewTaskPopup}
+        setViewTaskTrigger={setViewTaskPopup}
+      />
+    );
+    buttonClass =
+      "tw-w-7 tw-h-7 tw-mr-[10px] tw-cursor-pointer hover:tw-text-[#5bceff]";
   } else {
-    infoData[0]["element"] = <TeamMemberDashboard viewTaskTrigger={viewTaskPopup} setViewTaskTrigger={setViewTaskPopup}/>
-    dashboard = <TeamMemberDashboard viewTaskTrigger={viewTaskPopup} setViewTaskTrigger={setViewTaskPopup}/>
-    buttonClass = "tw-w-7 tw-h-7 tw-mr-[10px] tw-cursor-pointer hover:tw-text-[#5bceff] hide_Button";
+    infoData[0]["element"] = (
+      <TeamMemberDashboard
+        viewTaskTrigger={viewTaskPopup}
+        setViewTaskTrigger={setViewTaskPopup}
+      />
+    );
+    dashboard = (
+      <TeamMemberDashboard
+        viewTaskTrigger={viewTaskPopup}
+        setViewTaskTrigger={setViewTaskPopup}
+      />
+    );
+    buttonClass =
+      "tw-w-7 tw-h-7 tw-mr-[10px] tw-cursor-pointer hover:tw-text-[#5bceff] hide_Button";
   }
 
   const [element, setElement] = useState(dashboard);
 
   return (
-    <div className="home">
+    <div className="teamDashboard">
       <div className={SideBarResult + " sidebar-main"}>
         <h2>{currentTeam._teamName}</h2>
         <p className="members">{currentTeam._teamMemberList.length} Members</p>
@@ -112,23 +143,40 @@ const TeamDashboard = ({user}) => {
         <div className="line margin-left"></div>
 
         {infoData.map((info) => (
-          <div className={info.className} id={info.className} onClick={event => {
-            console.log(reactElementToJSXString(element));
-            if(reactElementToJSXString(element).includes("<TeamMemberDashboard") || reactElementToJSXString(element).includes("<TeamLeaderDashboard")) {
-              document.getElementById("teamActivity").style.color = "#ffffff";
-              document.getElementById("teamActivity").querySelector("#dot").style.visibility = "hidden"
-            } else if (reactElementToJSXString(element) === "<TeamChat />") {
-              document.getElementById("teamChat").style.color = "#ffffff"
-              document.getElementById("teamChat").querySelector("#dot").style.visibility = "hidden"
-            } else if (reactElementToJSXString(element) === "<TeamYourProgress />") {
-              document.getElementById("teamProgress").style.color = "#ffffff"
-              document.getElementById("teamProgress").querySelector("#dot").style.visibility = "hidden"
-            } 
+          <div
+            className={info.className}
+            id={info.className}
+            onClick={(event) => {
+              console.log(reactElementToJSXString(element));
+              if (
+                reactElementToJSXString(element).includes(
+                  "<TeamMemberDashboard"
+                ) ||
+                reactElementToJSXString(element).includes(
+                  "<TeamLeaderDashboard"
+                )
+              ) {
+                document.getElementById("teamActivity").style.color = "#ffffff";
+                document
+                  .getElementById("teamActivity")
+                  .querySelector("#dot").style.visibility = "hidden";
+              } else if (reactElementToJSXString(element) === "<TeamChat />") {
+                document.getElementById("teamChat").style.color = "#ffffff";
+                document
+                  .getElementById("teamChat")
+                  .querySelector("#dot").style.visibility = "hidden";
+              } else if (
+                reactElementToJSXString(element) === "<TeamYourProgress />"
+              ) {
+                document.getElementById("teamProgress").style.color = "#ffffff";
+                document
+                  .getElementById("teamProgress")
+                  .querySelector("#dot").style.visibility = "hidden";
+              }
 
-            handleItemClick(info.element)
-
-          }}>
-
+              handleItemClick(info.element);
+            }}
+          >
             <div className="barContent">
               <p className="side-text text-left margin-left">{info.title}</p>
               <div className="dot" id="dot"></div>
@@ -150,21 +198,24 @@ const TeamDashboard = ({user}) => {
                 ) : (
                   <p className="side-text">{info}</p>
                 )}
-                <IOIcons.IoIosAdd className={buttonClass} onClick={event => {
-            let popupLayout = document.getElementById("popupLayout");
-              if(isAssignTaskOpen) {
-                popupLayout.style.background = "rgba(0,0,0,0)"
-              } else {
-                popupLayout.style.visibility = "visible";
-                setTimeout(() => {
-                  popupLayout.style.background = "rgba(0,0,0,0.7)"
-                }, 100);
-              }
-            
-              setAssignTaskOpen(!isAssignTaskOpen);
-              setAssignTaskPopup(true);
-              setSelectedUser(info);
-          }} />
+                <IOIcons.IoIosAdd
+                  className={buttonClass}
+                  onClick={(event) => {
+                    let popupLayout = document.getElementById("popupLayout");
+                    if (isAssignTaskOpen) {
+                      popupLayout.style.background = "rgba(0,0,0,0)";
+                    } else {
+                      popupLayout.style.visibility = "visible";
+                      setTimeout(() => {
+                        popupLayout.style.background = "rgba(0,0,0,0.7)";
+                      }, 100);
+                    }
+
+                    setAssignTaskOpen(!isAssignTaskOpen);
+                    setAssignTaskPopup(true);
+                    setSelectedUser(info);
+                  }}
+                />
               </div>
               <div className="line"></div>
             </>
@@ -182,25 +233,32 @@ const TeamDashboard = ({user}) => {
         </div>
       </div>
 
-      <div className={MainContentResult}>
-        {element}
-      </div>
+      <div className={MainContentResult}>{element}</div>
 
-
-      <div className={isAssignTaskOpen ? "popupLayout show_popup" : "popupLayout hide_popup"} id='popupLayout'>
+      <div
+        className={
+          isAssignTaskOpen ? "popupLayout show_popup" : "popupLayout hide_popup"
+        }
+        id="popupLayout"
+      >
         <AssignTask
           trigger={assignTaskPopup}
           setTrigger={setAssignTaskOpen}
-          currentUser = {selectedUser}
+          currentUser={selectedUser}
         />
-  </div> 
-      <div className={viewTaskPopup ? "popupLayout show_popup" : "popupLayout hide_popup"} id='popupLayout2'>
-          <ViewTask
-              trigger={viewTaskPopup}
-              setTrigger={setViewTaskPopup}
-            ></ViewTask>
-      </div> 
-     </div>
+      </div>
+      <div
+        className={
+          viewTaskPopup ? "popupLayout show_popup" : "popupLayout hide_popup"
+        }
+        id="popupLayout2"
+      >
+        <ViewTask
+          trigger={viewTaskPopup}
+          setTrigger={setViewTaskPopup}
+        ></ViewTask>
+      </div>
+    </div>
   );
 };
 
