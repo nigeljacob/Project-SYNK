@@ -25,7 +25,7 @@ const TeamLeaderDashboard = (props) => {
         <h2 className="tw-font-bold tw-text-[30px]">Your Tasks</h2>
         <TaskDetails
           index="1"
-          taskDesc="Finish the individual report"
+          taskDesc="Finish the individual report now"
           taskStatus="Continue"
           setViewTaskTrigger={props.setViewTaskTrigger}
           viewTaskTrigger={props.viewTaskTrigger}
