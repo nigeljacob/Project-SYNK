@@ -12,9 +12,9 @@ const TeamLeaderDashboard = (props) => {
         taskDeadlineDate="Task Deadline Today"
         taskDetailsParagraph="Task assigned to you by leader from SDGP GROUP dues today"
       />
-      <div className="tasks-container tw-w-[calc(100vw-700px)]">
+      <div className="tasks-container">
         <h2 className="tw-font-bold tw-text-[30px]">Team Progress</h2>
-        <div className="tw-flex tw-flex-wrap tw-flex-col tw-gap-5 tw-overflow-x-auto">
+        <div className="tw-flex tw-flex-wrap tw-flex-col tw-gap-5 tw-overflow-x-auto tw-w-[calc(100vw-700px)]">
           <TeamProgressComponent />
           <TeamProgressComponent />
           <TeamProgressComponent />
