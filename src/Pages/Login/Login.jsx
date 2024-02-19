@@ -1,20 +1,23 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import "./Login.css"; // Import CSS file for additional styling
+import "./Login.css"; 
+import { loginUser } from "../../Backend/UserAccount";
 
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const handleLogin = (e) => {
-    e.preventDefault(); // Prevent form submission
-    // Authentication logic
-    if (username === "admin" && password === "password") {
-      setIsLoggedIn(true);
-    } else {
-      alert("Invalid username or password");
+  const handleLogin = async (e) => {
+    if(!username.includes("@")) {
+      return alert("Invalid Email");
     }
+
+    await loginUser(username, password).catch(e => {
+      alert("Invalid email or password")
+    })
+
+    e.preventDefault(); // Prevent form submission
   };
 
   return (

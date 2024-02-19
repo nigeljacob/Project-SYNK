@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./CreateAccount.css"; 
+import { createUser } from "../../Backend/UserAccount";
 
 const CreateAccount = () => {
   const [firstName, setFirstName] = useState("");
@@ -8,7 +9,7 @@ const CreateAccount = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
    
     if (password !== confirmPassword) {
@@ -16,7 +17,7 @@ const CreateAccount = () => {
       return;
     }
    
-    console.log("Account created successfully!");
+    await createUser(email, password)
   };
 
   return (
