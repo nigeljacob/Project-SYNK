@@ -26,7 +26,7 @@ const TeamDashboard = ({ user }) => {
   const state = location.state;
   const currentTeam = state["Team"];
 
-  let teamMembersList = currentTeam._teamMemberList;
+  let teamMembersList = currentTeam["teamMemberList"];
 
   let sideBarStatus = true;
 
@@ -99,7 +99,7 @@ const TeamDashboard = ({ user }) => {
 
   let dashboard = <TeamLeaderDashboard team = {currentTeam} sideBarStatus = {isOpen}/>;
 
-  if (currentUser === currentTeam._teamLeader) {
+  if (currentUser === currentTeam["teamLeader"]) {
     infoData[0]["element"] = (
       <TeamLeaderDashboard
         viewTaskTrigger={viewTaskPopup}
@@ -140,8 +140,8 @@ const TeamDashboard = ({ user }) => {
   return (
     <div className="teamDashboard">
       <div className={SideBarResult + " sidebar-main"}>
-        <h2>{currentTeam._teamName}</h2>
-        <p className="members">{currentTeam._teamMemberList.length} Members</p>
+        <h2>{currentTeam["teamName"]}</h2>
+        <p className="members">{currentTeam["teamMemberList"].length} Members</p>
         <p className="info-text">info</p>
 
         <div className="line margin-left"></div>

@@ -4,7 +4,7 @@ const path = require("path");
 
 function createWindow() {
   let mainWindowState = windowStateKeeper({
-    defaultWidth: 1000,
+    defaultWidth: 1200,
     defaultHeight: 800,
   });
 
