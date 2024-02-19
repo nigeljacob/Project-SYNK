@@ -13,8 +13,8 @@ import CreateAccount from "./Pages/CreateAccount/CreateAccount";
 let result = "";
 
 function App() {
-  const [user, setUser] = useState("Nigel");
-  // const [user, setUser] = useState(null);
+  // const [user, setUser] = useState("Nigel");
+  const [user, setUser] = useState(null);
 
   const handleLogin = (user) => {
     setUser(user);
