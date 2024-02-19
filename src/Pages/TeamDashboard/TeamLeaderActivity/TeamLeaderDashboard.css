@@ -12,6 +12,14 @@
   gap: 20px;
 }
 
+.progress_container_sideBarClosed {
+  width: calc(100vw - 420px);
+  overflow-x: auto;
+  white-space: nowrap;
+  display: flex;
+  gap: 20px;
+}
+
 .card{
   display: inline-block;
 }
