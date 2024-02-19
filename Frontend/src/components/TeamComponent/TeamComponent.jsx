@@ -14,7 +14,7 @@ function TeamComponent({team}) {
         <h3>{team["teamStatus"]}</h3>
         </div>
       ) : (
-        <div className="teamStatus tw-bg-[#]">
+        <div className="teamStatus tw-bg-[#39401C]">
         <h3 className='tw-text-yellow-400'>{team["teamStatus"]}</h3>
         </div>
       )}
