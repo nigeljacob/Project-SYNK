@@ -35,6 +35,7 @@ function App() {
   if (user == null) {
     return (
       <>
+        <div className="titleBar"></div>
         <Router>
           <Routes>
             <Route path="/" exact element={<Login />} />
