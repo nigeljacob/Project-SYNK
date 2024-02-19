@@ -6,7 +6,7 @@ import * as BSIcons from 'react-icons/bs';
 import * as IOIcons5 from 'react-icons/io5';
 import "./SideBar.css"
 
-function SideBar() {
+function SideBar(props) {
     setInterval(function() {
         document.getElementById("time").innerHTML = getTime();
     }, 3000);
@@ -27,7 +27,7 @@ function SideBar() {
             </div>
             <div className='title'>
                 <h2 id='userName'>
-                    Nigel Jacob
+                    {props.user.displayName}
                 </h2>
                 <h4 id='title'>
                     Full Stack Developer
