@@ -1,6 +1,5 @@
 import React from 'react'
 import './TeamComponent.css'
-import * as CIIcons  from "react-icons/ci";
 import * as FaIcons from "react-icons/fa";
 import { Link } from 'react-router-dom';
 

@@ -25,20 +25,19 @@ body {
   top: 0;
   -webkit-app-select: none;
   -webkit-app-region: drag;
-  z-index: 2000;
   position: absolute;
 }
 
 .settingsButtonMac {
   position: absolute;
-  right: 0;
-  margin: 10px;
+  right: 2px;
+  margin: 15px;
 }
 
 .settingsButtonWindows {
   position: absolute;
-  right: 0;
-  margin: 10px;
+  right: 2px;
+  margin: 15px;
   margin-top: 30px;
 }
 
@@ -46,6 +45,8 @@ body {
   width: 20px;
   height: 20px;
   color: #c8c8c8;
+  cursor: pointer;
+  z-index: 3000;
 }
 
 .main {
@@ -66,8 +67,20 @@ body {
   flex: 2;
 }
 
+.teamDashboard {
+  display: flex;
+  height: 100vh;
+  overflow-y: hidden;
+  color: white;
+  background: none;
+  display: flex;
+  flex: 2;
+}
+
 .home,
-.chat {
+.chat,
+.teamDashboard {
   transform: translateX(-10px);
   user-select: none;
+  margin-right: -12px;
 }

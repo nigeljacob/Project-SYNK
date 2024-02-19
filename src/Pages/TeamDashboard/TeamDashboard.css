@@ -9,6 +9,7 @@
   margin-top: 3px;
 }
 
+
 .info-text {
   font-size: 15px;
   margin-top: 7px;
@@ -44,6 +45,7 @@
 }
 
 #teamActivity, #teamChat, #teamProgress {
+  
   cursor: pointer;
 }
 

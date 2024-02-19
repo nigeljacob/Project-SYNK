@@ -1,16 +1,65 @@
-import React, {useState} from 'react'
-import './TeamLeaderDashboard.css'
-import { Button } from '../../../shadCN-UI/ui/button';
-import AssignTask from '../../../components/AssignTaskComponent/AssignTask';
-import '../../MainTeamsPage/Teams.css'
+import DeadlineComponent from "../../../components/ActivityDeadlineComponent/DeadlineComponent.jsx";
+import TaskDetails from "../../../components/TaskComponent/TaskDetails.jsx";
+import TeamProgressComponent from "../../../components/TeamProgressComponent/TeamProgressComponent.jsx";
+import "../../MainTeamsPage/Teams.css";
+import "./TeamLeaderDashboard.css";
 
-const TeamLeaderDashboard = () => {
-  
+const TeamLeaderDashboard = (props) => {
+  let currentTeam = props.team;
+
+  const teamMemberList = currentTeam._teamMemberList;
+
+  let teamMembers = [];
+
+  for (let i = 0; i < teamMemberList.length; i++) {
+    if (teamMemberList[i] != currentTeam._teamLeader) {
+      teamMembers.push(teamMemberList[i]);
+    }
+  }
+
   return (
-    <div className='teamLeaderDashboard'>
-    <h1>Leader</h1>
+    <div className="teamLeaderDashboard">
+      <h1>Leader</h1>
+      <DeadlineComponent
+        taskDeadlineDate="Finish Report"
+        taskDetailsParagraph="Task assigned to you by leader from SDGP GROUP dues today"
+      />
+      <div className="tasks-container">
+        <h2 className="tw-font-bold tw-text-[30px]">Team Progress</h2>
+        <div className="progress_container">
+          {teamMembers.map((member, index) => (
+            <TeamProgressComponent
+              key={index}
+              className="card"
+              photo=""
+              tasks={[
+                "Working on task 03",
+                "Working on Microsoft Word",
+                "3 more tasks to complete",
+                "working for 2h now",
+              ]}
+              name={member}
+            />
+          ))}
+        </div>
+        <h2 className="tw-font-bold tw-text-[30px]">Your Tasks</h2>
+        <TaskDetails
+          index="1"
+          taskDesc="Finish the individual report now"
+          taskStatus="Continue"
+          setViewTaskTrigger={props.setViewTaskTrigger}
+          viewTaskTrigger={props.viewTaskTrigger}
+        />
+        <TaskDetails
+          index="1"
+          taskDesc="Finish the individual report"
+          taskStatus="Continue"
+          setViewTaskTrigger={props.setViewTaskTrigger}
+          viewTaskTrigger={props.viewTaskTrigger}
+        />
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default TeamLeaderDashboard
+export default TeamLeaderDashboard;
