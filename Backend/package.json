@@ -1,0 +1,11 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "backend of Project SYNK",
+  "dependencies": {
+    "firebase": "^10.8.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
