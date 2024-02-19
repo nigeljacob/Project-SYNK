@@ -9,12 +9,12 @@ import TeamDashboard from "./Pages/TeamDashboard/TeamDashboard";
 import SideBar from "./layout/SideNavBar/SideBar";
 import Login from "./Pages/Login/Login";
 import CreateAccount from "./Pages/CreateAccount/CreateAccount";
+import { getCurrentUser } from "./Backend/UserAccount";
 
 let result = "";
 
 function App() {
-  const [user, setUser] = useState("Nigel");
-  // const [user, setUser] = useState(null);
+  const [user, setUser] = useState(getCurrentUser);
 
   const handleLogin = (user) => {
     setUser(user);
@@ -35,6 +35,7 @@ function App() {
   if (user == null) {
     return (
       <>
+        <div className="titleBar"></div>
         <Router>
           <Routes>
             <Route path="/" exact element={<Login />} />
