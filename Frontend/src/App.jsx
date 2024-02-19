@@ -11,7 +11,7 @@ import Login from "./Pages/Login/Login";
 import CreateAccount from "./Pages/CreateAccount/CreateAccount";
 import { getCurrentUser, loginUser } from "../../Backend/src/UserAccount";
 import { auth } from "../../Backend/src/firebase";
-import Loading from "./Pages/LoadingPage/Loading";
+import Loading from "./Pages/LoadingPage/LoadingPage";
 import { confirmAlert } from "react-confirm-alert";
 
 let result = "";
