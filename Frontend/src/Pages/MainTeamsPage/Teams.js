@@ -47,8 +47,6 @@ function Teams() {
 
   const [isRecurring, setRecurring] = useState(false)
 
-  const [teamCode, setTeamCode] = useState("");
-
   const [inviteHtml, setInviteHtml] = useState('');
 
   const [isCopied, setCopied] = useState(false)
@@ -60,10 +58,6 @@ function Teams() {
   const handleInvite = (invite) => {
     setInviteHtml(invite)
   } 
-
-  const handleTeamCode = (code) => {
-    setTeamCode(code)
-  }
 
   const handleCopy = () => {
     let code = document.getElementById('code');
