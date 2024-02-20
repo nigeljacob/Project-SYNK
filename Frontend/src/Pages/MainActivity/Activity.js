@@ -40,8 +40,6 @@ if (curHr < 12) {
         </div>
         <h2 id='teamsHeading'>Teams</h2>
         <div className='taskTeams'>
-
-
         </div>
         {/* close button */}
         <div className='closeButton' onClick={event => {

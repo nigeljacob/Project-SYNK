@@ -84,3 +84,15 @@ body {
   user-select: none;
   margin-right: -12px;
 }
+
+.wifi {
+  animation: wifiAnim 0.4s ease-in-out;
+}
+
+@keyframes wifiAnim {
+  0% {
+    opacity: 0;
+  } 100% {
+    opacity: 100%;
+  }
+}
