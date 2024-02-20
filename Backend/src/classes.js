@@ -1,5 +1,5 @@
 
-export const Team = (teamCode, teamName, teamProfile, teamDescription, teamLeader, teamMemberList, projectLength, taskList, teamStatus) => {
+export const Team = (teamCode, teamName, teamProfile, teamDescription, teamLeader, teamMemberList, projectLength, taskList, teamStatus, teamPendingInvites) => {
     return {
         "teamCode": teamCode,
         "teamName": teamName,
@@ -9,7 +9,8 @@ export const Team = (teamCode, teamName, teamProfile, teamDescription, teamLeade
         "teamMemberList": teamMemberList,
         "projectLength": projectLength,
         "taskList": taskList,
-        "teamStatus": teamStatus
+        "teamStatus": teamStatus,
+        "teamPendingInvites" : teamPendingInvites
     }
 }
 

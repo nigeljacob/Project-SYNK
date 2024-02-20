@@ -12,7 +12,7 @@ import CreateAccount from "./Pages/CreateAccount/CreateAccount";
 import { getCurrentUser, loginUser } from "../../Backend/src/UserAccount";
 import { auth } from "../../Backend/src/firebase";
 import Loading from "./Pages/LoadingPage/LoadingPage";
-import { confirmAlert } from "react-confirm-alert";
+import noWifi from './assets/images/noWifi.png'
 
 let result = "";
 
@@ -38,6 +38,22 @@ function App()  {
   const [isLoggedIn, setIsLoggedIn] = useState(loggedIn);
 
   const [isLogoutClicked, setLoggedOutClicked] = useState(false)
+
+  const [isOnline, setOnline] = useState(false)
+
+  function checkConnection() {
+    if(navigator.onLine) {
+      if(!isOnline) {
+        setOnline(true)
+      } 
+    } else {
+      if(isOnline) {
+        setOnline(false)
+      }
+    }
+  }
+  checkConnection()
+  setInterval(checkConnection, 1000);
 
   const handleItemClick = (boolean) => {
     setLoggedOutClicked(boolean)
@@ -116,6 +132,18 @@ function App()  {
                   confirm("Are you sure you want to Sign out") ? handleItemClick(true) : null
                 }} />
               </div>
+
+              {!isOnline ? (
+                <div className="tw-absolute tw-z-[2000] tw-flex tw-justify-center tw-items-center tw-flex-col tw-w-screen tw-h-screen tw-bg-[rgba(0,0,0,0.85)] wifi">
+                <img src={noWifi} alt="wifi_connection_failed" className="tw-mt-[-20px]"/>
+                <h1 className="tw-mt-[-50px]"><b>Lost Connection</b></h1>
+                {result === "settingsButtonMac" ? (
+                  <h3 className="tw-text-[#A7A7A7]">Your Mac seems to be disconnected from WI-FI</h3>
+                ) : (
+                  <h3 className="tw-text-[#A7A7A7]">Your PC seems to be disconnected from WI-FI</h3>
+                )}
+            </div>
+              ) : null }
             </div>
           </div>
         )}

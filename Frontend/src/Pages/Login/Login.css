@@ -47,7 +47,7 @@
     font-weight:bold;
   }
   
-  input {
+  input, textarea {
     width: 100%;
     padding: 10px;
     color: #000000;
