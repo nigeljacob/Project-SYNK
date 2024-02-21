@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import * as IOIcons from "react-icons/io";
 import './Activity.css';
 
-function Home() {
+function Home(props) {
 
   var sideBarStatus = true;
 
@@ -11,6 +11,19 @@ function Home() {
   } catch(e) {
     sideBarStatus = true;
   }
+
+var today = new Date()
+var curHr = today.getHours()
+
+var greeting = "";
+
+if (curHr < 12) {
+  greeting = "Morning"
+} else if (curHr < 18) {
+  greeting = "Afternoon"
+} else {
+  greeting = "Evening"
+}
   
   const [isOpen, setIsOpen] = useState(sideBarStatus);
   const SideBarResult = isOpen ? "sideBar show_SideBar" : "sideBar hide_SideBar";
@@ -27,8 +40,6 @@ function Home() {
         </div>
         <h2 id='teamsHeading'>Teams</h2>
         <div className='taskTeams'>
-
-
         </div>
         {/* close button */}
         <div className='closeButton' onClick={event => {
@@ -39,7 +50,7 @@ function Home() {
         </div>
         </div>
       <div className={MainContentResult}>
-      <h1>Good <span>Morning</span> <span id='displayName'>Nigel</span> !</h1>
+      <h1>Good <span>{greeting}</span> <span id='displayName'>{props.user.displayName}</span> !</h1>
       <div className='reminderTask'>
         
       </div>

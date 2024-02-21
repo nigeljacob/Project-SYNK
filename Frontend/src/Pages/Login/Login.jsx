@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./Login.css"; 
-import {loginUser} from "../../../../Backend/src/UserAccount"
+import {loginUser, getCurrentUser} from "../../../../Backend/src/UserAccount"
+import { auth } from "../../../../Backend/src/firebase";
 
-function Login() {
+function Login(props) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault(); // Prevent form submission
@@ -17,8 +17,20 @@ function Login() {
 
     await loginUser(username, password).catch(e => {
       alert("Invalid email or password")
+      return
     })
-  };
+
+   if(auth.currentUser != null) {
+        props.setIsLoggedIn(true)
+        localStorage.setItem("loggedIN", "true");
+        localStorage.setItem("currentUser", getCurrentUser)}
+      }
+
+  useEffect(() => {
+   setTimeout(() => {
+    auth.onAuthStateChanged(props.setUser)
+   }, 500)
+  }, []);
 
   return (
     <div className="login-container">
@@ -46,7 +58,7 @@ function Login() {
           />
         </div>
         <div className="reset">
-          <Link to="/passwordchange" className="forgot-password">
+          <Link to="" className="forgot-password">
             Forgot Password? Reset
           </Link>
         </div>
@@ -63,6 +75,16 @@ function Login() {
     </div>
   );
 }
+
+function getPreviousSetting(name) {
+  let setting = localStorage.getItem(name);
+  if(setting === "true") {
+    return true
+  } else {
+    return false
+  }
+}
+
 
 export default Login;
 

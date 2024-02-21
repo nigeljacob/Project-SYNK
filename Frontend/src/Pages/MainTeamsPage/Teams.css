@@ -97,20 +97,18 @@
 
 .JoinTeamPopup{
     position: absolute;
-    width: 300px;
-    height: 500px;
-    background: red;
     transition: 1s all ease-in-out;
-    cursor: pointer;
     visibility: hidden;
 }
 
 .createTeamPopup{
     position: absolute;
-    width: 300px;
-    height: 500px;
-    background: green;
     transition: 1s all ease-in-out;
-    cursor: pointer;
     visibility: hidden;
+}
+
+#JoinTeamPopup input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
