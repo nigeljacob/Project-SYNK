@@ -343,7 +343,7 @@ function Teams() {
               {useGit ? (
                 <>
                 <hr></hr>
-                <h4 className='tw-text- [15px] tw-mt-[20px] tw-mb-[10px]'>Select Type you want to use Git</h4>
+                <h4 className='tw-text- [15px] tw-mt-[20px] tw-mb-[10px]'>How do you want to use git</h4>
               
               <div className='tw-flex tw-items-center'>
               {gitType === "createGit" ? (
