@@ -60,7 +60,7 @@ const TeamDashboard = ({ user }) => {
         document
           .getElementById("teamActivity")
           .querySelector("#dot").style.visibility = "visible";
-      } else if (reactElementToJSXString(element) === "<TeamChat />") {
+      } else if (reactElementToJSXString(element).includes("<TeamChat")) {
         document.getElementById("teamChat").style.color = "#5bceff";
         document
           .getElementById("teamChat")
@@ -87,7 +87,7 @@ const TeamDashboard = ({ user }) => {
     },
     {
       title: "Chat",
-      element: <Chat />,
+      element: <Chat user = {user} />,
       className: "teamChat",
     },
     {
@@ -164,7 +164,7 @@ const TeamDashboard = ({ user }) => {
                 document
                   .getElementById("teamActivity")
                   .querySelector("#dot").style.visibility = "hidden";
-              } else if (reactElementToJSXString(element) === "<TeamChat />") {
+              } else if (reactElementToJSXString(element).includes("<TeamChat")) {
                 document.getElementById("teamChat").style.color = "#ffffff";
                 document
                   .getElementById("teamChat")
