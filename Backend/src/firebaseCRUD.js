@@ -3,7 +3,7 @@ import { firebaseRealtimeDatabase } from "./firebase";
 
 // write to firebase Realtime Database with and without unique key
 export const writeToDatabase = (referencePath, data) => {
-    return set(ref(firebaseRealtimeDatabase, referencePath), data);
+  return set(ref(firebaseRealtimeDatabase, referencePath), data);
 };
 
 export const generateKey = (referencePath) => {
@@ -46,4 +46,9 @@ export const readOnceFromDatabase = (referencePath) => {
     .catch((error) => {
       console.error(error.message);
     });
+};
+
+// Get profile Picture
+export const getProfilePicture = (referencePath) => {
+  return null;
 };

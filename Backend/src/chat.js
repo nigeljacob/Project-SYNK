@@ -1,6 +1,8 @@
 import { Message } from "./classes.js";
 import {
   generateKey,
+  getProfilePicture,
+  readOnceFromDatabase,
   read_from_Database,
   writeToDatabase,
 } from "./firebaseCRUD.js";
@@ -26,7 +28,7 @@ export const sendTeamMessage = (
 
   let encryptedMessage = encrypt(message);
 
-  let message = Message(
+  let newMessage = Message(
     encryptedMessage,
     senderUID,
     receiverUID,
@@ -36,7 +38,7 @@ export const sendTeamMessage = (
     senderEmail
   );
 
-  writeToDatabase(ref + "/" + key, message)
+  writeToDatabase(ref + "/" + key, newMessage)
     .then(() => {
       // Message sent
     })
@@ -93,6 +95,14 @@ export const decrypt = (message) => {
 
   return decryptedMessage;
 };
+
+export const retrieveProfilePicture = (uid) => {
+  return getProfilePicture("ProfilePictures" + "/" + uid + "/" + "profile.png");
+}
+
+export const retrieveSenderData = (uid) => {
+  return readOnceFromDatabase("Users" + "/" + uid)
+}
 
 const decryptList = [
   "#",

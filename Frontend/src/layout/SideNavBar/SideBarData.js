@@ -1,6 +1,8 @@
 import * as FaIcons6 from "react-icons/fa6";
 import * as MDIcons from "react-icons/md";
 
+import React from "react";
+
 export const SideBarData = [
   {
     title: "Activity",
