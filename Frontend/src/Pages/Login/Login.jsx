@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import "./Login.css"; 
-import {loginUser, getCurrentUser} from "../../../../Backend/src/UserAccount"
+import { getCurrentUser, loginUser } from "../../../../Backend/src/UserAccount";
 import { auth } from "../../../../Backend/src/firebase";
+import "./Login.css";
+
+import React from "react";
 
 function Login(props) {
   const [username, setUsername] = useState("");
@@ -11,25 +13,26 @@ function Login(props) {
   const handleLogin = async (e) => {
     e.preventDefault(); // Prevent form submission
 
-    if(!username.includes("@")) {
+    if (!username.includes("@")) {
       return alert("Invalid Email");
     }
 
-    await loginUser(username, password).catch(e => {
-      alert("Invalid email or password")
-      return
-    })
+    await loginUser(username, password).catch((e) => {
+      alert("Invalid email or password");
+      return;
+    });
 
-   if(auth.currentUser != null) {
-        props.setIsLoggedIn(true)
-        localStorage.setItem("loggedIN", "true");
-        localStorage.setItem("currentUser", getCurrentUser)}
-      }
+    if (auth.currentUser != null) {
+      props.setIsLoggedIn(true);
+      localStorage.setItem("loggedIN", "true");
+      localStorage.setItem("currentUser", getCurrentUser);
+    }
+  };
 
   useEffect(() => {
-   setTimeout(() => {
-    auth.onAuthStateChanged(props.setUser)
-   }, 500)
+    setTimeout(() => {
+      auth.onAuthStateChanged(props.setUser);
+    }, 500);
   }, []);
 
   return (
@@ -68,9 +71,10 @@ function Login(props) {
             Create an Account
           </Link>
         </div>
-        
 
-        <button type="submit" className="login-btn">Login</button>
+        <button type="submit" className="login-btn">
+          Login
+        </button>
       </form>
     </div>
   );
@@ -78,13 +82,11 @@ function Login(props) {
 
 function getPreviousSetting(name) {
   let setting = localStorage.getItem(name);
-  if(setting === "true") {
-    return true
+  if (setting === "true") {
+    return true;
   } else {
-    return false
+    return false;
   }
 }
 
-
 export default Login;
-

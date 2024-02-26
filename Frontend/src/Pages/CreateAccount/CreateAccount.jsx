@@ -1,24 +1,44 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import "./CreateAccount.css"; 
-import { createUser } from "../../../../Backend/src/UserAccount";
+import {
+  createUser,
+  getCurrentUser,
+} from "../../../../Backend/src/UserAccount";
+import { auth } from "../../../../Backend/src/firebase";
+import "./CreateAccount.css";
 
-const CreateAccount = () => {
+import React, { useEffect } from "react";
+
+const CreateAccount = (props) => {
   const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-   
-    if (password !== confirmPassword) {
-      alert("Passwords do not match!");
-      return;
+    e.preventDefault(); // Prevent form submission
+
+    if (!email.includes("@")) {
+      return alert("Invalid Email");
     }
-   
-    await createUser(email, password)
+
+    await createUser(email, password, firstName).catch((e) => {
+      alert(e.message);
+      return;
+    });
+
+    if (auth.currentUser != null) {
+      props.setIsLoggedIn(true);
+      localStorage.setItem("loggedIN", "true");
+      localStorage.setItem("currentUser", getCurrentUser);
+    }
   };
+
+  useEffect(() => {
+    setTimeout(() => {
+      auth.onAuthStateChanged(props.setUser);
+    }, 500);
+  }, []);
 
   return (
     <div className="create-account-container">
@@ -65,8 +85,12 @@ const CreateAccount = () => {
           />
         </div>
         <div className="tw-flex tw-flex-col ">
-          <button type="submit" className="create-account-btn">Create Your Account</button>
-          <Link to="/" className="back-to-login-link tw-mt-[10px] tw-underline">Go back to Login</Link>
+          <button type="submit" className="create-account-btn">
+            Create Your Account
+          </button>
+          <Link to="/" className="back-to-login-link tw-mt-[10px] tw-underline">
+            Go back to Login
+          </Link>
         </div>
       </form>
     </div>
