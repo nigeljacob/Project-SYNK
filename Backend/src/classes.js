@@ -28,8 +28,14 @@ export const Team = (
   };
 };
 
-export const User = () => {
-  return {};
+export const User = (uid, email, username, profilePicture, userStatus) => {
+  return {
+    uid: uid,
+    email: email,
+    username: username,
+    profile: profilePicture,
+    userStatus: userStatus
+  };
 };
 
 export const Task = () => {
