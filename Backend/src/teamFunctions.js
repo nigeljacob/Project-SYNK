@@ -3,7 +3,9 @@ import { auth } from "./firebase";
 import {
   read_OneValue_from_Database,
   read_from_Database_onChange,
+  updateDatabase,
   writeToDatabase,
+  readOnceFromDatabase
 } from "./firebaseCRUD";
 
 export const createTeam = (
@@ -80,46 +82,49 @@ export const joinTeam = (teamCode, onRequestSent) => {
     if (data === null) {
       alert("Team does not exist");
     } else {
+        
       const onListReceived = (dataList) => {
         if (dataList.includes("")) {
-          dataList.remove("");
+          dataList.splice(0);
         }
+
         dataList.push({
           UID: auth.currentUser.uid,
           email: auth.currentUser.email,
           name: auth.currentUser.displayName,
         });
 
+        updateDatabase("Teams/" + data.teamLeader + "/" + teamCode, {"teamPendingInvites": dataList}).catch(() => {
+            onRequestSent(false)
+            return
+        })
+
+
         const onTeamReceived = (team) => {
           team.teamPendingInvites = dataList;
 
           writeToDatabase(
-            "Teams/" + data.teamLeader + "/" + teamCode + "/teamPendingInvites",
-            dataList
-          )
-            .then(() => {
-              writeToDatabase(
-                "Teams/" + auth.currentUser.uid + "/" + teamCode,
-                team
-              ).then(() => onRequestSent(true));
-            })
-            .catch(() => {
-              onRequestSent(false);
-            });
+            "Teams/" + auth.currentUser.uid + "/" + team.teamCode,
+            team
+          ).then(() => {
+            onRequestSent(true)
+          });
         };
 
-        read_from_Database_onChange(
+        readOnceFromDatabase(
           "Teams/" + data.teamLeader + "/" + teamCode,
           onTeamReceived
         );
+
       };
-      read_OneValue_from_Database(
+
+      readOnceFromDatabase(
         "Teams/" + data.teamLeader + "/" + teamCode + "/teamPendingInvites",
         onListReceived
       );
     }
   };
-  read_OneValue_from_Database("TeamCodes/" + teamCode, onDataReceived);
+  readOnceFromDatabase("TeamCodes/" + teamCode, onDataReceived);
 };
 
 export const getTeamCodes = () => {

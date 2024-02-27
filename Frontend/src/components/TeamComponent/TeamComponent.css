@@ -25,7 +25,8 @@
 
 .teamProfile{
     display: flex;
-    margin-top: 30px;
+    margin-top: 40px;
+    align-items: center;
 }
 
 .teamProfile .profile{
