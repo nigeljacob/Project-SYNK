@@ -12,12 +12,12 @@ const TeamLeaderDashboard = (props) => {
 
   const progressContainerClassName = SideBarStatus ? "progress_container" : "progress_container_sideBarClosed";
 
-  const teamMemberList = currentTeam._teamMemberList;
+  const teamMemberList = currentTeam.teamMemberList;
 
   let teamMembers = [];
 
   for (let i = 0; i < teamMemberList.length; i++) {
-    if (teamMemberList[i] != currentTeam._teamLeader) {
+    if (teamMemberList[i]["UID"] != currentTeam.teamLeader.UID) {
       teamMembers.push(teamMemberList[i]);
     }
   }
@@ -30,23 +30,27 @@ const TeamLeaderDashboard = (props) => {
         taskDetailsParagraph="Task assigned to you by leader from SDGP GROUP dues today"
       />
       <div className="tasks-container">
-        <h2 className="tw-font-bold tw-text-[30px]">Team Progress</h2>
-        <div className={progressContainerClassName} >
-          {teamMembers.map((member, index) => (
-            <TeamProgressComponent
-              key={index}
-              className="card"
-              photo=""
-              tasks={[
-                "Working on task 03",
-                "Working on Microsoft Word",
-                "3 more tasks to complete",
-                "working for 2h now",
-              ]}
-              name={member}
-            />
-          ))}
-        </div>
+        {teamMembers.length > 0 ? (
+          <>
+          <h2 className="tw-font-bold tw-text-[30px]">Team Progress</h2>
+          <div className={progressContainerClassName} >
+            {teamMembers.map((member, index) => (
+              <TeamProgressComponent
+                key={index}
+                className="card"
+                photo=""
+                tasks={[
+                  "Working on task 03",
+                  "Working on Microsoft Word",
+                  "3 more tasks to complete",
+                  "working for 2h now",
+                ]}
+                name={member}
+              />
+            ))}
+          </div>
+          </>
+        ) : null}
         <h2 className="tw-font-bold tw-text-[30px]">Your Tasks</h2>
         <TaskDetails
           index="1"

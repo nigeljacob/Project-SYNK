@@ -86,7 +86,7 @@ function App() {
   if (user == null && loggedIn) {
     return (
       <>
-        <Loading message="Loading contents" />
+        <Loading message="Loading contents" background = {true} />
       </>
     );
   }
@@ -121,7 +121,7 @@ function App() {
     return (
       <>
         {isLogoutClicked ? (
-          <Loading message="signing out" />
+          <Loading message="signing out"  background = {true}/>
         ) : (
           <div className="mainFrame" id="mainFrame">
             <div className="titleBar"></div>

@@ -10,7 +10,8 @@ export const Team = (
   gitConfig,
   taskList,
   teamStatus,
-  teamPendingInvites
+  teamPendingInvites,
+  startDate
 ) => {
   return {
     teamCode: teamCode,
@@ -25,6 +26,7 @@ export const Team = (
     taskList: taskList,
     teamStatus: teamStatus,
     teamPendingInvites: teamPendingInvites,
+    startDate: startDate
   };
 };
 

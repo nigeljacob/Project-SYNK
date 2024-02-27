@@ -11,6 +11,8 @@ import reactElementToJSXString from "react-element-to-jsx-string";
 import { Button } from "../../shadCN-UI/ui/button";
 import AssignTask from "../../components/AssignTaskComponent/AssignTask";
 import ViewTask from "../../components/ViewTaskComponent/ViewTask";
+import Loading from "../LoadingPage/LoadingPage";
+import { auth } from "../../../../Backend/src/firebase";
 
 const TeamDashboard = ({ user }) => {
   const [assignTaskPopup, setAssignTaskPopup] = useState(false);
@@ -19,6 +21,13 @@ const TeamDashboard = ({ user }) => {
   const [isAssignTaskOpen, setAssignTaskOpen] = useState(false);
   const [isViewTaskOpen, setViewTaskOpen] = useState(false);
 
+  let [isLoading, setLoading] = useState(false)
+
+  const handleLoad = (boolean) => {
+    setLoading(boolean)
+  }
+
+
   var buttonClass =
     "tw-w-7 tw-h-7 tw-mr-[10px] tw-cursor-pointer hover:tw-text-[#5bceff]";
 
@@ -26,7 +35,7 @@ const TeamDashboard = ({ user }) => {
   const state = location.state;
   const currentTeam = state["Team"];
 
-  let teamMembersList = currentTeam["teamMemberList"];
+  let teamMemberList = currentTeam["teamMemberList"];
 
   let sideBarStatus = true;
 
@@ -99,7 +108,7 @@ const TeamDashboard = ({ user }) => {
 
   let dashboard = <TeamLeaderDashboard team = {currentTeam} sideBarStatus = {isOpen}/>;
 
-  if (currentUser === currentTeam["teamLeader"]) {
+  if (currentUser.uid === currentTeam["teamLeader"]["UID"]) {
     infoData[0]["element"] = (
       <TeamLeaderDashboard
         viewTaskTrigger={viewTaskPopup}
@@ -138,7 +147,11 @@ const TeamDashboard = ({ user }) => {
   const [element, setElement] = useState(dashboard);
 
   return (
-    <div className="teamDashboard">
+    <>
+      {isLoading ? (
+          <Loading message = "Loading Team Details" />
+      ) : (
+        <div className="teamDashboard">
       <div className={SideBarResult + " sidebar-main"}>
         <h2>{currentTeam["teamName"]}</h2>
         <p className="members">{currentTeam["teamMemberList"].length} Members</p>
@@ -194,13 +207,13 @@ const TeamDashboard = ({ user }) => {
 
           <div className="line"></div>
 
-          {teamMembersList.map((info) => (
+          {teamMemberList.map((info) => (
             <>
               <div className="memberContainer tw-flex tw-items-center tw-w-full tw-justify-between">
-                {info === currentTeam._teamLeader ? (
-                  <h3 className="Leader">{info} (L)</h3>
+                {info.UID === currentTeam.teamLeader.UID ? (
+                  <h3 className="Leader">{info.name} (L)</h3>
                 ) : (
-                  <p className="side-text">{info}</p>
+                  <p className="side-text">{info.name}</p>
                 )}
                 <IOIcons.IoIosAdd
                   className={buttonClass}
@@ -263,6 +276,8 @@ const TeamDashboard = ({ user }) => {
         ></ViewTask>
       </div>
     </div>
+      )}
+    </>
   );
 };
 
