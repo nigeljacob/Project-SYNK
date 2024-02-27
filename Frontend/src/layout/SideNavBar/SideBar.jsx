@@ -51,6 +51,9 @@ function SideBar(props) {
                 )
             })}
         </ul>
+
+        
+
         <div className='bottomButtons'>
             <h3 id='time'>
                 {getTime()}

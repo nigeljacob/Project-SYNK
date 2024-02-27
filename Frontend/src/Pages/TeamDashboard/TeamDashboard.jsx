@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as IOIcons from "react-icons/io";
 import "../MainActivity/Activity.css";
 import "./TeamDashboard.css";
@@ -13,6 +13,7 @@ import AssignTask from "../../components/AssignTaskComponent/AssignTask";
 import ViewTask from "../../components/ViewTaskComponent/ViewTask";
 import Loading from "../LoadingPage/LoadingPage";
 import { auth } from "../../../../Backend/src/firebase";
+import { fetchPendingInvites } from "../../../../Backend/src/teamFunctions";
 
 const TeamDashboard = ({ user }) => {
   const [assignTaskPopup, setAssignTaskPopup] = useState(false);
@@ -27,13 +28,21 @@ const TeamDashboard = ({ user }) => {
     setLoading(boolean)
   }
 
-
   var buttonClass =
     "tw-w-7 tw-h-7 tw-mr-[10px] tw-cursor-pointer hover:tw-text-[#5bceff]";
 
   const location = useLocation();
   const state = location.state;
   const currentTeam = state["Team"];
+
+  const [pendingInvites, setPendingInvites] = useState(currentTeam.teamPendingInvites)
+
+  useEffect(() => {
+    const onDataReceived = (data) => {
+      setPendingInvites(data)
+    }
+    fetchPendingInvites(onDataReceived, currentTeam.teamCode)
+  }, [])
 
   let teamMemberList = currentTeam["teamMemberList"];
 
