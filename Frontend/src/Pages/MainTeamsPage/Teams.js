@@ -49,7 +49,7 @@ function Teams() {
       let OwnedTeamList = [];
       let JoinTeamList = [];
       let PendingTeamList = [];
-
+      
       if (dataList.length > 0) {
         for (let i = 0; i < dataList.length; i++) {
           const element = dataList[i];
@@ -61,11 +61,15 @@ function Teams() {
             }
           } else if (element["teamMemberList"].includes(auth.currentUser.uid)) {
             JoinTeamList.push(element);
-          } else if (
-            element["teamPendingInvites"].includes(auth.currentUser.uid)
-          ) {
-            element["teamStatus"] = "Pending";
-            PendingTeamList.push(element);
+          } else {
+            
+            for(let i =0; i < element["teamPendingInvites"].length; i++) {
+              if(element["teamPendingInvites"][i].UID === auth.currentUser.uid) {
+                element["teamStatus"] = "Pending";
+                PendingTeamList.push(element);
+                break;
+              }
+            }
           }
         }
       }

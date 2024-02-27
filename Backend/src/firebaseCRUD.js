@@ -1,10 +1,14 @@
-import { onValue, push, ref, set, get, child, onChildChanged, onChildAdded } from "firebase/database";
+import { onValue, push, ref, set, get, child, update } from "firebase/database";
 import { firebaseRealtimeDatabase } from "./firebase";
 import { Team } from "./classes";
 
 // write to firebase Realtime Database with and without unique key
 export const writeToDatabase = (referencePath, data) => {
   return set(ref(firebaseRealtimeDatabase, referencePath), data);
+};
+
+export const updateDatabase = (referencePath, data) => {
+  return update(ref(firebaseRealtimeDatabase, referencePath), data);
 };
 
 // export const generateKey = (referencePath) => {
@@ -42,17 +46,17 @@ export const read_from_Database_onChange = (referencePath, onDataReceived) => {
 
 };
 
-
-
-
 // Read value once from firebase database
-export const readOnceFromDatabase = (referencePath) => {
-  get(child(firebaseRealtimeDatabase, referencePath))
+export const readOnceFromDatabase = (referencePath, onDataReceived) => {
+
+  const dataReference = ref(firebaseRealtimeDatabase, referencePath);
+
+  get(dataReference)
     .then((snapshot) => {
       if (snapshot.exists()) {
-        return snapshot.val();
+        onDataReceived(snapshot.val())
       } else {
-        return null;
+        onDataReceived(null)
       }
     })
     .catch((error) => {
