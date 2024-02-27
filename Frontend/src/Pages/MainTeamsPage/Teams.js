@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import './Teams.css';
 import {Team} from "../../../../Backend/src/classes"
 import TeamComponent from "../../components/TeamComponent/TeamComponent.jsx"
@@ -15,38 +15,86 @@ import { format } from "date-fns";
 import { Tooltip } from '@mui/material';
 import { auth } from '../../../../Backend/src/firebase';
 import loader from '../../assets/images/loader.gif'
+import {createTeam, fetchTeams} from '../../../../Backend/src/teamFunctions'
 
-let teamOwnList = [];
-let teamInList = [];
-let teamPendingList = [];
-
-for(let i = 0; i < 5; i++ ) {
-  let team = Team("T0001", "SDGP Group", "https://t4.ftcdn.net/jpg/03/64/21/11/360_F_364211147_1qgLVxv1Tcq0Ohz3FawUfrtONzz8nq3e.jpg", "A hassle-free team collaboration system for leaders to keep in touch with members and check in with progress" , "Nigel", ["Milni", "Sevinda", "Sasri", "Nigel", "Sevinda"], "2024/02/05", "Induvidual", null, [], "Active", []);
-  teamOwnList.push(team);
-}
-
-for(let i = 0; i < 2; i++ ) {
-  let team = Team("T0001", "On Life", "", "A hassle-free team collaboration system for leaders to keep in touch with members and check in with progress" , "Milni", ["Milni", "Sevinda", "Sasri", "Nigel", "Sevinda Perera"], "2024/02/05", "Induvidual", null, [], "Active", []);
-  teamInList.push(team);
-}
-
-for(let i = 0; i < 3; i++ ) {
-  let team = Team("T0001", "SDGP Group", "", "A hassle-free team collaboration system for leaders to keep in touch with members and check in with progress" , "Sasri", ["Milni", "Sevinda", "Sasri", "Nigel", "Sevinda"], "2024/02/05", "Induvidual", null, [], "Pending", []);
-  teamPendingList.push(team);
-}
+import Loading from '../LoadingPage/LoadingPage';
+import { read_OneValue_from_Database } from '../../../../Backend/src/firebaseCRUD';
 
 function Teams() {
 
-  const [isOpen, setIsOpen] = useState(false);
-  const SideBarResult = isOpen ? "popupLayout show_popup" : "popupLayout hide_popup";
+  let [teamOwnList, setTeamOwnList] = useState([]);
+  let [teamInList, setTeamInList] = useState([]);
+  let [teamPendingList, setTeamPendingList] = useState([]);
+  let [allTeams, setAllTeams] = useState([]);
 
-  const handleJoinSubmit = (e) => {
-    e.preventDefault()
+  let [isLoading, setLoading] = useState(false)
+
+
+  const handleLoad = (boolean) => {
+    setLoading(boolean)
   }
+
+  const fetchAllTeams = (toLoad) => {
+
+    if(toLoad) {
+      handleLoad(true)
+    }
+
+    const onDataReceived = (dataList) => {
+      setAllTeams(dataList);
+      let OwnedTeamList = [];
+      let JoinTeamList = [];
+      let PendingTeamList = [];
+
+      if(dataList.length > 0) {
+        for (let i = 0; i < dataList.length; i++) {
+          const element = dataList[i];
+          if (element["teamLeader"]["UID"] === auth.currentUser.uid) {
+            if (!teamOwnList.some(item => item.teamCode === element.teamCode)) {
+              OwnedTeamList.push(element);
+            }
+          } else if (element["teamMemberList"].includes(auth.currentUser.uid)) {
+            JoinTeamList.push(element);
+          } else if (element["teamPendingInvites"].includes(auth.currentUser.uid)) {
+            element["teamStatus"] = "Pending";
+            PendingTeamList.push(element);
+          }
+        }
+      
+      }
+
+      setTeamOwnList(OwnedTeamList)
+        setTeamInList(JoinTeamList)
+        setTeamPendingList(PendingTeamList)
+
+      if(toLoad) {
+        handleLoad(false)
+      }
+
+    }
+
+    fetchTeams(onDataReceived)
+
+  }
+
+  useEffect(() => {
+    fetchAllTeams(true)
+  }, [])
+
+
+  const [isOpen, setIsOpen] = useState(false);
+  
+  const SideBarResult = isOpen ? "popupLayout show_popup" : "popupLayout hide_popup";
 
   const [date, setDate] = useState(new Date());
 
   const [isRecurring, setRecurring] = useState(false)
+
+  const [teamCode, setTeamCode] = useState('');
+
+  const [teamName, setTeamName] = useState('');
+
+  const [teamDescription, setReamDescription] = useState('');
 
   const [inviteHtml, setInviteHtml] = useState('');
 
@@ -75,6 +123,39 @@ function Teams() {
   const handleInvite = (invite) => {
     setInviteHtml(invite)
   } 
+
+  const handleCreateSubmit = (e) => {
+      e.preventDefault()
+
+      if(projectType === "induvidualasked") {
+
+        if(date < new Date()) {
+          alert("project deadlines cannot be past")
+          return
+        }
+
+        let month = date.getMonth() + 1;
+
+        createTeam(teamCode, teamName, "", teamDescription, date.getDate().toString() + "/" + month + "/" + date.getFullYear().toString(), projectType, useGit).then(() => {
+          let popupLayout = document.getElementById("popupLayout");
+          let joinPopup = document.getElementById('JoinTeamPopup');
+          let createPopup = document.getElementById('createTeamPopup');
+          if(!isOpen) {
+            popupLayout.style.visibility = "visible";
+          } else {
+            popupLayout.style.visibility = "hidden";
+            joinPopup.style.visibility = "hidden";
+            createPopup.style.visibility = "hidden";
+            popupLayout.style.background = "rgba(0,0,0,0)"
+          }
+    
+          alert("Team " + teamName + " create Successfully")
+          setIsOpen(!isOpen);
+
+        })
+      } 
+
+  }
 
   const handleCopy = () => {
     let code = document.getElementById('code');
@@ -143,8 +224,16 @@ function Teams() {
 
   return (
     <>
+      {isLoading ? (
+        <Loading message = "Loading Teams" background = {false}/>
+      ) : (
+      <>
     <div className='teams'>
-      <h2>Teams you own</h2>
+      {teamOwnList.length + teamInList.length + teamPendingList.length > 0 ? (
+        <>
+          {teamOwnList.length > 0 ? (
+        <>
+          <h2>Teams you own</h2>
       <div className='teamsYouOwn'>
       {teamOwnList.map((item, index) => {
                 return (
@@ -152,8 +241,12 @@ function Teams() {
                 )
             })}
       </div>
+        </>
+      ): null }
 
-      <h2>Teams your in</h2>
+      {teamInList.length > 0 ? (
+        <>
+          <h2>Teams your in</h2>
       <div className='teamsYourIn'>
       {teamInList.map((item, index) => {
                 return (
@@ -161,15 +254,27 @@ function Teams() {
                 )
             })}
       </div>
+        </>
+      ): null}
 
-      <h2>Pending Teams</h2>
-      <div className='pendingTeams'>
-      {teamPendingList.map((item, index) => {
-                return (
-                  <TeamComponent team={teamPendingList[index]} />
-                )
-            })}
-      </div>
+      {teamPendingList.length > 0 ? (
+       <>
+         <h2>Pending Teams</h2>
+        <div className='pendingTeams'>
+        {teamPendingList.map((item, index) => {
+                  return (
+                    <TeamComponent team={teamPendingList[index]} />
+                  )
+              })}
+        </div>
+       </>
+      ) : null}
+        </>
+      ): (
+        <div className='tw-h-full tw-flex tw-items-center tw-justify-center tw-mb-[60px]'>
+          <h2 className='tw-text-center tw-text-[#A7A7A7]'>ⓘ No teams created yet</h2>
+        </div>
+      )}
 
       <div className='joinButtons'>
           <div className='button' onClick={event => {
@@ -203,7 +308,8 @@ function Teams() {
                   popupLayout.style.background = "rgba(0,0,0,0.7)"
                 }, 100);
               }
-            
+
+              generateTeamCode();
               setIsOpen(!isOpen);
           }}>
             <h4>Create Team</h4>
@@ -237,7 +343,7 @@ function Teams() {
 
           <div className='tw-mr-[30px] tw-ml-[30px] tw-mt-[50px] tw-relative tw-h-[180px]'>
             <h4 className='tw-text-[15px]'>Enter Team Code</h4>
-            <form onSubmit={handleJoinSubmit}>
+            <form >
               <input type='number' required className='tw-bg-zinc-900 tw-text-white tw-mt-[15px]' name="teamCode" />
               <input type='submit' className='tw-w-[90px] tw-h-[40px] tw-text-[12px] tw-text-black tw-bg-[#5BCEFF] tw-border-none hover:tw-opacity-[80%] tw-cursor-pointer tw-absolute tw-right-0 tw-bottom-0'/>
             </form>
@@ -269,14 +375,17 @@ function Teams() {
           </div>
 
           <div className='tw-mr-[30px] tw-ml-[30px] tw-mt-[30px] tw-relative tw-pb-[70px]' >
-            <form onSubmit={handleJoinSubmit}>
+            <form onSubmit={handleCreateSubmit}>
               <h4 className='tw-text-[15px]'>Team Name</h4>
               <input type='text' required className='tw-bg-zinc-900 tw-text-white tw-mt-[15px]' name="teamName" onChange={event => {
                  generateInvite(event.target.value, document.getElementById('code').textContent);
-              }}/>
+                 setTeamName(event.target.value);
+              }} />
 
               <h4 className='tw-text-[15px] tw-mt-[20px]'>Team Description</h4>
-              <textarea rows={5} required className='tw-bg-zinc-900 tw-text-white tw-mt-[15px] tw-w-full ' name="teamDescription"> </textarea>
+              <textarea rows={5} required className='tw-bg-zinc-900 tw-text-white tw-mt-[15px] tw-w-full ' name="teamDescription" onChange={event => {
+                setReamDescription(event.target.value);
+              }}> </textarea>
 
               <h4 className='tw-text-[15px] tw-mt-[20px] tw-mb-[10px]'>Project Deadline</h4>
 
@@ -531,7 +640,7 @@ function Teams() {
               <div className='tw-flex t-items-center tw-mt-[20px]'>
                 <h3 className='tw-flex-1'>Team Code</h3>
                 <Tooltip title={result} id='copyText'>
-                  <h4 className={isCopied ? "tw-mr-[20px] tw-text-[#00FF00]" : "tw-mr-[20px] tw-text-[#5BCEFF]"} id = "code" onClick={handleCopy}>{generateTeamCode()}</h4>
+                  <h4 className={isCopied ? "tw-mr-[20px] tw-text-[#00FF00]" : "tw-mr-[20px] tw-text-[#5BCEFF]"} id = "code" onClick={handleCopy}>{teamCode}</h4>
                 </Tooltip>
                 <div id='copyIcon' className='tw-bg-[#272727] tw-pl-2 tw-pr-2 tw-rounded-[5px]'>
                 {isCopied ? (
@@ -563,11 +672,24 @@ function Teams() {
     </div>
 
     </>
+      )}
+    </>
   )
 
   function generateTeamCode() {
-    let teamCode = "10987656"
-    return teamCode
+
+    let teamCode = Math.random() * 99999999
+    teamCode = Math.floor(teamCode)
+
+    const onDataReceived = (teamCodes) => {
+      if(teamCodes == null) {
+        setTeamCode(teamCode)
+      } else {
+        generateTeamCode()
+      }
+    }
+    read_OneValue_from_Database("TeamCodes/" + teamCode, onDataReceived);
+  
   }
   
   function generateInvite(teamName, teamCode) {

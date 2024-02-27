@@ -3,7 +3,7 @@ import {
   generateKey,
   getProfilePicture,
   readOnceFromDatabase,
-  read_from_Database,
+  read_from_Database_onChange as read_from_Database,
   writeToDatabase,
 } from "./firebaseCRUD.js";
 
@@ -67,8 +67,10 @@ export const fetchMessage = (senderUID, receiverUID) => {
 const getTimeDate = () => {
   let newDate = new Date();
 
+  let month = newDate.getMonth() + 1
+
   return [
-    newDate.getDate() + "/" + newDate.getMonth() + "/" + newDate.getFullYear(),
+    newDate.getDate() + "/" + month + "/" + newDate.getFullYear(),
     newDate.getHours() + ":" + newDate.getMinutes(),
   ];
 };

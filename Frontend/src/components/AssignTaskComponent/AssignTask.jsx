@@ -30,7 +30,7 @@ export default function AssignTask(props) {
           className="tw-w-[400px] tw-border-2 tw-border-primary/80  tw-bg-zinc-900">
           <CardHeader>
             <CardTitle className="tw-text-gray-300 tw-items-center">
-              Assign a task to {props.currentUser}
+              Assign a task to {props.currentUser["name"]}
             </CardTitle>
           </CardHeader>
           <CardContent>
