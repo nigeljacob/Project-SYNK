@@ -222,7 +222,7 @@ const TeamDashboard = ({ user }) => {
             ))}
 
             <div className="text-left margin-left margin-top">
-              <h2 className="">Members</h2>
+              <h2>Members</h2>
 
               <div className="line"></div>
 
@@ -260,14 +260,18 @@ const TeamDashboard = ({ user }) => {
 
               {pendingInvites[0] !== "" && (
                 <>
-                  <h2>Pending Invites</h2>
+                  <h2 className="tw-mt-[50px] tw-mb-[10px]">Pending Invites</h2>
 
                   {pendingInvites.map((info) => (
-                    <div className="memberContainer tw-flex tw-items-center tw-w-full tw-justify-between">
-                      <p className="side-text">{info.name}</p>
-                      <button className="tw-py-[5px] tw-px-[10px] tw-cursor-pointer tw-bg-[#5bceff] tw-text-black hide_Button">
-                        Accept
-                      </button>
+                    <div className="tw-w-full">
+                      <div className="line"></div>
+                      <div className="memberContainer tw-flex tw-items-center tw-w-full tw-justify-between">
+                        <p className="side-text">{info.name}</p>
+                        <button className="tw-py-[5px] tw-px-[10px] tw-cursor-pointer tw-bg-[#5bceff] tw-text-black tw-mr-[15px] tw-text-[12px] tw-rounded-lg" onClick={}>
+                          Accept
+                        </button>
+                      </div>
+                      <div className="line"></div>
                     </div>
                   ))}
                 </>
