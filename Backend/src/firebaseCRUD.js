@@ -7,8 +7,15 @@ export const writeToDatabase = (referencePath, data) => {
   return set(ref(firebaseRealtimeDatabase, referencePath), data);
 };
 
+// export const generateKey = (referencePath) => {
+//   return push(ref(firebaseRealtimeDatabase, referencePath)).key();
+// };
+
 export const generateKey = (referencePath) => {
-  return push(ref(firebaseRealtimeDatabase, referencePath)).key();
+  // Push a new child entry to the specified reference path
+  const childRef = push(ref(firebaseRealtimeDatabase, referencePath));
+  // Retrieve the key of the newly generated child entry
+  return childRef.key;
 };
 
 // Read one value from firebase Realtime database

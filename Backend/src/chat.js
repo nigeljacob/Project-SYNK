@@ -3,7 +3,7 @@ import {
   generateKey,
   getProfilePicture,
   readOnceFromDatabase,
-  read_from_Database_onChange as read_from_Database,
+  read_from_Database_onChange,
   writeToDatabase,
 } from "./firebaseCRUD.js";
 
@@ -11,19 +11,11 @@ export const sendTeamMessage = (
   message,
   senderUID,
   receiverUID,
-  senderEmail
+  senderEmail,
+  teamMemberList
 ) => {
   let timeDate = getTimeDate();
-  let ref =
-    "Users" +
-    "/" +
-    senderUID +
-    "/" +
-    "Teams" +
-    "/" +
-    receiverUID +
-    "/" +
-    "Conversations";
+  let ref = "Conversations/" + receiverUID;
   let key = generateKey(ref);
 
   let encryptedMessage = encrypt(message);
@@ -38,40 +30,40 @@ export const sendTeamMessage = (
     senderEmail
   );
 
-  writeToDatabase(ref + "/" + key, newMessage)
+  return writeToDatabase(ref + "/" + key, newMessage)
     .then(() => {
-      // Message sent
+      // for (let i = 0; i < teamMemberList.length; i++) {
+      //   if (teamMemberList[i].UID !== senderUID) {
+      //     writeToDatabase(
+      //       "Conversations/" + teamMemberList[i].UID + "/" + receiverUID
+      //     );
+      //   }
+      // }
     })
     .catch((error) => {
-      // Message not sent
-      window.alert("Failed to send message.");
+      window.alert(error.message);
     });
 };
 
-export const fetchMessage = (senderUID, receiverUID) => {
-  let ref =
-    "Users" +
-    "/" +
-    senderUID +
-    "/" +
-    "Teams" +
-    "/" +
-    receiverUID +
-    "/" +
-    "Conversations";
-
-  return read_from_Database(ref)
+export const fetchMessage = (onDataReceived, receiverUID) => {
+  let ref = "Conversations/" + receiverUID;
+  read_from_Database_onChange(ref, onDataReceived);
 };
 
 // get time and date using a function
 const getTimeDate = () => {
   let newDate = new Date();
 
-  let month = newDate.getMonth() + 1
+  let month = newDate.getMonth() + 1;
+
+  let hours = newDate.getHours();
+  if (hours < 10) hours = "0" + hours;
+  let minutes = newDate.getMinutes();
+  if (minutes < 10) minutes = "0" + minutes;
 
   return [
     newDate.getDate() + "/" + month + "/" + newDate.getFullYear(),
-    newDate.getHours() + ":" + newDate.getMinutes(),
+    hours + ":" + minutes,
   ];
 };
 
@@ -100,11 +92,11 @@ export const decrypt = (message) => {
 
 export const retrieveProfilePicture = (uid) => {
   return getProfilePicture("ProfilePictures" + "/" + uid + "/" + "profile.png");
-}
+};
 
 export const retrieveSenderData = (uid) => {
-  return readOnceFromDatabase("Users" + "/" + uid)
-}
+  return readOnceFromDatabase("Users" + "/" + uid);
+};
 
 const decryptList = [
   "#",
