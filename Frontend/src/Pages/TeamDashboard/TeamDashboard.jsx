@@ -22,7 +22,7 @@ const TeamDashboard = ({ user }) => {
 
   let [isLoading, setLoading] = useState(false);
 
-  const handleLoad = (boolean) => {
+  const handlLoad = (boolean) => {
     setLoading(boolean);
   };
 
