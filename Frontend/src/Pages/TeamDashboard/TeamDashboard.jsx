@@ -96,7 +96,7 @@ const TeamDashboard = ({ user }) => {
     },
     {
       title: "Chat",
-      element: <Chat user = {user} />,
+      element: <Chat user = {user} team={currentTeam} />,
       className: "teamChat",
     },
     {
