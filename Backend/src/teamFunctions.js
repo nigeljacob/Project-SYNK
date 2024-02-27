@@ -1,11 +1,11 @@
 import { Team } from "./classes";
 import { auth } from "./firebase";
 import {
+  readOnceFromDatabase,
   read_OneValue_from_Database,
   read_from_Database_onChange,
   updateDatabase,
   writeToDatabase,
-  readOnceFromDatabase
 } from "./firebaseCRUD";
 
 export const createTeam = (
@@ -82,7 +82,6 @@ export const joinTeam = (teamCode, onRequestSent) => {
     if (data === null) {
       alert("Team does not exist");
     } else {
-        
       const onListReceived = (dataList) => {
         if (dataList.includes("")) {
           dataList.splice(0);
@@ -94,11 +93,12 @@ export const joinTeam = (teamCode, onRequestSent) => {
           name: auth.currentUser.displayName,
         });
 
-        updateDatabase("Teams/" + data.teamLeader + "/" + teamCode, {"teamPendingInvites": dataList}).catch(() => {
-            onRequestSent(false)
-            return
-        })
-
+        updateDatabase("Teams/" + data.teamLeader + "/" + teamCode, {
+          teamPendingInvites: dataList,
+        }).catch(() => {
+          onRequestSent(false);
+          return;
+        });
 
         const onTeamReceived = (team) => {
           team.teamPendingInvites = dataList;
@@ -107,7 +107,7 @@ export const joinTeam = (teamCode, onRequestSent) => {
             "Teams/" + auth.currentUser.uid + "/" + team.teamCode,
             team
           ).then(() => {
-            onRequestSent(true)
+            onRequestSent(true);
           });
         };
 
@@ -115,7 +115,6 @@ export const joinTeam = (teamCode, onRequestSent) => {
           "Teams/" + data.teamLeader + "/" + teamCode,
           onTeamReceived
         );
-
       };
 
       readOnceFromDatabase(
@@ -140,4 +139,23 @@ const getTimeDate = () => {
     newDate.getDate() + "/" + month + "/" + newDate.getFullYear(),
     newDate.getHours() + ":" + newDate.getMinutes(),
   ];
+};
+
+export const acceptMembers = (member, teamID) => {
+  const onTeamReceived = (team) => {
+    if (team.teamMemberList.includes("")) {
+      team.teamMemberList.splice(0);
+    }
+
+    team.teamMemberList.push(member);
+
+    updateDatabase("Teams/" + auth.currentUser.uid + "/" + teamID, {
+      teamMemberList: team.teamMemberList,
+    });
+  };
+
+  readOnceFromDatabase(
+    "Teams/" + auth.currentUser.uid + "/" + teamID,
+    onTeamReceived
+  );
 };
