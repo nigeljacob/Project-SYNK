@@ -24,7 +24,7 @@ import {
 } from "../../shadCN-UI/ui/popover";
 import "./Teams.css";
 
-import { read_OneValue_from_Database } from "../../../../Backend/src/firebaseCRUD";
+import { readOnceFromDatabase, read_OneValue_from_Database } from "../../../../Backend/src/firebaseCRUD";
 import Loading from "../LoadingPage/LoadingPage";
 
 function Teams() {
@@ -62,7 +62,7 @@ function Teams() {
           } else if (element["teamMemberList"].includes(auth.currentUser.uid)) {
             JoinTeamList.push(element);
           } else {
-            
+
             for(let i =0; i < element["teamPendingInvites"].length; i++) {
               if(element["teamPendingInvites"][i].UID === auth.currentUser.uid) {
                 element["teamStatus"] = "Pending";
@@ -1016,7 +1016,7 @@ function Teams() {
         generateTeamCode();
       }
     };
-    read_OneValue_from_Database("TeamCodes/" + teamCode, onDataReceived);
+    readOnceFromDatabase("TeamCodes/" + teamCode, onDataReceived);
   }
 
   function generateInvite(teamName, teamCode) {
