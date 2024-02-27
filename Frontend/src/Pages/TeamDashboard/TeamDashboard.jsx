@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import reactElementToJSXString from "react-element-to-jsx-string";
 import * as IOIcons from "react-icons/io";
 import { useLocation } from "react-router";
@@ -265,7 +265,9 @@ const TeamDashboard = ({ user }) => {
                   {pendingInvites.map((info) => (
                     <div className="memberContainer tw-flex tw-items-center tw-w-full tw-justify-between">
                       <p className="side-text">{info.name}</p>
-                      <button className="tw-py-[5px] tw-px-[10px] tw-cursor-pointer tw-bg-[#5bceff] tw-text-black hide_Button">Accept</button>
+                      <button className="tw-py-[5px] tw-px-[10px] tw-cursor-pointer tw-bg-[#5bceff] tw-text-black hide_Button">
+                        Accept
+                      </button>
                     </div>
                   ))}
                 </>
