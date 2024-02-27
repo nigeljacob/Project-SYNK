@@ -164,12 +164,12 @@ const TeamDashboard = ({ user }) => {
       ) : (
         <div className="teamDashboard">
           <div className={SideBarResult + " sidebar-main"}>
-            <h2>{currentTeam["teamName"]}</h2>
+            <p className="tw-text-[20px]">{currentTeam["teamName"]}</p>
+            <p className="info-text">{currentTeam.teamCode}</p>
+
             <p className="members">
               {currentTeam["teamMemberList"].length} Members
             </p>
-            <p className="info-text">info</p>
-
             <div className="line margin-left"></div>
 
             {infoData.map((info) => (
