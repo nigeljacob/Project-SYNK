@@ -2,7 +2,10 @@ import React, { useEffect, useState } from "react";
 import reactElementToJSXString from "react-element-to-jsx-string";
 import * as IOIcons from "react-icons/io";
 import { useLocation } from "react-router";
-import { fetchPendingInvites } from "../../../../Backend/src/teamFunctions";
+import {
+  acceptMembers,
+  fetchPendingInvites,
+} from "../../../../Backend/src/teamFunctions";
 import AssignTask from "../../components/AssignTaskComponent/AssignTask";
 import ViewTask from "../../components/ViewTaskComponent/ViewTask";
 import Loading from "../LoadingPage/LoadingPage";
@@ -36,6 +39,10 @@ const TeamDashboard = ({ user }) => {
   const [pendingInvites, setPendingInvites] = useState(
     currentTeam.teamPendingInvites
   );
+
+  const handleAcceptMembers = (info) => {
+    acceptMembers(info, currentTeam.teamCode);
+  };
 
   useEffect(() => {
     const onDataReceived = (data) => {
@@ -267,7 +274,12 @@ const TeamDashboard = ({ user }) => {
                       <div className="line"></div>
                       <div className="memberContainer tw-flex tw-items-center tw-w-full tw-justify-between">
                         <p className="side-text">{info.name}</p>
-                        <button className="tw-py-[5px] tw-px-[10px] tw-cursor-pointer tw-bg-[#5bceff] tw-text-black tw-mr-[15px] tw-text-[12px] tw-rounded-lg" onClick={}>
+                        <button
+                          className="tw-py-[5px] tw-px-[10px] tw-cursor-pointer tw-bg-[#5bceff] tw-text-black tw-mr-[15px] tw-text-[12px] tw-rounded-lg"
+                          onClick={(event) => {
+                            handleAcceptMembers(info);
+                          }}
+                        >
                           Accept
                         </button>
                       </div>
