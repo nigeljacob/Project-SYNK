@@ -75,7 +75,7 @@ export const fetchPendingInvites = (onDataReceived, teamCode) => {
   );
 };
 
-export const joinTeam = (teamCode) => {
+export const joinTeam = (teamCode, onRequestSent) => {
   const onDataReceived = (data) => {
     if (data === null) {
       alert("Team does not exist");
@@ -96,12 +96,16 @@ export const joinTeam = (teamCode) => {
           writeToDatabase(
             "Teams/" + data.teamLeader + "/" + teamCode + "/teamPendingInvites",
             dataList
-          ).then(() => {
-            writeToDatabase(
-              "Teams/" + auth.currentUser.uid + "/" + teamCode,
-              team
-            );
-          });
+          )
+            .then(() => {
+              writeToDatabase(
+                "Teams/" + auth.currentUser.uid + "/" + teamCode,
+                team
+              ).then(() => onRequestSent(true));
+            })
+            .catch(() => {
+              onRequestSent(false);
+            });
         };
 
         read_from_Database_onChange(

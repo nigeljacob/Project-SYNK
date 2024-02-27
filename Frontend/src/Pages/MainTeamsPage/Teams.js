@@ -1,12 +1,16 @@
 import { Tooltip } from "@mui/material";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as AIIcons from "react-icons/ai";
 import * as IOIcons from "react-icons/io";
 import * as IOSIcons from "react-icons/io5";
 import { auth } from "../../../../Backend/src/firebase";
-import { createTeam, fetchTeams } from "../../../../Backend/src/teamFunctions";
+import {
+  createTeam,
+  fetchTeams,
+  joinTeam,
+} from "../../../../Backend/src/teamFunctions";
 import loader from "../../assets/images/loader.gif";
 import TeamComponent from "../../components/TeamComponent/TeamComponent.jsx";
 import { cn } from "../../shadCN-UI/lib/utils";
@@ -19,8 +23,6 @@ import {
   PopoverTrigger,
 } from "../../shadCN-UI/ui/popover";
 import "./Teams.css";
-
-import React from "react";
 
 import { read_OneValue_from_Database } from "../../../../Backend/src/firebaseCRUD";
 import Loading from "../LoadingPage/LoadingPage";
@@ -176,8 +178,28 @@ function Teams() {
 
   const handleJoinSubmit = (e) => {
     e.preventDefault();
+    const onRequestSent = (data) => {
+      if (data) {
+        alert("Request Sent Successfully");
+        let popupLayout = document.getElementById("popupLayout");
+        let joinPopup = document.getElementById("JoinTeamPopup");
+        let createPopup = document.getElementById("createTeamPopup");
+        if (!isOpen) {
+          popupLayout.style.visibility = "visible";
+        } else {
+          popupLayout.style.visibility = "hidden";
+          joinPopup.style.visibility = "hidden";
+          createPopup.style.visibility = "hidden";
+          popupLayout.style.background = "rgba(0,0,0,0)";
+        }
 
-
+        alert("Team " + teamName + " create Successfully");
+        setIsOpen(!isOpen);
+      } else {
+        alert("Failed to send request");
+      }
+    };
+    joinTeam(joinTeamCode, onRequestSent);
   };
 
   const handleCopy = () => {
@@ -381,7 +403,9 @@ function Teams() {
                     className="tw-bg-zinc-900 tw-text-white tw-mt-[15px]"
                     name="teamCode"
                     value={joinTeamCode}
-                    onChange={e => {setJoinTeamCode(e.target.value)}}
+                    onChange={(e) => {
+                      setJoinTeamCode(e.target.value);
+                    }}
                   />
                   <input
                     type="submit"

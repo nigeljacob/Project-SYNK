@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import reactElementToJSXString from "react-element-to-jsx-string";
 import * as IOIcons from "react-icons/io";
 import { useLocation } from "react-router";
@@ -22,7 +22,7 @@ const TeamDashboard = ({ user }) => {
 
   let [isLoading, setLoading] = useState(false);
 
-  const handleLoad = (boolean) => {
+  const handlLoad = (boolean) => {
     setLoading(boolean);
   };
 
@@ -164,12 +164,12 @@ const TeamDashboard = ({ user }) => {
       ) : (
         <div className="teamDashboard">
           <div className={SideBarResult + " sidebar-main"}>
-            <h2>{currentTeam["teamName"]}</h2>
+            <p className="tw-text-[20px]">{currentTeam["teamName"]}</p>
+            <p className="info-text">{currentTeam.teamCode}</p>
+
             <p className="members">
               {currentTeam["teamMemberList"].length} Members
             </p>
-            <p className="info-text">info</p>
-
             <div className="line margin-left"></div>
 
             {infoData.map((info) => (
@@ -265,7 +265,9 @@ const TeamDashboard = ({ user }) => {
                   {pendingInvites.map((info) => (
                     <div className="memberContainer tw-flex tw-items-center tw-w-full tw-justify-between">
                       <p className="side-text">{info.name}</p>
-                      <button className="tw-py-[5px] tw-px-[10px] tw-cursor-pointer tw-bg-[#5bceff] tw-text-black hide_Button">Accept</button>
+                      <button className="tw-py-[5px] tw-px-[10px] tw-cursor-pointer tw-bg-[#5bceff] tw-text-black hide_Button">
+                        Accept
+                      </button>
                     </div>
                   ))}
                 </>
