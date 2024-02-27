@@ -59,7 +59,7 @@ export const createTeam = (
         }
       };
 
-      read_OneValue_from_Database("TeamCodes/" + teamCode, onDataReceived);
+      readOnceFromDatabase("TeamCodes/" + teamCode, onDataReceived);
     })
     .catch(() => {
       alert("unable to create Team");
