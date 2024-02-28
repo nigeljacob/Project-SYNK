@@ -20,8 +20,6 @@ import useSound from 'use-sound'
 import notificationSound from './assets/Audio/notification.mp3'
 import errorSound from './assets/Audio/error.mp3'
 import successSound from './assets/Audio/success.mp3'
-
-
 import React from "react";
 import { deleteNotification, fetchNotification } from "../../Backend/src/teamFunctions";
 
@@ -102,22 +100,26 @@ function App() {
     const handleFocus = () => {
       clearTimeout(timer);
       setIsMinimized(false);
-      console.log('Window is focused');
     };
 
     const handleBlur = () => {
       timer = setTimeout(() => {
         setIsMinimized(true);
-        console.log('Window is minimized or not focused');
       }, 100);
+    };
+
+    const handleBeforeUnload = () => {
+      updateStatus("Offline")
     };
 
     window.addEventListener('focus', handleFocus);
     window.addEventListener('blur', handleBlur);
+    window.addEventListener('beforeunload', handleBeforeUnload);
 
     return () => {
       window.removeEventListener('focus', handleFocus);
       window.removeEventListener('blur', handleBlur);
+      window.removeEventListener('beforeunload', handleBeforeUnload); 
     };
   }, []);
 

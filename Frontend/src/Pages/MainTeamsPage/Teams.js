@@ -24,9 +24,10 @@ import {
   PopoverTrigger,
 } from "../../shadCN-UI/ui/popover";
 import "./Teams.css";
-
 import { readOnceFromDatabase, read_OneValue_from_Database } from "../../../../Backend/src/firebaseCRUD";
 import Loading from "../LoadingPage/LoadingPage";
+const electronApi = window?.electronApi;
+
 
 function Teams() {
   let [teamOwnList, setTeamOwnList] = useState([]);
@@ -35,6 +36,13 @@ function Teams() {
   let [allTeams, setAllTeams] = useState([]);
 
   let [isLoading, setLoading] = useState(false);
+
+
+  const sendMessage = () => {
+    electronApi.sendMessageToMain('Hello from renderer process!');
+  }
+
+
 
   const handleLoad = (boolean) => {
     setLoading(boolean);
@@ -292,6 +300,9 @@ function Teams() {
               <>
                 {teamOwnList.length > 0 ? (
                   <>
+                  <button onClick={event => {
+                    sendMessage()
+                  }}>fnjnf</button>
                     <h2>Teams you own</h2>
                     <div className="teamsYouOwn">
                       {teamOwnList.map((item, index) => {
