@@ -1,4 +1,4 @@
-const { Tray, app, BrowserWindow, Menu } = require("electron");
+const { Tray, app, BrowserWindow, Menu, ipcMain } = require("electron");
 const windowStateKeeper = require("electron-window-state");
 const path = require("path");
 
@@ -27,7 +27,7 @@ function createWindow() {
     webPreferences: {
       enableRemoteModule: true,
       contextIsolation: true,
-      nodeIntegration: false,
+      nodeIntegration: true,
     },
   });
 
@@ -61,6 +61,14 @@ function createWindow() {
 }
 
 app.on("ready", createWindow);
+
+app.on('browser-window-blur', () => {
+    try{
+      updateStatus("Offline")
+    } catch {
+
+    }
+})
 
 app.on("activate", function () {
   if (BrowserWindow.getAllWindows().length == 0) createWindow();

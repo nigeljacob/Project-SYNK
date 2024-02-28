@@ -34,6 +34,7 @@ export const createTeam = (
         UID: auth.currentUser.uid,
         name: auth.currentUser.displayName,
         email: auth.currentUser.email,
+        status: "Active"
       },
     ],
     projectLength,
@@ -80,11 +81,16 @@ export const fetchPendingInvites = (onDataReceived, teamCode) => {
 export const joinTeam = (teamCode, onRequestSent) => {
   const onDataReceived = (data) => {
     if (data === null) {
-      alert("Team does not exist");
+      sendNotification("Team doesn't exist", "The code you entered seems to be invalid", "danger", auth.currentUser.uid)
     } else {
       const onListReceived = (dataList) => {
         if (dataList.includes("")) {
           dataList.splice(0);
+        }
+
+        if(dataList.some((item) => item.UID === auth.currentUser.uid)){
+          onRequestSent("alreadySent");
+          return
         }
 
         dataList.push({
@@ -93,21 +99,28 @@ export const joinTeam = (teamCode, onRequestSent) => {
           name: auth.currentUser.displayName,
         });
 
-        updateDatabase("Teams/" + data.teamLeader + "/" + teamCode, {
-          teamPendingInvites: dataList,
-        }).catch(() => {
-          onRequestSent(false);
-          return;
-        });
-
         const onTeamReceived = (team) => {
+
+          if(team.teamMemberList.some((item) => item.UID === auth.currentUser.uid)){
+            onRequestSent("alreadyJoined");
+            return
+          }
+
           team.teamPendingInvites = dataList;
+
+          updateDatabase("Teams/" + data.teamLeader + "/" + teamCode, {
+            teamPendingInvites: dataList,
+          }).catch(() => {
+            onRequestSent("error");
+            return;
+          });
 
           writeToDatabase(
             "Teams/" + auth.currentUser.uid + "/" + team.teamCode,
             team
           ).then(() => {
-            onRequestSent(true);
+            sendNotification("New Join Request @ " + team.teamName, auth.currentUser.displayName + " has requested to join the team", "info", data.teamLeader)
+            onRequestSent("success");
           });
         };
 
@@ -141,17 +154,41 @@ const getTimeDate = () => {
   ];
 };
 
-export const acceptMembers = (member, teamID) => {
+export const acceptMembers = (member, teamID, index) => {
   const onTeamReceived = (team) => {
     if (team.teamMemberList.includes("")) {
       team.teamMemberList.splice(0);
     }
 
-    team.teamMemberList.push(member);
+    let newTeamMember = {UID: member.UID, name: member.name, email: member.email, status: "Active"}
+
+    team.teamMemberList.push(newTeamMember);
+    
+    team.teamPendingInvites.splice(index);
+
+    if(team.teamPendingInvites.length == 0) {
+        team.teamPendingInvites.push("")
+    }
 
     updateDatabase("Teams/" + auth.currentUser.uid + "/" + teamID, {
       teamMemberList: team.teamMemberList,
+      teamPendingInvites: team.teamPendingInvites
     });
+
+    updateDatabase("Teams/" + member.UID + "/" + teamID, {
+        teamMemberList: team.teamMemberList,
+        teamPendingInvites: team.teamPendingInvites
+      }).then(
+        sendNotification("Join Request Accepted", "You have been accepted into " + team.teamName + ". You can view the team in the teams panel", "success", member.UID)
+      );
+
+    for(let i = 0; i < team.teamMemberList.length; i++) {
+        updateDatabase("Teams/" + team.teamMemberList[i].UID + "/" + teamID, {
+            teamMemberList: team.teamMemberList,
+            teamPendingInvites: team.teamPendingInvites
+          });
+    }
+
   };
 
   readOnceFromDatabase(
@@ -159,3 +196,53 @@ export const acceptMembers = (member, teamID) => {
     onTeamReceived
   );
 };
+
+export const fetchNotification = (onNotificationReceived) => {
+  read_from_Database_onChange("Notification/" + auth.currentUser.uid, onNotificationReceived)
+}
+
+
+export const sendNotification = (title, message, type, receiverUID) => {
+
+  let notification = {title: title, message: message, type: type}
+
+  if(Array.isArray(receiverUID)){
+    for(let i = 0; i < receiverUID.length; i++) {
+      const onNotificationReceived = (notificationList) => {
+        if(notificationList == null) {
+          let dataList = [];
+          dataList.push(notification)
+          notificationList = dataList
+        } else {
+          notificationList.push(notification)
+        }
+
+         writeToDatabase("Notification/" + receiverUID[i], notificationList)
+      }
+
+      readOnceFromDatabase("Notification/" + receiverUID[i], onNotificationReceived)
+
+        }
+    } else {
+      const onNotificationReceived = (notificationList) => {
+        if(notificationList == null) {
+          let dataList = [];
+          dataList.push(notification)
+          notificationList = dataList
+        } else {
+          notificationList.push(notification)
+        }
+
+         writeToDatabase("Notification/" + receiverUID, notificationList)
+      }
+
+      readOnceFromDatabase("Notification/" + receiverUID, onNotificationReceived)
+    }
+
+}
+
+export const deleteNotification = (notificationList, index) => {
+  notificationList.splice(index);
+  writeToDatabase("Notification/" + auth.currentUser.uid, notificationList)
+}
+

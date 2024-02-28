@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import * as MDIcons from "react-icons/md";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import { getCurrentUser } from "../../Backend/src/UserAccount";
+import { getCurrentUser, updateStatus } from "../../Backend/src/UserAccount";
 import { auth } from "../../Backend/src/firebase";
 import "./App.css";
 import CreateAccount from "./Pages/CreateAccount/CreateAccount";
@@ -13,8 +13,17 @@ import Teams from "./Pages/MainTeamsPage/Teams";
 import TeamDashboard from "./Pages/TeamDashboard/TeamDashboard";
 import noWifi from "./assets/images/noWifi.png";
 import SideBar from "./layout/SideNavBar/SideBar";
+import { ReactNotifications } from 'react-notifications-component'
+import 'react-notifications-component/dist/theme.css'
+import { Store } from 'react-notifications-component';
+import useSound from 'use-sound'
+import notificationSound from './assets/Audio/notification.mp3'
+import errorSound from './assets/Audio/error.mp3'
+import successSound from './assets/Audio/success.mp3'
+
 
 import React from "react";
+import { deleteNotification, fetchNotification } from "../../Backend/src/teamFunctions";
 
 let result = "";
 
@@ -34,6 +43,8 @@ function App() {
       auth.onAuthStateChanged(setUser);
     }, 500);
   }, []);
+
+  let Notifications = []
 
   const [isLoggedIn, setIsLoggedIn] = useState(loggedIn);
 
@@ -83,6 +94,99 @@ function App() {
 
   detectOS();
 
+  const [isMinimized, setIsMinimized] = useState(false);
+
+  useEffect(() => {
+    let timer;
+
+    const handleFocus = () => {
+      clearTimeout(timer);
+      setIsMinimized(false);
+      console.log('Window is focused');
+    };
+
+    const handleBlur = () => {
+      timer = setTimeout(() => {
+        setIsMinimized(true);
+        console.log('Window is minimized or not focused');
+      }, 100);
+    };
+
+    window.addEventListener('focus', handleFocus);
+    window.addEventListener('blur', handleBlur);
+
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+      window.removeEventListener('blur', handleBlur);
+    };
+  }, []);
+
+  if(user != null) {
+    if(isMinimized) {
+      updateStatus("Offline")
+    } else {
+      updateStatus("Active")
+    }
+  }
+
+
+  let notifications = [];
+
+  const [playNotification] = useSound(notificationSound, { volume: 0.7 })
+  const [playError] = useSound(errorSound, { volume: 0.7 })
+  const [playSucces] = useSound(successSound, { volume: 0.7 })
+
+  useEffect(() => {
+    if(user != null) {
+      fetchNotification((notification) => {
+        for(let i = 0; i < notification.length; i++) {
+          if(notifications.some((item) => item.title === notification[i].title && item.message === notification[i].message)) {
+            
+          } else {
+            showNotification(notification[i]["title"], notification[i]["message"], notification[i]["type"])
+            setTimeout(() => {
+              deleteNotification(notification, i)
+            }, 50)
+            notifications.push(notification[i])
+          }
+        }
+        notifications = [];
+      })
+    }
+  }, user)
+
+  const showNotification = (title, message, type) => {
+
+    let duration =5000;
+    if(type === "success" || title.includes("New Join Request @")) {
+      duration = 10000; 
+    } else if(type == "danger") {
+      duration = 8000;
+    }
+
+    Store.addNotification({
+      title: title,
+      message: message,
+      type: type,
+      insert: "top",
+      container: "top-right",
+      animationIn: ["animate__animated", "animate__fadeIn"],
+      animationOut: ["animate__animated", "animate__fadeOut"],
+      dismiss: {
+        duration: duration,
+        showIcon: true
+      } 
+    });
+
+    if(type == "danger" || type == "warning") {
+      playError()
+    } else if(type == "success") {
+      playSucces()
+    } else {
+      playNotification()
+    }
+    }
+
   if (user == null && loggedIn) {
     return (
       <>
@@ -125,6 +229,9 @@ function App() {
         ) : (
           <div className="mainFrame" id="mainFrame">
             <div className="titleBar"></div>
+            <div className="tw-overflow-y-scroll">
+            <ReactNotifications />
+            </div>
             <div className="main" id="main">
               <Router>
                 <SideBar user={user} />
@@ -179,6 +286,10 @@ function App() {
         )}
       </>
     );
+  } else {
+    auth.signOut();
+    localStorage.setItem("loggedIN", "false");
+    window.location.reload()
   }
 }
 

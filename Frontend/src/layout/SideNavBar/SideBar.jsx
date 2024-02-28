@@ -1,15 +1,30 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { SideBarData } from './SideBarData';
 import * as MDIcons from 'react-icons/md';
 import * as BSIcons from 'react-icons/bs';
 import * as IOIcons5 from 'react-icons/io5';
 import "./SideBar.css"
+import { getStatus } from '../../../../Backend/src/UserAccount';
 
-function SideBar(props) {
+const SideBar = (props) => {
+    
+    
     setInterval(function() {
         document.getElementById("time").innerHTML = getTime();
     }, 3000);
+
+
+    const [status, setStatus] = useState("Active");
+
+    const result = status === "Active" ? "userStatus" : "userStatus_Offline";
+
+    useEffect(() => {
+        getStatus(props.user.uid, (status) => {
+            setStatus(status);
+        })
+    }, [])
+
   return (
     <>
     <div>
@@ -21,7 +36,7 @@ function SideBar(props) {
             <div className='profilePicture'>
                 <IOIcons5.IoPerson className='profilePerson' />
             </div>
-            <div className='userStatus'>
+            <div className={result}>
 
             </div>
             </div>

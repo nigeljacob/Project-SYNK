@@ -12,7 +12,7 @@ export const sendTeamMessage = (
   senderUID,
   receiverUID,
   senderEmail,
-  teamMemberList
+  senderName
 ) => {
   let timeDate = getTimeDate();
   let ref = "Conversations/" + receiverUID;
@@ -27,18 +27,12 @@ export const sendTeamMessage = (
     timeDate[1],
     timeDate[0],
     key,
-    senderEmail
+    senderEmail,
+    senderName
   );
 
   return writeToDatabase(ref + "/" + key, newMessage)
     .then(() => {
-      // for (let i = 0; i < teamMemberList.length; i++) {
-      //   if (teamMemberList[i].UID !== senderUID) {
-      //     writeToDatabase(
-      //       "Conversations/" + teamMemberList[i].UID + "/" + receiverUID
-      //     );
-      //   }
-      // }
     })
     .catch((error) => {
       window.alert(error.message);
@@ -67,13 +61,17 @@ const getTimeDate = () => {
   ];
 };
 
-// Encrypting and Decrypting messages
 export const encrypt = (message) => {
   let encryptedMessage = "";
 
   for (let i = 0; i < message.length; i++) {
     let index = encryptList.indexOf(message[i]);
-    encryptedMessage += decryptList[index];
+    
+    if (index !== -1) { // Check if the element is found in the list
+      encryptedMessage += decryptList[index];
+    } else {
+      encryptedMessage += message[i]; // Add the original element if not found
+    }
   }
 
   return encryptedMessage;
@@ -84,11 +82,17 @@ export const decrypt = (message) => {
 
   for (let i = 0; i < message.length; i++) {
     let index = decryptList.indexOf(message[i]);
-    decryptedMessage += encryptList[index];
+    
+    if (index !== -1) { // Check if the element is found in the list
+      decryptedMessage += encryptList[index];
+    } else {
+      decryptedMessage += message[i]; // Add the original element if not found
+    }
   }
 
   return decryptedMessage;
 };
+
 
 export const retrieveProfilePicture = (uid) => {
   return getProfilePicture("ProfilePictures" + "/" + uid + "/" + "profile.png");

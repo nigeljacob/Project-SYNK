@@ -15,6 +15,8 @@ import "./TeamDashboard.css";
 import TeamLeaderDashboard from "./TeamLeaderActivity/TeamLeaderDashboard";
 import TeamMemberDashboard from "./TeamMemberActivity/TeamMemberDashboard";
 import TeamYourProgress from "./TeamPersonalProgress/TeamYourProgress";
+import { read_OneValue_from_Database, read_from_Database_onChange } from "../../../../Backend/src/firebaseCRUD";
+import { auth } from "../../../../Backend/src/firebase";
 
 const TeamDashboard = ({ user }) => {
   const [assignTaskPopup, setAssignTaskPopup] = useState(false);
@@ -34,15 +36,20 @@ const TeamDashboard = ({ user }) => {
 
   const location = useLocation();
   const state = location.state;
-  const currentTeam = state["Team"];
+  const [currentTeam, setCurrentTeam] = useState(state["Team"]);
+
+  useEffect(() => {
+
+    // update when there is a change
+    read_OneValue_from_Database("Teams/" + auth.currentUser.uid + "/" + currentTeam.teamCode, (data) => {
+        setCurrentTeam(data)
+    })
+
+  }, [])
 
   const [pendingInvites, setPendingInvites] = useState(
     currentTeam.teamPendingInvites
   );
-
-  const handleAcceptMembers = (info) => {
-    acceptMembers(info, currentTeam.teamCode);
-  };
 
   useEffect(() => {
     const onDataReceived = (data) => {
@@ -51,7 +58,9 @@ const TeamDashboard = ({ user }) => {
     fetchPendingInvites(onDataReceived, currentTeam.teamCode);
   }, []);
 
-  let teamMemberList = currentTeam["teamMemberList"];
+  const handleAcceptMembers = (info, index) => {
+    acceptMembers(info, currentTeam.teamCode);
+  };
 
   let sideBarStatus = true;
 
@@ -233,7 +242,7 @@ const TeamDashboard = ({ user }) => {
 
               <div className="line"></div>
 
-              {teamMemberList.map((info) => (
+              {currentTeam["teamMemberList"].map((info) => (
                 <>
                   <div className="memberContainer tw-flex tw-items-center tw-w-full tw-justify-between">
                     {info.UID === currentTeam.teamLeader.UID ? (
@@ -269,7 +278,7 @@ const TeamDashboard = ({ user }) => {
                 <>
                   <h2 className="tw-mt-[50px] tw-mb-[10px]">Pending Invites</h2>
 
-                  {pendingInvites.map((info) => (
+                  {pendingInvites.map((info, index) => (
                     <div className="tw-w-full">
                       <div className="line"></div>
                       <div className="memberContainer tw-flex tw-items-center tw-w-full tw-justify-between">
@@ -277,7 +286,7 @@ const TeamDashboard = ({ user }) => {
                         <button
                           className="tw-py-[5px] tw-px-[10px] tw-cursor-pointer tw-bg-[#5bceff] tw-text-black tw-mr-[15px] tw-text-[12px] tw-rounded-lg"
                           onClick={(event) => {
-                            handleAcceptMembers(info);
+                            handleAcceptMembers(info, index);
                           }}
                         >
                           Accept
