@@ -15,15 +15,33 @@ import { Calendar as CalendarIcon } from "lucide-react";
 import { cn } from "../../shadCN-UI/lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "../../shadCN-UI/ui/popover";
 import React, { useState } from "react";
-import * from 
+import {assignTask } from "../../../../Backend/src/AssignTask/AssignTaskFunctions"
 
 export default function AssignTask(props) {
   const [date, setDate] = useState(new Date());
+  const [taskName, setTaskName] = useState();
+  const [taskDesc, setTaskDesc] = useState();
+  const [deadline, setDeadline] = useState();
 
   const handleClose = () => {
     props.setTrigger(false);
     console.log("`props.trigger` is now false");
   };
+
+  const handleSubmit=()=>{
+    let month = date.getMonth() + 1
+    let hours = date.getHours();
+    if (hours < 10) hours = "0" + hours;
+    let minutes = date.getMinutes();
+    if (minutes < 10) minutes = "0" + minutes;
+    const onSuccess = (boolean)=>{
+      handleClose()
+    }
+
+    console.log(props.currentTeam)
+
+    assignTask(props.currentUser.UID, props.currentTeam, props.index, taskName, taskDesc, [date.getDate() + "/" + month + "/" + date.getFullYear(), hours + ":" + minutes], onSuccess)
+  }
 
   return props.trigger ? (
     <div className="tw-justify-center tw-items-center tw-shadow-[0_0_16px_#5bceff]">
@@ -41,11 +59,11 @@ export default function AssignTask(props) {
                   <Label htmlFor="name" className="tw-text-left tw-text-gray-300">
                     Task name:
                   </Label>
-                  <Input id="name" className="tw-bg-transparent tw-text-gray-300" />
+                  <Input id="name" value={taskName} onChange={event=>{setTaskName(event.target.value)}} className="tw-bg-transparent tw-text-gray-300" />
                 </div>
                 <div className="tw-flex tw-flex-col tw-space-y-1.5 tw-text-left tw-text-gray-300 ">
                   <Label htmlFor="framework">Task description:</Label>
-                  <Textarea className="tw-bg-transparent tw-text-gray-300"></Textarea>
+                  <Textarea value={taskDesc} onChange={event=>{setTaskDesc(event.target.value)}} className="tw-bg-transparent tw-text-gray-300"></Textarea>
 
                   {/* <Select>
                     <SelectTrigger id="framework">
@@ -92,7 +110,7 @@ export default function AssignTask(props) {
           </CardContent>
           <CardFooter className="tw-flex tw-justify-between">
             <Button onClick={handleClose}>Cancel</Button>
-            <Button onClick={}>Confirm</Button>
+            <Button onClick={event => {handleSubmit()}}>Confirm</Button>
           </CardFooter>
         </Card>
     </div>
