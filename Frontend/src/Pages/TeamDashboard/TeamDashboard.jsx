@@ -24,7 +24,7 @@ const TeamDashboard = ({ user }) => {
 
   const [isAssignTaskOpen, setAssignTaskOpen] = useState(false);
   const [isViewTaskOpen, setViewTaskOpen] = useState(false);
-
+  const [teamMemberIndex, setTeamMemberIndex] = useState(0);
   let [isLoading, setLoading] = useState(false);
 
   const handlLoad = (boolean) => {
@@ -242,7 +242,7 @@ const TeamDashboard = ({ user }) => {
 
               <div className="line"></div>
 
-              {currentTeam["teamMemberList"].map((info) => (
+              {currentTeam["teamMemberList"].map((info, index) => (
                 <>
                   <div className="memberContainer tw-flex tw-items-center tw-w-full tw-justify-between">
                     {info.UID === currentTeam.teamLeader.UID ? (
@@ -253,6 +253,7 @@ const TeamDashboard = ({ user }) => {
                     <IOIcons.IoIosAdd
                       className={buttonClass}
                       onClick={(event) => {
+                        setTeamMemberIndex(index)
                         let popupLayout =
                           document.getElementById("popupLayout");
                         if (isAssignTaskOpen) {
@@ -324,6 +325,8 @@ const TeamDashboard = ({ user }) => {
               trigger={assignTaskPopup}
               setTrigger={setAssignTaskOpen}
               currentUser={selectedUser}
+              currentTeam={currentTeam}
+              index={teamMemberIndex}
             />
           </div>
           <div

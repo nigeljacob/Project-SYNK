@@ -34,13 +34,13 @@ export const createTeam = (
         UID: auth.currentUser.uid,
         name: auth.currentUser.displayName,
         email: auth.currentUser.email,
-        status: "Active"
+        status: "Active",
+        taskList: [""]
       },
     ],
     projectLength,
     projectType,
     gitConfig,
-    [""],
     "Active",
     [""],
     dateTime[0]
@@ -160,7 +160,7 @@ export const acceptMembers = (member, teamID, index) => {
       team.teamMemberList.splice(0);
     }
 
-    let newTeamMember = {UID: member.UID, name: member.name, email: member.email, status: "Active"}
+    let newTeamMember = {UID: member.UID, name: member.name, email: member.email, status: "Active", taskList: [""]}
 
     team.teamMemberList.push(newTeamMember);
     
