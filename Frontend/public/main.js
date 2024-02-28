@@ -1,4 +1,4 @@
-const { Tray, app, BrowserWindow, Menu, ipcMain } = require("electron");
+const { Tray, app, BrowserWindow, Menu, ipcMain, contextBridge } = require("electron");
 const windowStateKeeper = require("electron-window-state");
 const path = require("path");
 
@@ -25,9 +25,11 @@ function createWindow() {
     show: false,
     icon: "/logo.png",
     webPreferences: {
+      webSecurity: false,
       enableRemoteModule: true,
       contextIsolation: true,
-      nodeIntegration: true,
+      nodeIntegration: false,
+      preload: path.join(__dirname, "preload.js")
     },
   });
 
@@ -62,13 +64,10 @@ function createWindow() {
 
 app.on("ready", createWindow);
 
-app.on('browser-window-blur', () => {
-    try{
-      updateStatus("Offline")
-    } catch {
 
-    }
-})
+ipcMain.on('messageToMain', (event, message) => {
+  console.log('Received message from renderer process:', message);
+});
 
 app.on("activate", function () {
   if (BrowserWindow.getAllWindows().length == 0) createWindow();
