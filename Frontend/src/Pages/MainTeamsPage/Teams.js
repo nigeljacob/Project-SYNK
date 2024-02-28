@@ -10,6 +10,7 @@ import {
   createTeam,
   fetchTeams,
   joinTeam,
+  sendNotification,
 } from "../../../../Backend/src/teamFunctions";
 import loader from "../../assets/images/loader.gif";
 import TeamComponent from "../../components/TeamComponent/TeamComponent.jsx";
@@ -59,7 +60,7 @@ function Teams() {
             ) {
               OwnedTeamList.push(element);
             }
-          } else if (element["teamMemberList"].includes(auth.currentUser.uid)) {
+          } else if (element["teamMemberList"].some((item) => item.UID === auth.currentUser.uid)) {
             JoinTeamList.push(element);
           } else {
 
@@ -172,7 +173,7 @@ function Teams() {
           popupLayout.style.background = "rgba(0,0,0,0)";
         }
 
-        alert("Team " + teamName + " create Successfully");
+        sendNotification("Team Created Successfully", "Team " + teamName + " was created successfully. You can now view the team in the teams panel", "success", auth.currentUser.uid)
         setIsOpen(!isOpen);
       });
     }
@@ -183,8 +184,7 @@ function Teams() {
   const handleJoinSubmit = (e) => {
     e.preventDefault();
     const onRequestSent = (data) => {
-      if (data) {
-        alert("Request Sent Successfully");
+      if (data === "success") {
         let popupLayout = document.getElementById("popupLayout");
         let joinPopup = document.getElementById("JoinTeamPopup");
         let createPopup = document.getElementById("createTeamPopup");
@@ -197,10 +197,17 @@ function Teams() {
           popupLayout.style.background = "rgba(0,0,0,0)";
         }
 
-        alert("Team " + teamName + " create Successfully");
         setIsOpen(!isOpen);
+
+        sendNotification("Sent Successfully", "Join Request successfuly sent to team admin", "success", auth.currentUser.uid)
+
+      } else if (data === "alreadyJoined") {
+        sendNotification("Already Joined", "You have already joined this team as a member", "warning", auth.currentUser.uid)
+      } else if(data === "alreadySent") {
+        sendNotification("Join Request sent already", "A join request to this team has been sent to the admin already", "warning", auth.currentUser.uid)
       } else {
-        alert("Failed to send request");
+        sendNotification("Failed to join team", "An error occured while trying to join a team", "danger", auth.currentUser.uid)
+
       }
     };
     joinTeam(joinTeamCode, onRequestSent);
@@ -323,6 +330,8 @@ function Teams() {
                 </h2>
               </div>
             )}
+
+            <div className="tw-h-[50px]"><br></br></div>
 
             <div className="joinButtons">
               <div

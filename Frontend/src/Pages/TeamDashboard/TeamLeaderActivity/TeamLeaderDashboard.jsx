@@ -1,30 +1,39 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DeadlineComponent from "../../../components/ActivityDeadlineComponent/DeadlineComponent.jsx";
 import TaskDetails from "../../../components/TaskComponent/TaskDetails.jsx";
 import TeamProgressComponent from "../../../components/TeamProgressComponent/TeamProgressComponent.jsx";
 import "../../MainTeamsPage/Teams.css";
 import "./TeamLeaderDashboard.css";
+import { auth } from "../../../../../Backend/src/firebase.js";
+import { read_OneValue_from_Database } from "../../../../../Backend/src/firebaseCRUD.js";
 
 const TeamLeaderDashboard = (props) => {
-  let currentTeam = props.team;
+  let [currentTeam, setCurrentTeam] = useState(props.team);
+
+  useEffect(() => {
+    // update when there is a change
+  read_OneValue_from_Database("Teams/" + auth.currentUser.uid + "/" + currentTeam.teamCode, (data) => {
+    setCurrentTeam(data)
+  })
+  }, [])
 
   const SideBarStatus = useState(props.sideBarStatus);
 
   const progressContainerClassName = SideBarStatus ? "progress_container" : "progress_container_sideBarClosed";
 
-  const teamMemberList = currentTeam.teamMemberList;
+  let teamMembers = []
 
-  let teamMembers = [];
-
-  for (let i = 0; i < teamMemberList.length; i++) {
-    if (teamMemberList[i]["UID"] != currentTeam.teamLeader.UID) {
-      teamMembers.push(teamMemberList[i]);
+  for (let i = 0; i < currentTeam.teamMemberList.length; i++) {
+    if (currentTeam.teamMemberList[i]["UID"] != currentTeam.teamLeader.UID) {
+      if(!teamMembers.includes(currentTeam.teamMemberList[i])) {
+        teamMembers.push(currentTeam.teamMemberList[i]);
+      }
     }
   }
 
   return (
     <div className="teamLeaderDashboard">
-      <h1>Leader</h1>
+      <h1>Leader Dashboard</h1>
       <DeadlineComponent
         taskDeadlineDate="Finish Report"
         taskDetailsParagraph="Task assigned to you by leader from SDGP GROUP dues today"
@@ -45,7 +54,7 @@ const TeamLeaderDashboard = (props) => {
                   "3 more tasks to complete",
                   "working for 2h now",
                 ]}
-                name={member}
+                member={member}
               />
             ))}
           </div>

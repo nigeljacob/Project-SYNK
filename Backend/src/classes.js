@@ -51,7 +51,8 @@ export const Message = (
   time,
   date,
   key,
-  senderEmail
+  senderEmail,
+  senderName
 ) => {
   return {
     message: message,
@@ -61,6 +62,7 @@ export const Message = (
     date: date,
     key: key,
     senderEmail: senderEmail,
+    senderName: senderName
   };
 };
 

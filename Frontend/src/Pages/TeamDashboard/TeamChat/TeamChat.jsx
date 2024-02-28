@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ReceiveMessage from "../../../components/ChatComponents/ReceiveMessage";
 import SendMessage from "../../../components/ChatComponents/SendMessage.jsx";
 import { IoSend } from "react-icons/io5";
@@ -7,9 +7,21 @@ import { sendTeamMessage, fetchMessage, decrypt } from "../../../../../Backend/s
 import React from "react";
 
 import { auth } from "../../../../../Backend/src/firebase";
+import { fireEvent } from "@testing-library/react";
+import { sendNotification } from "../../../../../Backend/src/teamFunctions";
 
 const TeamChat = ({ user, team }) => {
   let [messageList, setMessageList] = useState([]);
+
+  const messagesEndRef = useRef(null)
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }
+
+  scrollToBottom()
+
+  let firstTime = true;
 
   useEffect(() => {
     const onDataReceived = (data) => {
@@ -17,12 +29,25 @@ const TeamChat = ({ user, team }) => {
         data[i].message = decrypt(data[i].message);
       }
       setMessageList(data);
+      scrollToBottom()
+
     }
 
     fetchMessage(onDataReceived, team.teamCode);
-  }, []);
+  }, [messageList.length]);
 
   const [message, setMessage] = useState("");
+
+  let teamMembers = []
+
+  for (let i = 0; i < team.teamMemberList.length; i++) {
+    if (team.teamMemberList[i]["UID"] != team.teamLeader.UID) {
+      if(!teamMembers.includes(team.teamMemberList[i].UID)) {
+        teamMembers.push(team.teamMemberList[i].UID);
+      }
+    }
+  }
+
 
   const handleSendMessage = (e) => {
     e.preventDefault();
@@ -34,10 +59,21 @@ const TeamChat = ({ user, team }) => {
       auth.currentUser.uid,
       team.teamCode,
       auth.currentUser.email,
-      team.teamMembersList
+      auth.currentUser.displayName
     );
 
     setMessage("");
+
+    let teamMembers = []
+
+    for (let i = 0; i < team.teamMemberList.length; i++) {
+      if (team.teamMemberList[i]["UID"] != auth.currentUser.uid) {
+        teamMembers.push(team.teamMemberList[i].UID);
+     }
+    }
+
+    sendNotification("New Chat" + " @ " + team.teamName, user.displayName + ": " + message, "info", teamMembers)
+
   };
 
   return (
@@ -55,6 +91,7 @@ const TeamChat = ({ user, team }) => {
             );
           }
         })}
+        <div ref={messagesEndRef} />
       </div>
 
       <div>

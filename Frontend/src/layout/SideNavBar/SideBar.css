@@ -55,6 +55,15 @@
     float: right;
 }
 
+.userStatus_Offline {
+    width: 13px;
+    height: 13px;
+    background-color: red;
+    border-radius: 50%;
+    margin-top: -15px;
+    float: right;
+}
+
 .title {
     margin-left: 10px;
 }

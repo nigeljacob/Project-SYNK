@@ -3,6 +3,7 @@ import './TeamComponent.css'
 import * as FaIcons from "react-icons/fa";
 import { Link } from 'react-router-dom';
 import { getProfilePicture } from '../../../../Backend/src/firebaseCRUD';
+import { Tooltip } from '@mui/material';
 const { differenceInDays, differenceInMonths } = require('date-fns');
 
 function TeamComponent({team}) {
@@ -51,6 +52,8 @@ function TeamComponent({team}) {
           let profilePic = getProfilePicture(item.UID)
           return(
             <div className='memberProfile'>  
+              <Tooltip title={item.name}>
+
               {profilePic === null ? (
                 <div className="memberExtra">
                   <h3 className='tw-text-white tw-text-[13px]'>{item.name[0]}</h3>
@@ -58,6 +61,8 @@ function TeamComponent({team}) {
               ) : (
                 <img src= {profilePic} alt="" />
               )}
+
+              </Tooltip>
             </div>
           )
         } else if(index === 3){
