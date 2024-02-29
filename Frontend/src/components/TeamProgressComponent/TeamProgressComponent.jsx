@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import timeClock from "../../assets/images/timeClock.svg";
-import { getStatus } from "../../../../Backend/src/UserAccount";
+import { getProfilePicture, getStatus } from "../../../../Backend/src/UserAccount";
 
 const TeamProgressComponent = ({
   photo,
@@ -8,12 +8,30 @@ const TeamProgressComponent = ({
   tasks,
 }) => {
 
-
   const [status, setStatus] = useState("Offline");
+  const [profilePic, setProfilePic] = useState(null);
+  
+  let StartedTasks = 0;
+  let CompletedTasks = 0;
+  let StartedTasksIndex = [];
+
+  
+  for(let i = 0; i < tasks.length; i++) {
+    if(tasks.taskStatus == "In Progress") {
+      StartedTasks++
+      StartedTasksIndex.push(i)
+    } else if(tasks.taskStatus == "Completed") {
+      CompletedTasks++
+    }
+  }
+
 
     useEffect(() => {
         getStatus(member["UID"], (status) => {
             setStatus(status);
+        })
+        getProfilePicture(member["UID"], (data) => {
+          setProfilePic(data)
         })
     }, [])
 
@@ -23,7 +41,7 @@ const TeamProgressComponent = ({
       <div className="tw-flex tw-flex-col tw-relative">
         <div className="tw-flex tw-items-center tw-w-full">
           {photo ? (
-            <img src={photo} alt="profile picture" />
+            <img src={profilePic} alt="profile picture" />
           ) : (
             <div className="tw-flex tw-justify-center tw-items-center tw-text-[18px] tw-w-[50px] tw-h-[50px] tw-bg-[#0B0B0B]">
               {member["name"][0]}
@@ -34,19 +52,43 @@ const TeamProgressComponent = ({
             <p className="tw-text-[12px] tw-text-[#9C9C9C]">
               {status}
             </p>
-            <p className="tw-absolute tw-top-0 tw-right-0 tw-text-[11px] tw-text-[#00FF00] tw-bg-[#284829] tw-py-[4px] tw-px-[6px] tw-rounded-[5px]">
-              Working
-            </p>
+            {status == "Busy" ? (
+              <p className="tw-absolute tw-top-0 tw-right-0 tw-text-[11px] tw-text-[#FF0000] tw-bg-[#341d1d] tw-py-[4px] tw-px-[6px] tw-rounded-[5px]">
+              Busy
+              </p>
+            ) : status == "Offline" ? (
+              <p className="tw-absolute tw-top-0 tw-right-0 tw-text-[11px] tw-text-[#FF0000] tw-bg-[#341d1d]  tw-py-[4px] tw-px-[6px] tw-rounded-[5px]">
+              Offline
+              </p>
+            ) : (
+              <p className="tw-absolute tw-top-0 tw-right-0 tw-text-[11px] tw-text-[#00FF00] tw-bg-[#284829] tw-py-[4px] tw-px-[6px] tw-rounded-[5px]">
+              {member["status"]}
+              </p>
+            )}
           </div>
         </div>
 
         <div className="tw-mt-[10px] tw-flex tw-flex-col tw-gap-[5px]">
-          {tasks.map((task, index) => (
-            <div key={index} className="tw-flex tw-gap-[8px]">
+          
+          {StartedTasks > 0 ? (
+            <></> 
+            // have to implement
+          ) : (
+            <div>
+              <div className="tw-flex tw-gap-[8px]">
               <img src={timeClock} alt="time clock" />
-              <p className="tw-text-[14px]">{task}</p>
+              <p className="tw-text-[14px]">No Tasks Started Yet</p>
             </div>
-          ))}
+            <div className="tw-flex tw-gap-[8px]">
+              <img src={timeClock} alt="time clock" />
+              {tasks.length < 2 ? (
+                 <p className="tw-text-[14px]">{tasks.length} task to complete</p>
+              ) : (
+                <p className="tw-text-[14px]">{tasks.length} tasks to complete</p>
+              )} 
+            </div>
+            </div>
+          )}
         </div>
       </div>
 

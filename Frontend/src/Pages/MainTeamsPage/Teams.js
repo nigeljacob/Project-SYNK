@@ -42,8 +42,6 @@ function Teams() {
     electronApi.sendMessageToMain('Hello from renderer process!');
   }
 
-
-
   const handleLoad = (boolean) => {
     setLoading(boolean);
   };
@@ -300,9 +298,6 @@ function Teams() {
               <>
                 {teamOwnList.length > 0 ? (
                   <>
-                  <button onClick={event => {
-                    sendMessage()
-                  }}>fnjnf</button>
                     <h2>Teams you own</h2>
                     <div className="teamsYouOwn">
                       {teamOwnList.map((item, index) => {

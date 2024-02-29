@@ -36,7 +36,7 @@ const TeamDashboard = ({ user }) => {
 
   const location = useLocation();
   const state = location.state;
-  const [currentTeam, setCurrentTeam] = useState(state["Team"]);
+  const [currentTeam, setCurrentTeam] = useState(state["Team"])
 
   useEffect(() => {
 
@@ -46,6 +46,7 @@ const TeamDashboard = ({ user }) => {
     })
 
   }, [])
+
 
   const [pendingInvites, setPendingInvites] = useState(
     currentTeam.teamPendingInvites

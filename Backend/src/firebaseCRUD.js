@@ -1,5 +1,8 @@
 import { onValue, push, ref, set, get, child, update } from "firebase/database";
+import { ref as reference, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 import { firebaseRealtimeDatabase } from "./firebase";
+import { firebaseStorage } from "./firebase";
+import { updateProfile } from "firebase/auth";
 import { Team } from "./classes";
 
 // write to firebase Realtime Database with and without unique key
@@ -63,6 +66,23 @@ export const readOnceFromDatabase = (referencePath, onDataReceived) => {
       console.error(error.message);
     });
 };
+
+export const uploadToStrorage = (referencePath, data) => {
+  const storageRef = reference(firebaseStorage, referencePath);
+  
+  return uploadBytesResumable(storageRef, data);
+}
+
+// export const updateProfilePic = async (file, currentUser, onUpload) => {
+//   const fileRef = ref(storage, currentUser.uid + '.png');
+
+  
+//   const snapshot = await uploadBytes(fileRef, file);
+//   const photoURL = await getDownloadURL(fileRef);
+
+//   onUpload(photoURL)
+
+// }
 
 // Get profile Picture
 export const getProfilePicture = (referencePath) => {
