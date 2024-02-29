@@ -11,6 +11,8 @@ import Activity from "./Pages/MainActivity/Activity";
 import Chat from "./Pages/MainChat/Chats";
 import Teams from "./Pages/MainTeamsPage/Teams";
 import TeamDashboard from "./Pages/TeamDashboard/TeamDashboard";
+import NotificationsCenter from "./Pages/Notifications/Notifications";
+import UpdatProfileCenter from "./Pages/ProfileSettings/ProfileSettings";
 import noWifi from "./assets/images/noWifi.png";
 import SideBar from "./layout/SideNavBar/SideBar";
 import { ReactNotifications } from 'react-notifications-component'
@@ -22,6 +24,11 @@ import errorSound from './assets/Audio/error.mp3'
 import successSound from './assets/Audio/success.mp3'
 import React from "react";
 import { deleteNotification, fetchNotification } from "../../Backend/src/teamFunctions";
+import { Card } from "./shadCN-UI/ui/card";
+import * as IOSIcons from "react-icons/io5";
+import "./Pages/MainTeamsPage/Teams.css";
+import ProfileSettings from "./Pages/ProfileSettings/ProfileSettings";
+import { read_OneValue_from_Database } from "../../Backend/src/firebaseCRUD";
 
 let result = "";
 
@@ -49,6 +56,12 @@ function App() {
   const [isLogoutClicked, setLoggedOutClicked] = useState(false);
 
   const [isOnline, setOnline] = useState(false);
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const SideBarResult = isOpen
+    ? "sideBarOpened tw-w-[300px] tw-bg-zinc-900 tw-absolute tw-right-0 tw-m-[20px] tw-rounded-[20px]"
+    : "sideBarClosed tw-w-[300px] tw-bg-zinc-900 tw-absolute tw-right-0 tw-m-[20px] tw-rounded-[20px]";
 
   function checkConnection() {
     if (navigator.onLine) {
@@ -132,7 +145,7 @@ function App() {
   }
 
 
-  let notifications = [];
+  let [notifications, setNotifications] = useState([]);
 
   const [playNotification] = useSound(notificationSound, { volume: 0.7 })
   const [playError] = useSound(errorSound, { volume: 0.7 })
@@ -149,10 +162,22 @@ function App() {
             setTimeout(() => {
               deleteNotification(notification, i)
             }, 50)
-            notifications.push(notification[i])
+            if(notification[i].type != "success" || notification[i].type != "danger" || notification[i].type != "warning") {
+              Notifications.push(notification[i])
+            }
           }
         }
-        notifications = [];
+        setNotifications(Notifications)
+      })
+    }
+  }, user)
+
+  const [userData, setUserData] = useState({});
+
+  useEffect(() => {
+    if(user != null) {
+      read_OneValue_from_Database("Users/" + auth.currentUser.uid, (UserData) => {
+        setUserData(UserData)
       })
     }
   }, user)
@@ -160,7 +185,7 @@ function App() {
   const showNotification = (title, message, type) => {
 
     let duration =5000;
-    if(type === "success" || title.includes("New Join Request @")) {
+    if(type === "success" || title.includes("New Join Request @") || title.includes("Task assigned @")) {
       duration = 10000; 
     } else if(type == "danger") {
       duration = 8000;
@@ -236,7 +261,7 @@ function App() {
             </div>
             <div className="main" id="main">
               <Router>
-                <SideBar user={user} />
+                <SideBar user={user} setOpen={setIsOpen} isOpen={isOpen}/>
                 <Routes>
                   <Route
                     path="/"
@@ -248,6 +273,14 @@ function App() {
                   <Route
                     path="/memberDashboard"
                     element={<TeamDashboard user={user} />}
+                  />
+                  <Route
+                    path="/notifications"
+                    element={<NotificationsCenter Notifications = {notifications} className="notifications"/>}
+                  />
+                  <Route
+                    path="/profileUpdate"
+                    element={<ProfileSettings user = {user} className="notifications" userData={userData}/>}
                   />
                 </Routes>
               </Router>
@@ -283,7 +316,20 @@ function App() {
                   )}
                 </div>
               ) : null}
+
+              <div className={SideBarResult}>
+                    
+              <IOSIcons.IoClose
+                    className="tw-w-[30px] tw-h-[30px] tw-absolute tw-right-0 tw-cursor-pointer hover:tw-text-[#A7A7A7] tw-m-[30px]"
+                    onClick={(event) => {
+                      setIsOpen(!isOpen);
+                    }}
+                  />
+
+              </div>
+              
             </div>
+
           </div>
         )}
       </>

@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import './TeamComponent.css'
 import * as FaIcons from "react-icons/fa";
 import { Link } from 'react-router-dom';
-import { getProfilePicture } from '../../../../Backend/src/firebaseCRUD';
+import { getProfilePicture } from '../../../../Backend/src/UserAccount';
 import { Tooltip } from '@mui/material';
 const { differenceInDays, differenceInMonths } = require('date-fns');
 
@@ -10,6 +10,33 @@ function TeamComponent({team}) {
   const isAvailable = team["teamProfile"] !== "";
   const nameList = team["teamName"].split(" ");
   const isLarger = nameList.length > 1;
+
+  let [profilePictures, setProfilePictures] = useState(["","",""])
+
+  let tempProfilePictures = []
+
+  if(team.teamMemberList.length > 2) {
+    for(let i = 0; i < 3; i++) {
+      getProfilePicture(team.teamMemberList[i].UID, (data) => {
+        if(data != "") {
+          tempProfilePictures[i] = data
+        }
+      })
+    }
+  } else {
+    for(let i = 0; i < team.teamMemberList.length; i++) {
+      getProfilePicture(team.teamMemberList[i].UID, (data) => {
+        if(data != "") {
+          tempProfilePictures[i] = data
+        } 
+      })  
+    }
+  }
+
+  useEffect(() => {
+    setProfilePictures(tempProfilePictures)
+  }, tempProfilePictures)
+  
   return (
     <div className='teamWrapper '>
       {team["teamStatus"] === "Active" ? (
@@ -49,17 +76,16 @@ function TeamComponent({team}) {
       <div className='memberProfiles'>
       {team["teamMemberList"].map((item, index) => {
         if(index < 3) {
-          let profilePic = getProfilePicture(item.UID)
           return(
             <div className='memberProfile'>  
               <Tooltip title={item.name}>
 
-              {profilePic === null ? (
+              {(profilePictures[index] === undefined || profilePictures[index] === null || profilePictures[index] === "") ? (
                 <div className="memberExtra">
                   <h3 className='tw-text-white tw-text-[13px]'>{item.name[0]}</h3>
                 </div>
               ) : (
-                <img src= {profilePic} alt="" />
+                <img src= {profilePictures[index]} alt="mmm" />
               )}
 
               </Tooltip>

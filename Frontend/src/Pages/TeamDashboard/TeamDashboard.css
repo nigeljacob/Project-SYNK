@@ -96,6 +96,17 @@
   margin-top: 10px;
 }
 
+.deadline-container_past {
+  background-color: #4a1010;
+  padding: 15px 35px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  border-radius: 20px;
+  margin-top: 10px;
+}
+
 .clock-container {
   display: flex;
   align-items: center;

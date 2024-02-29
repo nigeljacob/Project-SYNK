@@ -8,6 +8,17 @@
     border-radius: 10px;
     -webkit-transition: 1s;
   }
+
+  .single-task-container_past {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #330b0b;
+    margin-top: 20px;
+    padding: 15px 20px;
+    border-radius: 10px;
+    -webkit-transition: 1s;
+  }
   
   .status-container {
     display: flex;
@@ -15,7 +26,7 @@
   }
   
   .status-container select {
-    background-color: #2d2d2d;
+    background-color: transparent;
     border: none;
     font-size: 12px;
   }

@@ -13,7 +13,7 @@ function createWindow() {
     y: mainWindowState.y,
     width: mainWindowState.width,
     height: mainWindowState.height,
-    minWidth: 1000,
+    minWidth: 1300,
     title: "SYNK",
     minHeight: 600,
     titleBarStyle: "hidden",

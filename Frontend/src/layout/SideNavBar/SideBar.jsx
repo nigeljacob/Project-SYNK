@@ -34,7 +34,11 @@ const SideBar = (props) => {
         <div className='Profile'>
             <div>
             <div className='profilePicture'>
-                <IOIcons5.IoPerson className='profilePerson' />
+               {props.user.photoURL == null ? (
+                 <IOIcons5.IoPerson className='profilePerson' />
+               ) : (
+                <img src = {props.user.photoURL} alt='profile' className='tw-w-full tw-h-full tw-object-cover tw-rounded-[50%]'/>
+               )}
             </div>
             <div className={result}>
 
@@ -48,7 +52,7 @@ const SideBar = (props) => {
                     Full Stack Developer
                 </h4>
             </div>
-            <Link className='editButton'>
+            <Link className='editButton' to="/profileUpdate">
                 <MDIcons.MdOutlineEdit className='editICON' />
             </Link>
         </div>
@@ -74,7 +78,7 @@ const SideBar = (props) => {
                 {getTime()}
             </h3>
             <div className='notificationButton'>
-                <Link>
+                <Link to="/notifications">
                     <BSIcons.BsBellFill className='notificationIcon' />
                 </Link>
             </div>
