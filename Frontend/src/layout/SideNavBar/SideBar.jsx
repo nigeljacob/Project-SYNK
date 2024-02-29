@@ -40,9 +40,10 @@ const SideBar = (props) => {
                 <img src = {props.user.photoURL} alt='profile' className='tw-w-full tw-h-full tw-object-cover tw-rounded-[50%]'/>
                )}
             </div>
-            <div className={result}>
+    
 
             </div>
+            <div className={result}>
             </div>
             <div className='title'>
                 <h2 id='userName'>
