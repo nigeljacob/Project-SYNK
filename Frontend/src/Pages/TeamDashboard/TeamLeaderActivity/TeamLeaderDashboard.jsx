@@ -6,7 +6,7 @@ import "../../MainTeamsPage/Teams.css";
 import "./TeamLeaderDashboard.css";
 import { auth } from "../../../../../Backend/src/firebase.js";
 import { read_OneValue_from_Database } from "../../../../../Backend/src/firebaseCRUD.js";
-import { assignTask } from "../../../../../Backend/src/AssignTask/AssignTaskFunctions.js";
+import { assignTask } from "../../../../../Backend/src/AssignTask/taskFunctions.js";
 import { List } from "lucide-react";
 const { parse, differenceInMilliseconds, closestTo } = require('date-fns');
 
@@ -145,6 +145,7 @@ const TeamLeaderDashboard = (props) => {
             teamMemberIndex={teamMemberIndex}
             setViewTaskTrigger={props.setViewTaskTrigger}
             viewTaskTrigger={props.viewTaskTrigger}
+            taskTrigger = {props.taskTrigger}
             />
           ))
         ) : (

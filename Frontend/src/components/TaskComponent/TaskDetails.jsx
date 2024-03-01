@@ -3,10 +3,10 @@ import "../../Pages/TeamDashboard/TeamDashboard"
 import React, { useEffect, useState } from "react";
 import Tooltip from '@mui/material/Tooltip';
 import { MdEdit } from "react-icons/md";
-import { updateTaskStatus } from "../../../../Backend/src/AssignTask/AssignTaskFunctions";
+import { updateTaskStatus } from "../../../../Backend/src/AssignTask/taskFunctions";
 import { auth } from "../../../../Backend/src/firebase";
 
-const TaskDetails = ({ index, task, team, teamMemberIndex, setViewTaskTrigger, viewTaskTrigger }) => {
+const TaskDetails = ({ index, task, team, teamMemberIndex, setViewTaskTrigger, viewTaskTrigger, taskTrigger}) => {
 
   const [Status, setStatus] = useState(task.taskStatus);
 
@@ -24,6 +24,10 @@ const TaskDetails = ({ index, task, team, teamMemberIndex, setViewTaskTrigger, v
     dued = true;
   } else {
     dued = false
+  }
+
+  const handleConfirm = () => {
+    electronApi.viewTask("hey there im testing")
   }
 
   const containerClass = dued ? "single-task-container_past" : "single-task-container"
@@ -103,6 +107,8 @@ const TaskDetails = ({ index, task, team, teamMemberIndex, setViewTaskTrigger, v
               }, 90);
 
           setViewTaskTrigger(true);
+          taskTrigger(task)
+          handleConfirm()
 
           }}}>{Status}</button>
         </div>
@@ -122,6 +128,8 @@ const TaskDetails = ({ index, task, team, teamMemberIndex, setViewTaskTrigger, v
               }, 90);
 
           setViewTaskTrigger(true);
+          taskTrigger(task)
+          handleConfirm() // display installed apps for view task component
 
           }}}/>  
             </div>

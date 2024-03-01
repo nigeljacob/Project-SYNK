@@ -15,7 +15,7 @@ import { Calendar as CalendarIcon } from "lucide-react";
 import { cn } from "../../shadCN-UI/lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "../../shadCN-UI/ui/popover";
 import React, { useState } from "react";
-import {assignTask } from "../../../../Backend/src/AssignTask/AssignTaskFunctions"
+import {assignTask } from "../../../../Backend/src/AssignTask/taskFunctions"
 
 export default function AssignTask(props) {
   const [date, setDate] = useState(new Date());

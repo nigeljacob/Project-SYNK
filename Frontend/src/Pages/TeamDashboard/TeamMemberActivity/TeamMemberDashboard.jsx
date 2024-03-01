@@ -118,6 +118,7 @@ const TeamMemberDashboard = (props) => {
             teamMemberIndex={teamMemberIndex}
             setViewTaskTrigger={props.setViewTaskTrigger}
             viewTaskTrigger={props.viewTaskTrigger}
+            taskTrigger = {props.taskTrigger}
             />
           ))
         ) : (

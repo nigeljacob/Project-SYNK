@@ -38,6 +38,10 @@ const TeamDashboard = ({ user }) => {
   const state = location.state;
   const [currentTeam, setCurrentTeam] = useState(state["Team"])
 
+  const [selectedTask, setSelectedTask] = useState({})
+
+  const [isTaskClicked, setTaskClicked] = useState(false)
+
   useEffect(() => {
 
     // update when there is a change
@@ -116,6 +120,7 @@ const TeamDashboard = ({ user }) => {
         <TeamMemberDashboard
           viewTaskTrigger={viewTaskPopup}
           setViewTaskTrigger={setViewTaskPopup}
+          taskTrigger = {setSelectedTask}
         />
       ),
       className: "teamActivity",
@@ -141,6 +146,7 @@ const TeamDashboard = ({ user }) => {
       <TeamLeaderDashboard
         viewTaskTrigger={viewTaskPopup}
         setViewTaskTrigger={setViewTaskPopup}
+        taskTrigger = {setSelectedTask}
         team={currentTeam}
         sideBarStatus={isOpen}
       />
@@ -149,6 +155,7 @@ const TeamDashboard = ({ user }) => {
       <TeamLeaderDashboard
         viewTaskTrigger={viewTaskPopup}
         setViewTaskTrigger={setViewTaskPopup}
+        taskTrigger = {setSelectedTask}
         team={currentTeam}
         sideBarStatus={isOpen}
       />
@@ -160,12 +167,14 @@ const TeamDashboard = ({ user }) => {
       <TeamMemberDashboard
         viewTaskTrigger={viewTaskPopup}
         setViewTaskTrigger={setViewTaskPopup}
+        taskTrigger = {setSelectedTask}
       />
     );
     dashboard = (
       <TeamMemberDashboard
         viewTaskTrigger={viewTaskPopup}
         setViewTaskTrigger={setViewTaskPopup}
+        taskTrigger = {setSelectedTask}
       />
     );
     buttonClass =
@@ -338,10 +347,14 @@ const TeamDashboard = ({ user }) => {
             }
             id="popupLayout2"
           >
-            <ViewTask
+            {viewTaskPopup ? (
+              <ViewTask
               trigger={viewTaskPopup}
               setTrigger={setViewTaskPopup}
+              task={selectedTask}
+              
             ></ViewTask>
+            ) : null}
           </div>
         </div>
       )}
