@@ -65,6 +65,7 @@ function createWindow() {
     // console.log('Received message from renderer process:', );
     getappsfunc()
     .then(appsList =>{
+      console.log(appsList)
       win.webContents.send("texsssst", appsList)
     })
     .catch(error => console.error("Error:", error));
