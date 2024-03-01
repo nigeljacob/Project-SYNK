@@ -1,5 +1,7 @@
 var getIcon = require('get-app-icon');
 var fs = require('fs');
+const os = require('node:os')
+const { exec } = require('child_process');
 // const helloModule = require('./testing.js');
 
 const {getInstalledApps} = require('get-installed-apps')
@@ -13,6 +15,17 @@ const {getInstalledApps} = require('get-installed-apps')
         try {
             const apps = await getInstalledApps();
             for (const app of apps) {
+                if(os.platform() === "darwin") {
+                    let appName = app.appName;
+ 
+                    appsList.push({
+                        name: appName,
+                        caca: "../../assets/images/defaultIconMac.png"
+                    });
+                
+        
+                } else {
+
                 let appName = app.DisplayName;
                 let appIcon = app.DisplayIcon;
                 if (appIcon != null) {
@@ -34,9 +47,14 @@ const {getInstalledApps} = require('get-installed-apps')
                 } else {
                     appIcon = "defaultAppIcon";
                 }
+                }
+
+            
             }
 
             return appsList;
+
+
         } catch (error) {
             console.error("Error getting installed apps:", error);
             throw new Error('Platform not supported');
@@ -46,6 +64,32 @@ const {getInstalledApps} = require('get-installed-apps')
 
 
 // };
+
+function extractIconFromPath(appPath) {
+    return new Promise((resolve, reject) => {
+        // Use sips command to convert .icns to .png
+        const command = `sips -s format png "${appPath}/Contents/Resources/AppIcon.icns" --out /tmp/appIcon.png`;
+        exec(command, (err, stdout, stderr) => {
+            if (err) {
+                console.error('Error extracting icon:', err);
+                reject(err);
+            } else {
+                // Read the converted .png file
+                fs.readFile('/tmp/appIcon.png', (err, data) => {
+                    if (err) {
+                        console.error('Error reading icon file:', err);
+                        reject(err);
+                    } else {
+                        // Convert the buffer to base64
+                        const base64Icon = data.toString('base64');
+                        resolve(base64Icon);
+                    }
+                });
+            }
+        });
+    });
+}
+
 
 
 module.exports = { getappsfunc };

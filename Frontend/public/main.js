@@ -2,6 +2,7 @@ const { Tray, app, BrowserWindow, Menu, ipcMain, contextBridge } = require("elec
 const windowStateKeeper = require("electron-window-state");
 const path = require("path");
 const {getappsfunc} = require('../../Backend/src/electronFunctions/viewTaskFunctions')
+const {checkActiveApplication} = require('../../Backend/src/electronFunctions/ProgressTrackerFunctions')
 
 function createWindow() {
   let mainWindowState = windowStateKeeper({
@@ -65,15 +66,16 @@ function createWindow() {
     // console.log('Received message from renderer process:', );
     getappsfunc()
     .then(appsList =>{
+      console.log(appsList)
       win.webContents.send("texsssst", appsList)
     })
     .catch(error => console.error("Error:", error));
-
-
-
+    // setInterval(checkActiveApplication, 1000);
   });
 
 }
+
+
 
 app.on("ready", createWindow);
 

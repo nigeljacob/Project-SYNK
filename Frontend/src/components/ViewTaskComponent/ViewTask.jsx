@@ -31,6 +31,7 @@ import { Check, ChevronsUpDown } from "lucide-react";
 import { ScrollArea } from "../../shadCN-UI/ui/scroll-area";
 import { Separator } from "../../shadCN-UI/ui/separator";
 import { useState } from "react";
+import icon from "../../assets/images/defaultIconMac.png"
 import {
   Command,
   CommandDialog,
@@ -453,17 +454,17 @@ export default function ViewTask(props) {
 
 
 
-let taskName = props.task.taskName;
+let taskName = props.task[0].taskName;
 let userID = "";
 let taskDesc =
-props.task.taskDesc
+props.task[0].taskDesc
 let documentFilePath = "";
-let progress = props.task.progress;
-let assignedDate = "Task Assigned: " + props.task["assignedDate"][0] + " at " + props.task["assignedDate"][1]; // Initialize with current date
+let progress = props.task[0].progress;
+let assignedDate = "Task Assigned: " + props.task[0]["assignedDate"][0] + " at " + props.task[0]["assignedDate"][1]; // Initialize with current date
 
-let deadline = "Task Due: " + props.task["deadline"][0] + " at " + props.task["deadline"][1];
-let taskStatus = props.task.taskStatus;
-let completedTask = props.task.taskCompletedDate; // Or a specific Date if applicable
+let deadline = "Task Due: " + props.task[0]["deadline"][0] + " at " + props.task[0]["deadline"][1];
+let taskStatus = props.task[0].taskStatus;
+let completedTask = props.task[0].taskCompletedDate; // Or a specific Date if applicable
 
 const [open, setOpen] = React.useState(false);
 const [value, setValue] = React.useState(false);
@@ -919,9 +920,17 @@ return props.trigger ? (
 
                                   }}
                                 >
+
+                                  {framework.caca === "../../assets/images/defaultIconMac.png" ? (
+                                    <img src={icon}
+                                  className="tw-w-[38px] tw-h-[38px] tw-m-1 tw-p-0 tw-rounded-md tw-border-2 tw-border-gray-300"
+                                />
+                                  ) : (
                                   <img src={framework.caca}
                                   className="tw-w-[38px] tw-h-[38px] tw-m-1 tw-p-0 tw-rounded-md tw-border-2 tw-border-gray-300"
                                 />
+                                  )}
+                                  
 
                                   <p className="tw-p-2">{framework.name}</p>
                                <Check
@@ -1007,12 +1016,15 @@ return props.trigger ? (
                                 
                               }}
                             >
-                              <img
-                                  src={application.caca}
-                                  // src={framework.caca}
-
-                                  className="tw-w-[38px] tw-m-1 tw-p-0 tw-rounded-md tw-border-2 tw-border-gray-300"
-                              />
+                              {application.caca === "../../assets/images/defaultIconMac.png" ? (
+                                    <img src={icon}
+                                  className="tw-w-[38px] tw-h-[38px] tw-m-1 tw-p-0 tw-rounded-md tw-border-2 tw-border-gray-300"
+                                />
+                                  ) : (
+                                  <img src={application.caca}
+                                  className="tw-w-[38px] tw-h-[38px] tw-m-1 tw-p-0 tw-rounded-md tw-border-2 tw-border-gray-300"
+                                />
+                                  )}
 
                               <p className="tw-p-2 tw-text-[14px]">{application.name}</p>
                             </CommandItem>

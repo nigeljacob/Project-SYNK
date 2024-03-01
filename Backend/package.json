@@ -5,7 +5,8 @@
   "dependencies": {
     "firebase": "^10.8.0",
     "get-app-icon": "^1.0.1",
-    "get-installed-apps": "^1.1.0"
+    "get-installed-apps": "^1.1.0",
+    "ps-list": "^7.1.0"
   },
   "keywords": [],
   "author": "",
