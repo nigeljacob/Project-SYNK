@@ -1,6 +1,8 @@
-const { Tray, app, BrowserWindow, Menu } = require("electron");
+const { Tray, app, BrowserWindow, Menu, ipcMain, contextBridge } = require("electron");
 const windowStateKeeper = require("electron-window-state");
 const path = require("path");
+const {getappsfunc} = require('../../Backend/src/electronFunctions/viewTaskFunctions')
+const {checkActiveApplication} = require('../../Backend/src/electronFunctions/ProgressTrackerFunctions')
 
 function createWindow() {
   let mainWindowState = windowStateKeeper({
@@ -13,21 +15,23 @@ function createWindow() {
     y: mainWindowState.y,
     width: mainWindowState.width,
     height: mainWindowState.height,
-    minWidth: 1000,
+    minWidth: 1300,
     title: "SYNK",
     minHeight: 600,
-    titleBarStyle: "hidden",
+    // titleBarStyle: "hidden",
     titleBarOverlay: {
       color: "rgba(0,0,0,0)",
       symbolColor: "#ffffff",
     },
-    frame: false,
+    // frame: false,
     show: false,
     icon: "/logo.png",
     webPreferences: {
+      webSecurity: false,
       enableRemoteModule: true,
       contextIsolation: true,
       nodeIntegration: false,
+      preload: path.join(__dirname, "preload.js")
     },
   });
 
@@ -49,7 +53,7 @@ function createWindow() {
   splashScreen.show();
 
   win.setBackgroundColor("#1e1e1e");
-  win.setMenu(null);
+  // win.setMenu(null);
 
   setTimeout(function () {
     splashScreen.close();
@@ -58,9 +62,23 @@ function createWindow() {
     win.show();
   }, 7000);
 
+  ipcMain.on('viewTask', (event, message) => {
+    // console.log('Received message from renderer process:', );
+    getappsfunc()
+    .then(appsList =>{
+      console.log(appsList)
+      win.webContents.send("texsssst", appsList)
+    })
+    .catch(error => console.error("Error:", error));
+    // setInterval(checkActiveApplication, 1000);
+  });
+
 }
 
+
+
 app.on("ready", createWindow);
+
 
 app.on("activate", function () {
   if (BrowserWindow.getAllWindows().length == 0) createWindow();

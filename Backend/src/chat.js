@@ -3,7 +3,7 @@ import {
   generateKey,
   getProfilePicture,
   readOnceFromDatabase,
-  read_from_Database,
+  read_from_Database_onChange,
   writeToDatabase,
 } from "./firebaseCRUD.js";
 
@@ -11,19 +11,11 @@ export const sendTeamMessage = (
   message,
   senderUID,
   receiverUID,
-  senderEmail
+  senderEmail,
+  senderName
 ) => {
   let timeDate = getTimeDate();
-  let ref =
-    "Users" +
-    "/" +
-    senderUID +
-    "/" +
-    "Teams" +
-    "/" +
-    receiverUID +
-    "/" +
-    "Conversations";
+  let ref = "Conversations/" + receiverUID;
   let key = generateKey(ref);
 
   let encryptedMessage = encrypt(message);
@@ -35,51 +27,51 @@ export const sendTeamMessage = (
     timeDate[1],
     timeDate[0],
     key,
-    senderEmail
+    senderEmail,
+    senderName
   );
 
-  writeToDatabase(ref + "/" + key, newMessage)
+  return writeToDatabase(ref + "/" + key, newMessage)
     .then(() => {
-      // Message sent
     })
     .catch((error) => {
-      // Message not sent
-      window.alert("Failed to send message.");
+      window.alert(error.message);
     });
 };
 
-export const fetchMessage = (senderUID, receiverUID) => {
-  let ref =
-    "Users" +
-    "/" +
-    senderUID +
-    "/" +
-    "Teams" +
-    "/" +
-    receiverUID +
-    "/" +
-    "Conversations";
-
-  return read_from_Database(ref)
+export const fetchMessage = (onDataReceived, receiverUID) => {
+  let ref = "Conversations/" + receiverUID;
+  read_from_Database_onChange(ref, onDataReceived);
 };
 
 // get time and date using a function
 const getTimeDate = () => {
   let newDate = new Date();
 
+  let month = newDate.getMonth() + 1;
+
+  let hours = newDate.getHours();
+  if (hours < 10) hours = "0" + hours;
+  let minutes = newDate.getMinutes();
+  if (minutes < 10) minutes = "0" + minutes;
+
   return [
-    newDate.getDate() + "/" + newDate.getMonth() + "/" + newDate.getFullYear(),
-    newDate.getHours() + ":" + newDate.getMinutes(),
+    newDate.getDate() + "/" + month + "/" + newDate.getFullYear(),
+    hours + ":" + minutes,
   ];
 };
 
-// Encrypting and Decrypting messages
 export const encrypt = (message) => {
   let encryptedMessage = "";
 
   for (let i = 0; i < message.length; i++) {
     let index = encryptList.indexOf(message[i]);
-    encryptedMessage += decryptList[index];
+    
+    if (index !== -1) { // Check if the element is found in the list
+      encryptedMessage += decryptList[index];
+    } else {
+      encryptedMessage += message[i]; // Add the original element if not found
+    }
   }
 
   return encryptedMessage;
@@ -90,19 +82,25 @@ export const decrypt = (message) => {
 
   for (let i = 0; i < message.length; i++) {
     let index = decryptList.indexOf(message[i]);
-    decryptedMessage += encryptList[index];
+    
+    if (index !== -1) { // Check if the element is found in the list
+      decryptedMessage += encryptList[index];
+    } else {
+      decryptedMessage += message[i]; // Add the original element if not found
+    }
   }
 
   return decryptedMessage;
 };
 
+
 export const retrieveProfilePicture = (uid) => {
   return getProfilePicture("ProfilePictures" + "/" + uid + "/" + "profile.png");
-}
+};
 
 export const retrieveSenderData = (uid) => {
-  return readOnceFromDatabase("Users" + "/" + uid)
-}
+  return readOnceFromDatabase("Users" + "/" + uid);
+};
 
 const decryptList = [
   "#",

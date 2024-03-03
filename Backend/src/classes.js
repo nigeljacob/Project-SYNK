@@ -8,9 +8,9 @@ export const Team = (
   projectLength,
   projectType,
   gitConfig,
-  taskList,
   teamStatus,
-  teamPendingInvites
+  teamPendingInvites,
+  startDate
 ) => {
   return {
     teamCode: teamCode,
@@ -22,9 +22,9 @@ export const Team = (
     projectLength: projectLength,
     projectType: projectType,
     gitConfig: gitConfig,
-    taskList: taskList,
     teamStatus: teamStatus,
     teamPendingInvites: teamPendingInvites,
+    startDate: startDate
   };
 };
 
@@ -38,8 +38,21 @@ export const User = (uid, email, username, profilePicture, userStatus) => {
   };
 };
 
-export const Task = () => {
-  return {};
+export const Task = (
+  taskName, taskDesc, documentFilePath, applicationsList, progress, assignedDate, deadline, taskCompletedDate, taskStatus 
+) => {
+
+  return {
+    taskName: taskName, 
+    taskDesc: taskDesc, 
+    documentFilePath: documentFilePath, 
+    applicationsList: applicationsList, 
+    progress: progress, 
+    assignedDate: assignedDate, 
+    deadline: deadline, 
+    taskCompletedDate: taskCompletedDate, 
+    taskStatus: taskStatus 
+  };
 };
 
 export const Message = (
@@ -49,7 +62,8 @@ export const Message = (
   time,
   date,
   key,
-  senderEmail
+  senderEmail,
+  senderName
 ) => {
   return {
     message: message,
@@ -59,6 +73,7 @@ export const Message = (
     date: date,
     key: key,
     senderEmail: senderEmail,
+    senderName: senderName
   };
 };
 

@@ -1,16 +1,48 @@
 import "./TaskDetails.css";
 import "../../Pages/TeamDashboard/TeamDashboard"
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Tooltip from '@mui/material/Tooltip';
 import { MdEdit } from "react-icons/md";
+import { updateTaskStatus } from "../../../../Backend/src/AssignTask/taskFunctions";
+import { auth } from "../../../../Backend/src/firebase";
 
-const TaskDetails = ({ index, taskDesc, taskStatus, setViewTaskTrigger, viewTaskTrigger }) => {
+const TaskDetails = ({ index, task, team, teamMemberIndex, setViewTaskTrigger, viewTaskTrigger, taskTrigger}) => {
 
-  const [Status, setStatus] = useState(taskStatus);
+  const [Status, setStatus] = useState(task.taskStatus);
+
+  const [dateString, timeString] = task.deadline; 
+
+    const [day, month, year] = dateString.split('/');
+
+    const combinedDateTimeString = `${year}-${month}-${day} ${timeString}`;
+
+    const targetDate = new Date(combinedDateTimeString);
+
+    let dued = false;
+
+  if(targetDate < new Date()) {
+    dued = true;
+  } else {
+    dued = false
+  }
+
+  const handleConfirm = () => {
+    electronApi.viewTask("hey there im testing")
+  }
+
+  const containerClass = dued ? "single-task-container_past" : "single-task-container"
+
+
+  // there are some errros in this function have to fix.. don't use it might ruin the firebase structure
+  // useEffect(() => {
+
+  //   updateTaskStatus(team, teamMemberIndex, index, Status, auth.currentUser.displayName)
+
+  // }, Status)
 
   return (
-    <div className="single-task-container">
-      <p>{index + ". " + taskDesc}</p>
+    <div className={containerClass}>
+      <p>{index + ". " + task.taskName}</p>
 
       <div className="status-container">
           {Status === "Start" ? (
@@ -22,9 +54,7 @@ const TaskDetails = ({ index, taskDesc, taskStatus, setViewTaskTrigger, viewTask
                 Status === "Completed" ? "green-status" : "yellow-status"
               }
             >
-                <option value="start" selected >
-                Not Started Yet
-                </option>
+                <option value="start" selected > Not Started Yet</option>
                 <option value="Continue" hidden>In Progress</option>
                 <option value="Completed" hidden>Completed</option>
 
@@ -77,6 +107,8 @@ const TaskDetails = ({ index, taskDesc, taskStatus, setViewTaskTrigger, viewTask
               }, 90);
 
           setViewTaskTrigger(true);
+          taskTrigger([task, team])
+          handleConfirm()
 
           }}}>{Status}</button>
         </div>
@@ -96,6 +128,8 @@ const TaskDetails = ({ index, taskDesc, taskStatus, setViewTaskTrigger, viewTask
               }, 90);
 
           setViewTaskTrigger(true);
+          taskTrigger([task, team])
+          handleConfirm() // display installed apps for view task component
 
           }}}/>  
             </div>

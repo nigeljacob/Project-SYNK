@@ -11,6 +11,7 @@
     position: relative;
     background-color: #181818;
     width: 350px;
+    flex-shrink: 0;
     padding: 25px 50px 25px 0px;
     color: white;
     min-height: 100vh;
@@ -37,6 +38,7 @@
     justify-content: center;
     align-items: center;
     display: flex;
+    z-index: -1000;
 }
 
 .profilePerson {
@@ -51,7 +53,18 @@
     height: 13px;
     background-color: #50B401;
     border-radius: 50%;
-    margin-top: -15px;
+    margin-top: 35px;
+    margin-left: -14px;
+    float: right;
+}
+
+.userStatus_Offline {
+    width: 13px;
+    height: 13px;
+    background-color: red;
+    border-radius: 50%;
+    margin-top: 35px;
+    margin-left: -14px;
     float: right;
 }
 

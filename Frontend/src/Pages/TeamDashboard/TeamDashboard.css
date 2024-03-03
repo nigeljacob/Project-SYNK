@@ -9,12 +9,10 @@
   margin-top: 3px;
 }
 
-
 .info-text {
   font-size: 15px;
-  margin-top: 7px;
   color: #5bceff;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
 .margin-left {
@@ -40,25 +38,30 @@
   text-align: left;
 }
 
-#teamActivity{
+#teamActivity {
   color: #5bceff;
 }
 
-#teamActivity, #teamChat, #teamProgress {
-  
+#teamActivity,
+#teamChat,
+#teamProgress {
   cursor: pointer;
 }
 
-#teamActivity:hover, #teamChat:hover, #teamProgress:hover {
+#teamActivity:hover,
+#teamChat:hover,
+#teamProgress:hover {
   opacity: 0.8;
 }
 
-.barContent{
+.barContent {
   display: flex;
   align-items: center;
 }
 
-#teamActivity p, #teamChat p, #teamProgress p {
+#teamActivity p,
+#teamChat p,
+#teamProgress p {
   flex: 2;
   width: 100%;
 }
@@ -84,6 +87,17 @@
 
 .deadline-container {
   background-color: #115d68;
+  padding: 15px 35px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  border-radius: 20px;
+  margin-top: 10px;
+}
+
+.deadline-container_past {
+  background-color: #4a1010;
   padding: 15px 35px;
   display: flex;
   align-items: center;
@@ -130,6 +144,6 @@
   text-align: center;
 }
 
-.hide_Button{
+.hide_Button {
   visibility: hidden;
 }

@@ -1,14 +1,44 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import './TeamComponent.css'
 import * as FaIcons from "react-icons/fa";
 import { Link } from 'react-router-dom';
+import { getProfilePicture } from '../../../../Backend/src/UserAccount';
+import { Tooltip } from '@mui/material';
+const { differenceInDays, differenceInMonths } = require('date-fns');
 
 function TeamComponent({team}) {
   const isAvailable = team["teamProfile"] !== "";
   const nameList = team["teamName"].split(" ");
   const isLarger = nameList.length > 1;
+
+  let [profilePictures, setProfilePictures] = useState(["","",""])
+
+  let tempProfilePictures = []
+
+  if(team.teamMemberList.length > 2) {
+    for(let i = 0; i < 3; i++) {
+      getProfilePicture(team.teamMemberList[i].UID, (data) => {
+        if(data != "") {
+          tempProfilePictures[i] = data
+        }
+      })
+    }
+  } else {
+    for(let i = 0; i < team.teamMemberList.length; i++) {
+      getProfilePicture(team.teamMemberList[i].UID, (data) => {
+        if(data != "") {
+          tempProfilePictures[i] = data
+        } 
+      })  
+    }
+  }
+
+  useEffect(() => {
+    setProfilePictures(tempProfilePictures)
+  }, tempProfilePictures)
+  
   return (
-    <div className='teamWrapper'>
+    <div className='teamWrapper '>
       {team["teamStatus"] === "Active" ? (
         <div className="teamStatus tw-bg-[#284829]">
         <h3>{team["teamStatus"]}</h3>
@@ -35,7 +65,9 @@ function TeamComponent({team}) {
           <h5 id="membersLength">{team["teamMemberList"].length} Members</h5>
         </div>
       </div>
+      <div className='teamDesc'>
       <p id="teamDesc">{team["teamDescription"]}</p>
+      </div>
       <div className="projectLength">
         <FaIcons.FaClock />
         <h3>{calculateProjectLength()}</h3>
@@ -46,7 +78,17 @@ function TeamComponent({team}) {
         if(index < 3) {
           return(
             <div className='memberProfile'>  
-              <img src="https://t4.ftcdn.net/jpg/03/64/21/11/360_F_364211147_1qgLVxv1Tcq0Ohz3FawUfrtONzz8nq3e.jpg" alt="" />
+              <Tooltip title={item.name}>
+
+              {(profilePictures[index] === undefined || profilePictures[index] === null || profilePictures[index] === "") ? (
+                <div className="memberExtra">
+                  <h3 className='tw-text-white tw-text-[13px]'>{item.name[0]}</h3>
+                </div>
+              ) : (
+                <img src= {profilePictures[index]} alt="mmm" />
+              )}
+
+              </Tooltip>
             </div>
           )
         } else if(index === 3){
@@ -73,14 +115,54 @@ function TeamComponent({team}) {
       </div>   
     </div>
   )
+
+  function calculateProjectRemaining() {
+    let newDate = new Date();
+    let month = newDate.getMonth() + 1
+
+    const startDateStr = newDate.getFullYear() + "-" + month + "-" + newDate.getDate();
+    const endDate = team.projectLength.split("/")
+
+    const endDateStr = endDate[2] + "-" + endDate[1] + "-" + endDate[0];
+
+    const dateLength = calculateDateLength(startDateStr, endDateStr);
+
+    return dateLength.months + " M " + dateLength.days + " d"
+  } 
+
+  
+  function calculateProjectLength() {
+    const startDate = team.startDate.split("/")
+    const endDate = team.projectLength.split("/")
+
+    const startDateStr = startDate[2] + "-" + startDate[1] + "-" + startDate[0];
+    const endDateStr = endDate[2] + "-" + endDate[1] + "-" + endDate[0];
+
+    const dateLength = calculateDateLength(startDateStr, endDateStr);
+
+
+    return dateLength.months + " Months"
+  }
+
 }
 
-function calculateProjectLength() {
-  return "6 months"
+// Function to calculate the length of the date range in days and months
+function calculateDateLength(startDateStr, endDateStr) {
+  // Parse the start and end dates
+  const startDate = new Date(startDateStr);
+  const endDate = new Date(endDateStr);
+
+  // Calculate the difference in days
+  const differenceDays = differenceInDays(endDate, startDate);
+
+  // Calculate the difference in months
+  const differenceMonths = differenceInMonths(endDate, startDate);
+
+  return {
+    months: differenceMonths,
+    days: differenceDays % 30 // get the remaining days after subtracting complete months
+  };
 }
 
-function calculateProjectRemaining() {
-  return "5m 6d"
-}
 
 export default TeamComponent

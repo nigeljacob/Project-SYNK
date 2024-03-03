@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import * as MDIcons from "react-icons/md";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import { getCurrentUser } from "../../Backend/src/UserAccount";
+import { getCurrentUser, updateStatus } from "../../Backend/src/UserAccount";
 import { auth } from "../../Backend/src/firebase";
 import "./App.css";
 import CreateAccount from "./Pages/CreateAccount/CreateAccount";
@@ -11,10 +11,24 @@ import Activity from "./Pages/MainActivity/Activity";
 import Chat from "./Pages/MainChat/Chats";
 import Teams from "./Pages/MainTeamsPage/Teams";
 import TeamDashboard from "./Pages/TeamDashboard/TeamDashboard";
+import NotificationsCenter from "./Pages/Notifications/Notifications";
+import UpdatProfileCenter from "./Pages/ProfileSettings/ProfileSettings";
 import noWifi from "./assets/images/noWifi.png";
 import SideBar from "./layout/SideNavBar/SideBar";
-
+import { ReactNotifications } from 'react-notifications-component'
+import 'react-notifications-component/dist/theme.css'
+import { Store } from 'react-notifications-component';
+import useSound from 'use-sound'
+import notificationSound from './assets/Audio/notification.mp3'
+import errorSound from './assets/Audio/error.mp3'
+import successSound from './assets/Audio/success.mp3'
 import React from "react";
+import { deleteNotification, fetchNotification } from "../../Backend/src/teamFunctions";
+import { Card } from "./shadCN-UI/ui/card";
+import * as IOSIcons from "react-icons/io5";
+import "./Pages/MainTeamsPage/Teams.css";
+import ProfileSettings from "./Pages/ProfileSettings/ProfileSettings";
+import { read_OneValue_from_Database } from "../../Backend/src/firebaseCRUD";
 
 let result = "";
 
@@ -35,11 +49,19 @@ function App() {
     }, 500);
   }, []);
 
+  let Notifications = []
+
   const [isLoggedIn, setIsLoggedIn] = useState(loggedIn);
 
   const [isLogoutClicked, setLoggedOutClicked] = useState(false);
 
   const [isOnline, setOnline] = useState(false);
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const SideBarResult = isOpen
+    ? "sideBarOpened tw-w-[300px] tw-bg-zinc-900 tw-absolute tw-right-0 tw-m-[20px] tw-rounded-[20px]"
+    : "sideBarClosed tw-w-[300px] tw-bg-zinc-900 tw-absolute tw-right-0 tw-m-[20px] tw-rounded-[20px]";
 
   function checkConnection() {
     if (navigator.onLine) {
@@ -83,10 +105,119 @@ function App() {
 
   detectOS();
 
+  const [isMinimized, setIsMinimized] = useState(false);
+
+  useEffect(() => {
+    let timer;
+
+    const handleFocus = () => {
+      clearTimeout(timer);
+      setIsMinimized(false);
+    };
+
+    const handleBlur = () => {
+      timer = setTimeout(() => {
+        setIsMinimized(true);
+      }, 100);
+    };
+
+    const handleBeforeUnload = () => {
+      updateStatus("Offline")
+    };
+
+    window.addEventListener('focus', handleFocus);
+    window.addEventListener('blur', handleBlur);
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+      window.removeEventListener('blur', handleBlur);
+      window.removeEventListener('beforeunload', handleBeforeUnload); 
+    };
+  }, []);
+
+  if(user != null) {
+    if(isMinimized) {
+      updateStatus("Offline")
+    } else {
+      updateStatus("Active")
+    }
+  }
+
+
+  let [notifications, setNotifications] = useState([]);
+
+  const [playNotification] = useSound(notificationSound, { volume: 0.7 })
+  const [playError] = useSound(errorSound, { volume: 0.7 })
+  const [playSucces] = useSound(successSound, { volume: 0.7 })
+
+  useEffect(() => {
+    if(user != null) {
+      fetchNotification((notification) => {
+        for(let i = 0; i < notification.length; i++) {
+          if(notifications.some((item) => item.title === notification[i].title && item.message === notification[i].message)) {
+            
+          } else {
+            showNotification(notification[i]["title"], notification[i]["message"], notification[i]["type"])
+            setTimeout(() => {
+              deleteNotification(notification, i)
+            }, 50)
+            if(notification[i].type != "success" || notification[i].type != "danger" || notification[i].type != "warning") {
+              Notifications.push(notification[i])
+            }
+          }
+        }
+        setNotifications(Notifications)
+      })
+    }
+  }, user)
+
+  const [userData, setUserData] = useState({});
+
+  useEffect(() => {
+    if(user != null) {
+      read_OneValue_from_Database("Users/" + auth.currentUser.uid, (UserData) => {
+        setUserData(UserData)
+      })
+    }
+  }, user)
+
+  const showNotification = (title, message, type) => {
+
+    let duration =5000;
+    if(type === "success" || title.includes("New Join Request @") || title.includes("Task assigned @")) {
+      duration = 10000; 
+    } else if(type == "danger") {
+      duration = 8000;
+    }
+
+    Store.addNotification({
+      title: title,
+      message: message,
+      type: type,
+      insert: "top",
+      container: "top-right",
+      animationIn: ["animate__animated", "animate__fadeIn"],
+      animationOut: ["animate__animated", "animate__fadeOut"],
+      dismiss: {
+        duration: duration,
+        showIcon: true
+      } 
+    });
+
+    if(type == "danger" || type == "warning") {
+      playError()
+    } else if(type == "success") {
+      playSucces()
+    } else {
+      playNotification()
+    }
+    }
+
   if (user == null && loggedIn) {
     return (
       <>
-        <Loading message="Loading contents" />
+        <Loading message="Loading contents" background = {true} />
       </>
     );
   }
@@ -121,13 +252,16 @@ function App() {
     return (
       <>
         {isLogoutClicked ? (
-          <Loading message="signing out" />
+          <Loading message="signing out"  background = {true}/>
         ) : (
           <div className="mainFrame" id="mainFrame">
             <div className="titleBar"></div>
+            <div className="tw-overflow-y-scroll">
+            <ReactNotifications />
+            </div>
             <div className="main" id="main">
               <Router>
-                <SideBar user={user} />
+                <SideBar user={user} setOpen={setIsOpen} isOpen={isOpen}/>
                 <Routes>
                   <Route
                     path="/"
@@ -139,6 +273,14 @@ function App() {
                   <Route
                     path="/memberDashboard"
                     element={<TeamDashboard user={user} />}
+                  />
+                  <Route
+                    path="/notifications"
+                    element={<NotificationsCenter Notifications = {notifications} className="notifications"/>}
+                  />
+                  <Route
+                    path="/profileUpdate"
+                    element={<ProfileSettings user = {user} className="notifications" userData={userData}/>}
                   />
                 </Routes>
               </Router>
@@ -174,11 +316,28 @@ function App() {
                   )}
                 </div>
               ) : null}
+
+              <div className={SideBarResult}>
+                    
+              <IOSIcons.IoClose
+                    className="tw-w-[30px] tw-h-[30px] tw-absolute tw-right-0 tw-cursor-pointer hover:tw-text-[#A7A7A7] tw-m-[30px]"
+                    onClick={(event) => {
+                      setIsOpen(!isOpen);
+                    }}
+                  />
+
+              </div>
+              
             </div>
+
           </div>
         )}
       </>
     );
+  } else {
+    auth.signOut();
+    localStorage.setItem("loggedIN", "false");
+    window.location.reload()
   }
 }
 

@@ -3,8 +3,8 @@
     background: #272727;
     border-radius: 16px;
     margin: 10px;
-    padding: 10px;
-    height: fit-content;
+    padding: 3px 10px;
+    height: 100%;
 }
 
 .teamStatus{
@@ -25,7 +25,8 @@
 
 .teamProfile{
     display: flex;
-    margin-top: 30px;
+    margin-top: 40px;
+    align-items: center;
 }
 
 .teamProfile .profile{
@@ -64,11 +65,22 @@
     font-weight: 400;
 }
 
+.teamDesc{
+    overflow: hidden;
+   text-overflow: ellipsis;
+   display: -webkit-box;
+   -webkit-line-clamp: 3; /* number of lines to show */
+           line-clamp: 3;
+   -webkit-box-orient: vertical;
+}
+
+
 
 #teamDesc {
     margin-top: 10px;
     color: #a7a7a7;
     font-size: 13px;
+    height: 60px;
 }
 
 .projectLength{

@@ -1,0 +1,12 @@
+.notifications {
+    transform: translateX(-500px);
+}
+
+@keyframes move {
+    0% {
+      transform: translateX(-100wh);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }

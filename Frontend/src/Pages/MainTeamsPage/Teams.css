@@ -25,6 +25,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 10%));
     height: fit-content;
+    row-gap: 20px;
     user-select: none;
 }
 
