@@ -44,7 +44,7 @@ export default function AssignTask(props) {
   }
 
   return props.trigger ? (
-    <div className="tw-justify-center tw-items-center tw-shadow-[0_0_16px_#5bceff]">
+    <div className="tw-justify-center tw-items-center tw-shadow-[0_0_16px_#5bbfff]">
 <Card
           className="tw-w-[400px] tw-border-2 tw-border-primary/80  tw-bg-zinc-900">
           <CardHeader>

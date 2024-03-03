@@ -1,4 +1,6 @@
 // change frameworks to applicationslist
+//change caca to icon
+//change applicationsList to selectedAppsList
 
 import React, { useEffect } from "react";
 import { Button } from "../../shadCN-UI/ui/button";
@@ -30,65 +32,47 @@ import {
 } from "../../shadCN-UI/ui/command";
 const electronApi = window?.electronApi;
 
+
+//component to display a task assigned to a team member. Shows a list of applications installed on the user's computer in order to select a few that the user will use for the task.
 export default function ViewTask(props) {
-  const handleClose = () => {
-    props.setTrigger(false);
-    console.log("`props.trigger` is now false");
-  };
 
-  const [frameworks, setFrameworks] = useState([]);
-
-  useEffect(() => {
-    electronApi.receiveAppListFromMain((data) => {
-      console.log("data:" + data);
-      setFrameworks(data);
-    });
-  }, []);
-
-  console.log(frameworks);
-
+  const [installedApps, setInstalledApps] = useState([]); //array of apps installed on pc as a JSON that includes the app name and an icon string
   let taskName = props.task[0].taskName;
   let taskDesc = props.task[0].taskDesc;
   let documentFilePath = "";
   let progress = props.task[0].progress;
-  let assignedDate =
-    "Task Assigned: " +
-    props.task[0]["assignedDate"][0] +
-    " at " +
-    props.task[0]["assignedDate"][1]; // Initialize with current date
-  let deadline =
-    "Task Due: " +
-    props.task[0]["deadline"][0] +
-    " at " +
-    props.task[0]["deadline"][1];
+  let assignedDate = "Task Assigned: " + props.task[0]["assignedDate"][0] + " at " +  props.task[0]["assignedDate"][1]; 
+  let deadline = "Task Due: " +  props.task[0]["deadline"][0] + " at " +  props.task[0]["deadline"][1];
   let taskStatus = props.task[0].taskStatus;
-  let completedTask = props.task[0].taskCompletedDate; // Or a specific Date if applicable
-  const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState(false);
-  var [checkmark, setcheckmark] = React.useState();
+  let completedTask = props.task[0].taskCompletedDate; 
+  const [open, setOpen] = React.useState(false); //state variable to set the state of the pop up (opened/closed)
   const [file, setFile] = React.useState();
-  let [arrayIsEmpty, setArrayIsEmpty] = React.useState(true);
-  var [applicationsList, setApplicationsList] = React.useState([]); // Empty array for applicationsList
+  var [selectedApps, setSelectedApps] = React.useState([]); //array of apps selected by user
 
-  var harro = [
-    "sveltdekit",
-    "nukxt.js",
-    "rejmix",
-    "astharo",
-    "next.js",
-    "sveltdekit",
-    "nukxt.js",
-    "rejmix",
-    "astharo",
-    "next.js",
-  ];
-  var matchedCategories;
-  //newValues is the list of apps
 
+
+  //function to handle the onclick event of the Close button
+  const handleClose = () => {
+    props.setTrigger(false);
+    // console.log("`props.trigger` is now false");
+  };
+
+  //useEffect that retrieves the list of installed applications from the viewTaskFunctions.js file by using ipcRenderer. useEffect retrieves the data everytime the component is used
+  useEffect(() => {
+    electronApi.receiveAppListFromMain((data) => {
+      // console.log("data:" + data);
+      setInstalledApps(data);//retrieves the data and sets it to the array of installed apps
+    });
+  }, []);
+
+  // console.log(installedApps);
+
+
+  //trigger needs to be true in order for the popup to be open
   return props.trigger ? (
     <div>
       <div className="tw-fixed tw-inset-0  tw-flex tw-justify-center tw-items-center">
-        <Card className="tw-relative tw-w-[470px] tw-shadow-[0_0_10px_10px_rgba(91,206,255,0.3)] tw-border-2 tw-border-primary/80  tw-bg-zinc-900">
+        <Card className="tw-relative tw-w-[470px] tw-shadow-[0_0_16px_0_#5bbfff] tw-border-2 tw-border-primary/80 tw-bg-zinc-900  ">
           <CardHeader>
             <CardTitle className="tw-text-gray-300">
               Task Assigned: {taskName}
@@ -124,11 +108,9 @@ export default function ViewTask(props) {
                   </div>
                   
                   <div className="tw-flex tw-flex-col tw-space-y-5 tw-text-left tw-text-gray-300 ">
-                    <Label htmlFor="framework">
+                    <Label htmlFor="currentApp">
                       Applications required for this task:
                     </Label>
-
-                
 
                     <Popover open={open} onOpenChange={setOpen}>
                       <PopoverTrigger asChild>
@@ -154,47 +136,46 @@ export default function ViewTask(props) {
 
                             <CommandGroup>
                               
-
-                              {frameworks.map((framework) => (
+                              {/* mapping each app in installedApps array in the form of a list*/}
+                              {installedApps.map((currentApp) => (
                                 <div>
-                              
-
                                   <CommandItem
                                     className="tw-h-[56px]"
-                                    key={framework.name}
-                                    value={framework.name}
+                                    key={currentApp.name}
+                                    value={currentApp.name}
+
+                                    // when a specific item is selected from the applications list, the selectedApps array
+                                    //is checked to see if the selected app is already in it. 
                                     onSelect={() => {
-                                      var check = false;
 
-                                      //newValues is a list of names of selected apps
-                                      var currentValue = framework.name;
-
-                                      var foundObject = applicationsList.find(
-                                        (item) => item.name == currentValue
+                                      //foundApp is a variable that stores information on whether the current app was found in the selectedApps array
+                                      var foundApp = selectedApps.find(
+                                        (item) => item.name == currentApp.name
                                       );
-                                      setValue();
 
-
-                                      const updatedApplicationsList =
-                                        foundObject
-                                          ? [...applicationsList].filter(
-                                              (item) => item !== foundObject
+                                      //updatesSelectedApps is an array that is an updated copy of the selectedApps array. If the app was found in the array(the app was selected by the user) and the app was clicked again, the app would be removed from the array. If the app wasn't selected previously and clicked on now, it would be added to the array.
+                                      const updatedSelectedApps =
+                                        foundApp
+                                          ? [...selectedApps].filter(
+                                              (item) => item !== foundApp
                                             )
                                           : [
-                                              ...applicationsList,
+                                              ...selectedApps,
                                               {
-                                                name: framework.name,
-                                                caca: framework.caca,
+                                                name: currentApp.name,
+                                                iconData: currentApp.iconData,
                                               },
                                             ];
 
-                                      setApplicationsList(
-                                        updatedApplicationsList
+                                      //selectedApps array is updated with the new updated array
+                                      setSelectedApps(
+                                        updatedSelectedApps
                                       );
                                       
                                     }}
                                   >
-                                    {framework.caca ===
+                                  
+                                    {currentApp.iconData ===
                                     "../../assets/images/defaultIconMac.png" ? (
                                       <img
                                         src={icon}
@@ -202,17 +183,19 @@ export default function ViewTask(props) {
                                       />
                                     ) : (
                                       <img
-                                        src={framework.caca}
+                                        src={currentApp.iconData}
                                         className="tw-w-[38px] tw-h-[38px] tw-m-1 tw-p-0 tw-rounded-md tw-border-2 tw-border-gray-300"
                                       />
                                     )}
 
-                                    <p className="tw-p-2">{framework.name}</p>
+                                    <p className="tw-p-2">{currentApp.name}</p>
                                     <Check
                                       className={cn(
                                         "tw-mr-3 tw-h-4 tw-w-4 tw-absolute tw-right-0",
-                                        applicationsList.find(
-                                          (item) => item.name == framework.name
+
+                                        // add a checkmark next to the apps that were selected and remove the checkmark from apps that were deselected
+                                        selectedApps.find(
+                                          (item) => item.name == currentApp.name
                                         )
                                           ? "tw-opacity-100"
                                           : "tw-opacity-0"
@@ -241,12 +224,15 @@ export default function ViewTask(props) {
                       <ScrollArea className="tw-h-[120px] tw-w-[300px] tw-rounded-md tw-border">
                         <CommandGroup>
                           
-                          {applicationsList.length === 0 && (
+                          {/* if no applications were selected, display a message */}
+                          {selectedApps.length === 0 && (
                             <div className="tw-text-[19px] tw-m-[40px] tw-text-foreground/90">
                               No applications selected
                             </div>
                           )}
-                          {applicationsList.map((application) => (
+
+                          {/* display the list of selected applications */}
+                          {selectedApps.map((application) => (
                             <div>
                               <CommandItem
                                 className="tw-aria-selected:bg-background tw-aria-selected:text-foreground tw-h-[56px]"
@@ -255,7 +241,7 @@ export default function ViewTask(props) {
                                   
                                 }}
                               >
-                                {application.caca ===
+                                {application.iconData ===
                                 "../../assets/images/defaultIconMac.png" ? (
                                   <img
                                     src={icon}
@@ -263,7 +249,7 @@ export default function ViewTask(props) {
                                   />
                                 ) : (
                                   <img
-                                    src={application.caca}
+                                    src={application.iconData}
                                     className="tw-w-[38px] tw-h-[38px] tw-m-1 tw-p-0 tw-rounded-md tw-border-2 tw-border-gray-300"
                                   />
                                 )}
@@ -288,7 +274,7 @@ export default function ViewTask(props) {
                   </Label>
                   <Input
                     className="tw-file:text-foreground tw-text-foreground/90"
-                    id="picture"
+                    id="selectedFile"
                     type="file"
                   />
                 </div>
