@@ -19,6 +19,8 @@ const TeamYourProgress = () => {
       <div className=" tw-rounded-lg tw-py-20 tw-bg-[#272727] tw-h-[500px]">
         
         <PieChart/>
+        
+        
       
       </div>
 
