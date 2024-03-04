@@ -2,6 +2,10 @@ const { app } = require('electron');
 const { exec } = require('child_process');
 const activeWin = require('active-win');
 const { run } = require('node:test');
+const fs = require('fs');
+const path = require('path');
+const archiver = require('archiver');
+const { dialog } = require('electron');
 
 function getActiveWindowMac() {
     return new Promise((resolve, reject) => {
@@ -76,6 +80,39 @@ function getActiveWindow() {
 }
 
 
+function zipFolder(sourceFolder, outputZip) {
+    return new Promise((resolve, reject) => {
+        // Create a write stream to the output zip file
+        const output = fs.createWriteStream(outputZip);
+        const archive = archiver('zip', {
+            zlib: { level: 9 } // set compression level
+        });
+
+        // Listen for all archive data to be written
+        output.on('close', () => {
+            console.log(archive.pointer() + ' total bytes');
+            console.log('archiver has been finalized and the output file descriptor has closed.');
+
+            resolve();
+        });
+
+        // Catch any errors
+        archive.on('error', (err) => {
+            reject(err);
+        });
+
+        // Pipe archive data to the file
+        archive.pipe(output);
+
+        // Add entire folder to the archive
+        archive.directory(sourceFolder, false);
+
+        // Finalize the archive (create the zip file)
+        archive.finalize();
+    });
+}
+
+
 
 async function getCurrentlyActiveApplication() {
     try {
@@ -97,5 +134,20 @@ async function getCurrentlyActiveApplication() {
     }
 }
 
+// Function to open a file dialog and return the selected file path
+async function openFileDialog() {
+    const result = await dialog.showOpenDialog({
+        properties: ['openDirectory']
+      });
+    
+      // If the user selected a folder, return its path
+      if (!result.canceled && result.filePaths.length > 0) {
+        return result.filePaths[0];
+      }
+    
+      // Return null if no folder was selected
+      return null;
+  }
 
-module.exports = { checkActiveApplication, getCurrentlyActiveApplication };
+
+module.exports = { checkActiveApplication, getCurrentlyActiveApplication, openFileDialog};

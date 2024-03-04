@@ -1,7 +1,8 @@
-import { Task } from "../classes"
+import { Progress, Task } from "../classes"
 import { auth } from "../firebase";
 import { readOnceFromDatabase, updateDatabase, writeToDatabase } from "../firebaseCRUD";
 import { sendNotification } from "../teamFunctions";
+import JSZip from 'jszip';
 
 export const assignTask = (userID, team, index , taskName, taskDesc, deadline, onSuccess ) => {
     const currentTask = Task( taskName, taskDesc, "", [""], "", getTimeDate(), deadline, "", "Start" )
@@ -29,6 +30,62 @@ export const assignTask = (userID, team, index , taskName, taskDesc, deadline, o
     
 }
     readOnceFromDatabase("Teams/" + userID + "/" + team.teamCode + "/teamMemberList/" + index + "/taskList", onDataReceived)
+}
+
+export const updateViewTask = (team, task, taskIndex, newApplicationList, filePath, callback) => {
+
+    const onDataReceived = (data) => {
+        for(let i = 0; i < data.length; i++) {
+            let member = data[i]
+            if(member.UID === auth.currentUser.uid) {
+                let task = member.taskList[taskIndex];
+
+
+                let applicationList = newApplicationList
+
+
+                if(task.progress === "") {
+
+                    let applicationTimeList = [];
+
+                    for(let i = 0; i < applicationList.length; i++) {
+                        let dict = {name: applicationList[i].name, timeLength: ""}
+                        applicationTimeList.push(dict)
+                    }
+
+                    task.progress = Progress("", [""], applicationTimeList)
+                } else {
+
+                    let applicationTimeList = task.progress.applicationTimeList
+
+                    for(let i = 0; i < applicationList.length; i++) {
+                        if(!applicationTimeList.some((item) => item.name == applicationList[i].name)) {
+                            applicationTimeList.push({name: applicationList[i].name, timeLength: ""})
+                        }
+                    }
+                    
+                }
+
+                task.applicationsList = applicationList
+                task.filePath = filePath
+                task.taskStatus = "Continue"
+
+                updateDatabase("Teams/" + auth.currentUser.uid + "/" + team.teamCode + "/teamMemberList/" + i + "/taskList/" + taskIndex, task).then(() => {
+                    updateDatabase("Teams/" + team.teamLeader.UID + "/" + team.teamCode + "/teamMemberList/" + i + "/taskList/" + taskIndex, task).then(() => {
+                        sendNotification("Task Details Updated", "Task details have been updated... You can now start the task", "success", auth.currentUser.uid )
+                        sendNotification(member.name + " @ " + team.teamName, "Updated their task details for task " + parseInt(taskIndex + 1) , "info", team.teamLeader.UID )
+                        callback(true)
+                    })
+                }).catch(() => {
+                    sendNotification("Failed to update task details", "An error occured while updating task details", "danger", auth.currentUser.uid)
+                    callback(false)
+                })
+
+            }
+        }
+    }
+
+    readOnceFromDatabase("Teams/" + auth.currentUser.uid + "/" + team.teamCode + "/teamMemberList/", onDataReceived)
 }
 
 // there are some errros in this function have to fix.. don't use it might ruin the firebase structure

@@ -31,7 +31,10 @@ import {
   CommandItem,
 } from "../../shadCN-UI/ui/command";
 const electronApi = window?.electronApi;
-
+import { updateViewTask } from "../../../../Backend/src/AssignTask/taskFunctions";
+import { sendNotification } from "../../../../Backend/src/teamFunctions";
+import { auth } from "../../../../Backend/src/firebase";
+import { readOnceFromDatabase, read_OneValue_from_Database } from "../../../../Backend/src/firebaseCRUD";
 
 //component to display a task assigned to a team member. Shows a list of applications installed on the user's computer in order to select a few that the user will use for the task.
 export default function ViewTask(props) {
@@ -46,7 +49,7 @@ export default function ViewTask(props) {
   let taskStatus = props.task[0].taskStatus;
   let completedTask = props.task[0].taskCompletedDate; 
   const [open, setOpen] = React.useState(false); //state variable to set the state of the pop up (opened/closed)
-  const [file, setFile] = React.useState();
+  const [file, setFile] = React.useState("");
   var [selectedApps, setSelectedApps] = React.useState([]); //array of apps selected by user
 
 
@@ -57,11 +60,60 @@ export default function ViewTask(props) {
     // console.log("`props.trigger` is now false");
   };
 
+  useEffect(() => {
+    readOnceFromDatabase("Teams/" + auth.currentUser.uid + "/" + props.task[1].teamCode + "/teamMemberList/", (data) => {
+      for(let i = 0; i < data.length; i++) {
+        try{
+          if(data[i].UID === auth.currentUser.uid) {
+            let task = data[i].taskList[props.task[2]]
+            setFile(task.filePath)
+            setSelectedApps(task.applicationsList)
+            break
+          }
+        } catch(e) {
+            
+        }
+      }
+    })
+  }, [])
+
+  const handleFileOpenClick = () => {
+    electronApi.sendSignalToGetFilePath("getPath")
+  }
+
+  const handleSumibit = () => {
+    console.log("fdff")
+    if(selectedApps.length != 0) {
+        if(file != "") {
+          updateViewTask(props.task[1], props.task[0], props.task[2], selectedApps, file, (callback) => {
+            if(callback) {
+              handleClose()
+            }
+          })
+        } else {
+          sendNotification("File path is empty", "Fill in the file path to update task details", "danger",auth.currentUser.uid)
+          console.log("DKHBUHD")
+        }
+    } else {
+      sendNotification("No Applications Selected", "Select applications to update task details", "danger", auth.currentUser.uid)
+    }
+  }
+
+  console.log(file)
+
+
   //useEffect that retrieves the list of installed applications from the viewTaskFunctions.js file by using ipcRenderer. useEffect retrieves the data everytime the component is used
   useEffect(() => {
     electronApi.receiveAppListFromMain((data) => {
       // console.log("data:" + data);
       setInstalledApps(data);//retrieves the data and sets it to the array of installed apps
+    });
+  }, []);
+
+  useEffect(() => {
+    electronApi.receiveFileFromMain((filePath) => {
+      // console.log("data:" + data);
+      setFile(filePath);//retrieves the data and sets it to the array of installed apps
     });
   }, []);
 
@@ -272,18 +324,20 @@ export default function ViewTask(props) {
                   >
                     Select file to be used:
                   </Label>
-                  <Input
-                    className="tw-file:text-foreground tw-text-foreground/90"
-                    id="selectedFile"
-                    type="file"
-                  />
+                  <div className="tw-w-full tw-h-[100px] tw-flex tw-justify-center tw-items-center" onClick={event => handleFileOpenClick()}>
+                        {(file == "" || file == null) ? (
+                          <h3>Cick here to open file</h3>
+                        ): (
+                          <h3>{file}</h3>
+                        )}
+                  </div>
                 </div>
               </div>
             </form>
           </CardContent>
           <CardFooter className="tw-flex tw-justify-between">
             <Button onClick={handleClose}>Cancel</Button>
-            <Button>Confirm</Button>
+            <Button onClick = {event => handleSumibit()}>Confirm</Button>
           </CardFooter>
         </Card>
       </div>{" "}

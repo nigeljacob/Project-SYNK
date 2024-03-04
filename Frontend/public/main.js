@@ -2,7 +2,7 @@ const { Tray, app, BrowserWindow, Menu, ipcMain, contextBridge } = require("elec
 const windowStateKeeper = require("electron-window-state");
 const path = require("path");
 const {getappsfunc} = require('../../Backend/src/electronFunctions/viewTaskFunctions')
-const {checkActiveApplication, getCurrentlyActiveApplication} = require('../../Backend/src/electronFunctions/ProgressTrackerFunctions')
+const {checkActiveApplication, getCurrentlyActiveApplication, openFileDialog} = require('../../Backend/src/electronFunctions/ProgressTrackerFunctions')
 const os = require('node:os')
 
 function createWindow() {
@@ -73,13 +73,29 @@ function createWindow() {
     .catch(error => console.error("Error:", error));
 
 
-    // if(os.platform() == "darwin") {
-    //   setInterval(checkActiveApplication, 1000)
-    // } else {
-    //   console.log("suhudhi")
-    //   setInterval(getCurrentlyActiveApplication, 1000)
-    // }
+  //   zipFolder('../ViewTaskComponent', "../")
+  //   .then(() => {
+  //       console.log('Folder zipped successfully.');
+  //   })
+  //   .catch((error) => {
+  //       console.error('Error zipping folder:', error);
+  //   });
   });
+
+  ipcMain.on("openFileDialog", (event, message) => {
+    openFileDialog()
+  .then((filePath) => {
+    if (filePath) {
+      console.log('Selected file:', filePath);
+      win.webContents.send("filePath", filePath)
+    } else {
+      console.log('No file selected.');
+    }
+  })
+  .catch((error) => {
+    console.error('Error:', error);
+  });
+  })
 
 }
 
