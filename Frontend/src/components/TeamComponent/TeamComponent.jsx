@@ -34,7 +34,10 @@ function TeamComponent({team}) {
   }
 
   useEffect(() => {
-    setProfilePictures(tempProfilePictures)
+    setTimeout(() => {
+      setProfilePictures(tempProfilePictures)
+      console.log(tempProfilePictures)
+    }, 500)
   }, tempProfilePictures)
   
   return (
