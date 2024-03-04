@@ -15,9 +15,13 @@ const TeamProgressComponent = ({
   let CompletedTasks = 0;
   let StartedTasksIndex = [];
 
+  if(tasks[0] === "") {
+    tasks.splice(0)
+  }
+
   
   for(let i = 0; i < tasks.length; i++) {
-    if(tasks.taskStatus == "In Progress") {
+    if(tasks.taskStatus == "Continue") {
       StartedTasks++
       StartedTasksIndex.push(i)
     } else if(tasks.taskStatus == "Completed") {
@@ -81,11 +85,15 @@ const TeamProgressComponent = ({
             </div>
             <div className="tw-flex tw-gap-[8px]">
               <img src={timeClock} alt="time clock" />
-              {tasks.length < 2 ? (
-                 <p className="tw-text-[14px]">{tasks.length} task to complete</p>
-              ) : (
-                <p className="tw-text-[14px]">{tasks.length} tasks to complete</p>
-              )} 
+              {tasks.length == 0 ? (
+                <p>No Tasks assigned yet</p>
+              ): (
+                tasks.length < 2 ? (
+                  <p className="tw-text-[14px]">{tasks.length} task to complete</p>
+               ) : (
+                 <p className="tw-text-[14px]">{tasks.length} tasks to complete</p>
+               )
+              )}
             </div>
             </div>
           )}
