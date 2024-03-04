@@ -47,8 +47,8 @@ const TaskDetails = ({ index, task, team, teamMemberIndex, setViewTaskTrigger, v
 
   useEffect(() => {
     read_OneValue_from_Database("Teams/" + auth.currentUser.uid + "/" + team.teamCode + "/teamMemberList/" + teamMemberIndex + "/taskList/" + parseInt(index - 1), (task) => {
-      console.log(task)
       setCurrentTask(task)
+      setStatus(task.taskStatus)
     })
   }, [])
 
@@ -57,13 +57,13 @@ const TaskDetails = ({ index, task, team, teamMemberIndex, setViewTaskTrigger, v
       <p>{index + ". " + currentTask.taskName}</p>
 
       <div className="status-container">
-          {currentTask.taskStatus === "Start" ? (
+          {Status === "Start" ? (
             <Tooltip title = "Start Task to Change Status">
             <select
               name="status"
               disabled
               className={
-                currentTask.taskStatus === "Completed" ? "green-status" : "yellow-status"
+                Status === "Completed" ? "green-status" : "yellow-status"
               }
             >
                 <option value="start" selected > Not Started Yet</option>
@@ -73,12 +73,12 @@ const TaskDetails = ({ index, task, team, teamMemberIndex, setViewTaskTrigger, v
             </select>
             </Tooltip>
           ) : (
-            currentTask.taskStatus === "Continue" ? (
+            Status === "Continue" ? (
               <select
               name="status"
               onChange={event => setStatus(event.target.value)}
               className={
-                currentTask.taskStatus === "Completed" ? "green-status" : "yellow-status"
+                Status === "Completed" ? "green-status" : "yellow-status"
               }
             >
               <option value="start" disabled>
@@ -93,7 +93,7 @@ const TaskDetails = ({ index, task, team, teamMemberIndex, setViewTaskTrigger, v
               name="status"
               onChange={event => setStatus(event.target.value)}
               className={
-                currentTask.taskStatus === "Completed" ? "green-status" : "yellow-status"
+                Status === "Completed" ? "green-status" : "yellow-status"
               }
             >
               <option value="start" disabled>
@@ -105,7 +105,7 @@ const TaskDetails = ({ index, task, team, teamMemberIndex, setViewTaskTrigger, v
             </select>
             )
           )}
-        {currentTask.taskStatus === "Start" ? (
+        {Status === "Start" ? (
           <Tooltip title = "Start Task">
             <div >
           <button className="status" onClick={event => {
@@ -122,13 +122,13 @@ const TaskDetails = ({ index, task, team, teamMemberIndex, setViewTaskTrigger, v
           taskTrigger([currentTask, team, parseInt(index - 1)])
           handleConfirm()
 
-          }}}>{currentTask.taskStatus}</button>
+          }}}>{Status}</button>
         </div>
           </Tooltip>
         ) : (
-          currentTask.taskStatus === "Continue" ? (
+          Status === "Continue" ? (
             <div className="tw-flex tw-items-center">
-            <button className="status" >{currentTask.taskStatus}</button>
+            <button className="status" >{Status}</button>
             <MdEdit className="tw-w-[20px] tw-h-[20px] tw-ml-[10px] tw-cursor-pointer" onClick={event => {
           let popupLayout = document.getElementById("popupLayout2");
             if(viewTaskTrigger) {
@@ -147,7 +147,7 @@ const TaskDetails = ({ index, task, team, teamMemberIndex, setViewTaskTrigger, v
             </div>
           ) : (
             <div >
-            <button className="status tw-text-red" >{currentTask.taskStatus}</button> </div>
+            <button className="status tw-text-red" >{Status}</button> </div>
           )
         )}
       </div>
