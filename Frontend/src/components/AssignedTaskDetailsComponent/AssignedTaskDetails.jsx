@@ -16,7 +16,7 @@ const AssignedTaskDetails = ({ index, taskDesc, taskActivity }) => {
         <div className="tw-flex tw-gap-[50px] tw-items-center">
             <p>{taskActivity}</p>
             <button
-              className="tw-text-cyan-500 tw-bg-black tw-rounded-lg tw-p-1 tw-h-[40px] tw-w-[100px]"
+              className="tw-text-cyan-500 tw-bg-black tw-rounded-lg tw-p-1 tw-h-[35px] tw-w-[90px]"
               onClick={toggleDetails}
             >
               Details
@@ -24,14 +24,14 @@ const AssignedTaskDetails = ({ index, taskDesc, taskActivity }) => {
         </div>
         {showDetails && (
           <ul>
-            <li className="tw-mb-1 tw-text-lime-500   tw-rounded-lg tw-p-1 tw-left-0 ">
-              Time Spent :-
+            <li className="tw-mb-1 tw-text-white  tw-rounded-lg tw-p-1 tw-left-0 tw- tw-list-disc">
+              Time Spent -
             </li>
-            <li className="tw-mb-1 tw-text-lime-500  tw-rounded-lg tw-p-1">
-              Task Assigned :-
+            <li className="tw-mb-1 tw-text-white tw-rounded-lg tw-p-1 tw-list-disc">
+              Task Assigned -
             </li>
-            <li className="tw-mb-1 tw-text-lime-500  tw-rounded-lg tw-p-1">
-              Task Completed :-
+            <li className="tw-mb-1 tw-text-white  tw-rounded-lg tw-p-1 tw-list-disc">
+              Task Completed -
             </li>
           </ul>
         )}

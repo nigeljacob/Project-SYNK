@@ -1,44 +1,24 @@
 import AssignedTaskDetails from "../../../components/AssignedTaskDetailsComponent/AssignedTaskDetails.jsx";
 import React, { useEffect } from "react";
+import PieChart from "../../../components/PieChartComponent/PieChart.jsx";
 
 const data = [
   {
     taskDesc: "Test-->Task 01",
     taskActivity: "Completed",
   },
-  {
-    taskDesc: "Test--> Task 02",
-    taskActivity: "In Progress",
-  },
-  {
-    taskDesc: "Test--> Task 03",
-    taskActivity: "In Progress",
-  },
-  {
-    taskDesc: "Test--> Task 04",
-    taskActivity: "In Progress",
-  },
-  {
-    taskDesc: "Test--> Task 05",
-    taskActivity: "In Progress",
-  },
-  {
-    taskDesc: "Test--> Task 05",
-    taskActivity: "In Progress",
-  },
-  {
-    taskDesc: "Test--> Task 05",
-    taskActivity: "In Progress",
-  },
+ 
 ];
 
 
 const TeamYourProgress = () => {
   return (
     <div className="tw-overflow-y-scroll tw-h-full">
-      <h3 className="tw-font-bold tw-text-[30px]">Your Progress</h3>
+      <h3 className="tw-font-bold tw-text-[30px] tw-mb-[100px]">Your Progress</h3>
 
-      <div className="tw-mt-[100px] tw-rounded-lg tw-py-40 tw-bg-[#272727]">CHART1
+      <div className=" tw-rounded-lg tw-py-20 tw-bg-[#272727] tw-h-[500px]">
+        
+        <PieChart/>
       
       </div>
 
