@@ -2,7 +2,8 @@ const { Tray, app, BrowserWindow, Menu, ipcMain, contextBridge } = require("elec
 const windowStateKeeper = require("electron-window-state");
 const path = require("path");
 const {getappsfunc} = require('../../Backend/src/electronFunctions/viewTaskFunctions')
-const {checkActiveApplication} = require('../../Backend/src/electronFunctions/ProgressTrackerFunctions')
+const {checkActiveApplication, getCurrentlyActiveApplication} = require('../../Backend/src/electronFunctions/ProgressTrackerFunctions')
+const os = require('node:os')
 
 function createWindow() {
   let mainWindowState = windowStateKeeper({
@@ -63,14 +64,21 @@ function createWindow() {
   }, 7000);
 
   ipcMain.on('viewTask', (event, message) => {
-    // console.log('Received message from renderer process:', );
+    console.log('Received message from renderer process:', );
     getappsfunc()
     .then(appsList =>{
       console.log(appsList)
       win.webContents.send("texsssst", appsList)
     })
     .catch(error => console.error("Error:", error));
-    // setInterval(checkActiveApplication, 1000);
+
+
+    // if(os.platform() == "darwin") {
+    //   setInterval(checkActiveApplication, 1000)
+    // } else {
+    //   console.log("suhudhi")
+    //   setInterval(getCurrentlyActiveApplication, 1000)
+    // }
   });
 
 }
