@@ -9,6 +9,16 @@ contextBridge.exposeInMainWorld('electronApi', {
       callback(data)
     }) ;
   },
+
+  receiveFileFromMain: (callback) => {
+    ipcRenderer.on("filePath", (event, data) => {
+      callback(data)
+    })
+  },
+
+  sendSignalToGetFilePath: (message) => {
+    ipcRenderer.send('openFileDialog', message);
+  },
   
   // Add more functions as needed...
   viewTask: (message) => {
