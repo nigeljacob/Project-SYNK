@@ -1,6 +1,7 @@
 import AssignedTaskDetails from "../../../components/AssignedTaskDetailsComponent/AssignedTaskDetails.jsx";
 import React, { useEffect } from "react";
 import PieChart from "../../../components/PieChartComponent/PieChart.jsx";
+import PieDetails from "../../../components/PieChartComponent/PieDeatils.jsx";
 
 const data = [
   {
@@ -16,9 +17,12 @@ const TeamYourProgress = () => {
     <div className="tw-overflow-y-scroll tw-h-full">
       <h3 className="tw-font-bold tw-text-[30px] tw-mb-[100px]">Your Progress</h3>
 
-      <div className=" tw-rounded-lg tw-py-20 tw-bg-[#272727] tw-h-[500px]">
+      <div className=" tw-flex tw-rounded-lg tw-py-20 tw-bg-[#272727] tw-h-[500px]">
+         
+        <PieChart/> <PieDetails/>
         
-        <PieChart/>
+        
+        
       
       </div>
 
