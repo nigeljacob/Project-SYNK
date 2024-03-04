@@ -67,7 +67,9 @@ export default function ViewTask(props) {
           if(data[i].UID === auth.currentUser.uid) {
             let task = data[i].taskList[props.task[2]]
             setFile(task.filePath)
-            setSelectedApps(task.applicationsList)
+            if(task.applicationsList[0] != "") {
+              setSelectedApps(task.applicationsList)
+            }
             break
           }
         } catch(e) {
