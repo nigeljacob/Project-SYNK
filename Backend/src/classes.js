@@ -77,6 +77,10 @@ export const Message = (
   };
 };
 
-export const Progress = () => {
-  return {};
+export const Progress = (taskLength, folderVersions, applicationTimeList) => {
+  return {
+    taskLength: taskLength,
+    folderVersions: folderVersions,
+    applicationTimeList: applicationTimeList
+  };
 };

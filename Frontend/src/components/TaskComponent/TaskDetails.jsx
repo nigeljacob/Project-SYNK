@@ -107,7 +107,7 @@ const TaskDetails = ({ index, task, team, teamMemberIndex, setViewTaskTrigger, v
               }, 90);
 
           setViewTaskTrigger(true);
-          taskTrigger([task, team])
+          taskTrigger([task, team, parseInt(index - 1)])
           handleConfirm()
 
           }}}>{Status}</button>
@@ -128,7 +128,7 @@ const TaskDetails = ({ index, task, team, teamMemberIndex, setViewTaskTrigger, v
               }, 90);
 
           setViewTaskTrigger(true);
-          taskTrigger([task, team])
+          taskTrigger([task, team, parseInt(index - 1)])
           handleConfirm() // display installed apps for view task component
 
           }}}/>  

@@ -17,7 +17,7 @@ const TeamYourProgress = () => {
     <div className="tw-overflow-y-scroll tw-h-full">
       <h3 className="tw-font-bold tw-text-[30px] tw-mb-[100px]">Your Progress</h3>
 
-      <div className=" tw-flex tw-rounded-lg tw-py-20 tw-bg-[#272727] tw-h-[500px]">
+      <div className=" tw-flex tw-rounded-lg tw-py-10 tw-bg-[#272727] tw-h-[400px]">
          
         <PieChart/> <PieDetails/>
         

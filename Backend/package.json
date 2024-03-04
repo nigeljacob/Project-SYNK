@@ -4,9 +4,11 @@
   "description": "backend of Project SYNK",
   "dependencies": {
     "active-win": "^8.2.1",
+    "archiver": "^7.0.0",
     "firebase": "^10.8.0",
     "get-app-icon": "^1.0.1",
     "get-installed-apps": "^1.1.0",
+    "jszip": "^3.10.1",
     "ps-list": "^7.1.0"
   },
   "keywords": [],
