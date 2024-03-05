@@ -5,12 +5,16 @@ import Tooltip from '@mui/material/Tooltip';
 import { MdEdit } from "react-icons/md";
 import { updateTaskStatus } from "../../../../Backend/src/AssignTask/taskFunctions";
 import { auth } from "../../../../Backend/src/firebase";
+import { read_OneValue_from_Database } from "../../../../Backend/src/firebaseCRUD";
+import { Indent } from "lucide-react";
 
 const TaskDetails = ({ index, task, team, teamMemberIndex, setViewTaskTrigger, viewTaskTrigger, taskTrigger}) => {
 
-  const [Status, setStatus] = useState(task.taskStatus);
+  const [currentTask, setCurrentTask] = useState(task)
 
-  const [dateString, timeString] = task.deadline; 
+  const [Status, setStatus] = useState(currentTask.taskStatus);
+
+  const [dateString, timeString] = currentTask.deadline;
 
     const [day, month, year] = dateString.split('/');
 
@@ -33,6 +37,7 @@ const TaskDetails = ({ index, task, team, teamMemberIndex, setViewTaskTrigger, v
   const containerClass = dued ? "single-task-container_past" : "single-task-container"
 
 
+
   // there are some errros in this function have to fix.. don't use it might ruin the firebase structure
   // useEffect(() => {
 
@@ -40,9 +45,16 @@ const TaskDetails = ({ index, task, team, teamMemberIndex, setViewTaskTrigger, v
 
   // }, Status)
 
+  useEffect(() => {
+    read_OneValue_from_Database("Teams/" + auth.currentUser.uid + "/" + team.teamCode + "/teamMemberList/" + teamMemberIndex + "/taskList/" + parseInt(index - 1), (task) => {
+      setCurrentTask(task)
+      setStatus(task.taskStatus)
+    })
+  }, [])
+
   return (
     <div className={containerClass}>
-      <p>{index + ". " + task.taskName}</p>
+      <p>{index + ". " + currentTask.taskName}</p>
 
       <div className="status-container">
           {Status === "Start" ? (
@@ -107,7 +119,7 @@ const TaskDetails = ({ index, task, team, teamMemberIndex, setViewTaskTrigger, v
               }, 90);
 
           setViewTaskTrigger(true);
-          taskTrigger([task, team, parseInt(index - 1)])
+          taskTrigger([currentTask, team, parseInt(index - 1)])
           handleConfirm()
 
           }}}>{Status}</button>
@@ -128,7 +140,7 @@ const TaskDetails = ({ index, task, team, teamMemberIndex, setViewTaskTrigger, v
               }, 90);
 
           setViewTaskTrigger(true);
-          taskTrigger([task, team, parseInt(index - 1)])
+          taskTrigger([currentTask, team, parseInt(index - 1)])
           handleConfirm() // display installed apps for view task component
 
           }}}/>  

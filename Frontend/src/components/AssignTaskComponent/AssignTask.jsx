@@ -23,7 +23,7 @@ export default function AssignTask(props) {
   const [taskDesc, setTaskDesc] = useState();
   const [deadline, setDeadline] = useState();
 
-  const handleClose = () => {
+  const handleClose = (event) => {
     props.setTrigger(false);
     console.log("`props.trigger` is now false");
   };
@@ -110,7 +110,9 @@ export default function AssignTask(props) {
           </CardContent>
           <CardFooter className="tw-flex tw-justify-between">
             <Button onClick={handleClose}>Cancel</Button>
-            <Button onClick={event => {handleSubmit()}}>Confirm</Button>
+            <Button onClick={event => {
+              handleSubmit()
+              }}>Confirm</Button>
           </CardFooter>
         </Card>
     </div>
