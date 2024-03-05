@@ -1,9 +1,8 @@
-const { Tray, app, BrowserWindow, Menu, ipcMain, contextBridge } = require("electron");
+const { Tray, app, BrowserWindow, Menu, ipcMain, Notification } = require("electron");
 const windowStateKeeper = require("electron-window-state");
 const path = require("path");
 const {getappsfunc} = require('../../Backend/src/electronFunctions/viewTaskFunctions')
 const {checkActiveApplication, getCurrentlyActiveApplication, openFileDialog} = require('../../Backend/src/electronFunctions/ProgressTrackerFunctions')
-const os = require('node:os')
 
 function createWindow() {
   let mainWindowState = windowStateKeeper({
@@ -26,7 +25,7 @@ function createWindow() {
     },
     // frame: false,
     show: false,
-    icon: "/logo.png",
+    icon: path.join(__dirname, "icon.png"),
     webPreferences: {
       webSecurity: false,
       enableRemoteModule: true,
@@ -49,7 +48,7 @@ function createWindow() {
   });
 
   splashScreen.loadFile("./public/preload.html");
-  splashScreen.setIcon(path.join(__dirname, "logo.png"));
+  splashScreen.setIcon(path.join(__dirname, "icon.png"));
   splashScreen.center();
   splashScreen.show();
 
@@ -97,11 +96,25 @@ function createWindow() {
   });
   })
 
+  ipcMain.on("notification", (event, notification) => {
+    const NOTIFICATION_TITLE = notification[0]
+    const NOTIFICATION_BODY = notification[1]    
+
+    new Notification({
+      title: NOTIFICATION_TITLE,
+      body: NOTIFICATION_BODY,
+      icon: path.join(__dirname, "icon.png")
+    }).show()
+
+  })
+
 }
 
 
 
 app.on("ready", createWindow);
+
+app.dock.setIcon(path.join(__dirname, "icon.png"))
 
 
 app.on("activate", function () {

@@ -301,7 +301,7 @@ function Teams() {
                     <h2>Teams you own</h2>
                     <div className="teamsYouOwn">
                       {teamOwnList.map((item, index) => {
-                        return <TeamComponent team={teamOwnList[index]} />;
+                        return <TeamComponent team={teamOwnList[index]} teamsList={allTeams}/>;
                       })}
                     </div>
                   </>
@@ -312,7 +312,7 @@ function Teams() {
                     <h2>Teams your in</h2>
                     <div className="teamsYourIn">
                       {teamInList.map((item, index) => {
-                        return <TeamComponent team={teamInList[index]} />;
+                        return <TeamComponent team={teamInList[index]} teamsList={allTeams}/>;
                       })}
                     </div>
                   </>
@@ -323,7 +323,7 @@ function Teams() {
                     <h2>Pending Teams</h2>
                     <div className="pendingTeams">
                       {teamPendingList.map((item, index) => {
-                        return <TeamComponent team={teamPendingList[index]} />;
+                        return <TeamComponent team={teamPendingList[index]} teamsList={allTeams}/>;
                       })}
                     </div>
                   </>

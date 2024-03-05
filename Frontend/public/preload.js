@@ -25,6 +25,11 @@ contextBridge.exposeInMainWorld('electronApi', {
     ipcRenderer.send('viewTask', message);
     console.log("WHOOO MESSAGE WHOOOO")
   },
+
+  sendNotificationToMain: (Notification) => {
+    ipcRenderer.send("notification", Notification);
+  }
+
 });
 
 console.log("preload script loaded")

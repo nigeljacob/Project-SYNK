@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import * as MDIcons from "react-icons/md";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import { getCurrentUser, updateStatus } from "../../Backend/src/UserAccount";
+import { getCurrentUser, getStatus, updateStatus } from "../../Backend/src/UserAccount";
 import { auth } from "../../Backend/src/firebase";
 import "./App.css";
 import CreateAccount from "./Pages/CreateAccount/CreateAccount";
@@ -29,6 +29,7 @@ import * as IOSIcons from "react-icons/io5";
 import "./Pages/MainTeamsPage/Teams.css";
 import ProfileSettings from "./Pages/ProfileSettings/ProfileSettings";
 import { read_OneValue_from_Database } from "../../Backend/src/firebaseCRUD";
+const electronApi = window?.electronApi;
 
 let result = "";
 
@@ -144,6 +145,16 @@ function App() {
     }
   }
 
+  const [Status, setStatus] = useState("Offline")
+
+  useEffect(() => {
+    if(user != null) {
+      getStatus(auth.currentUser.uid, (status) => {
+        setStatus(status)
+      })
+    }
+  }, [])
+
 
   let [notifications, setNotifications] = useState([]);
 
@@ -158,7 +169,25 @@ function App() {
           if(notifications.some((item) => item.title === notification[i].title && item.message === notification[i].message)) {
             
           } else {
-            showNotification(notification[i]["title"], notification[i]["message"], notification[i]["type"])
+            if(notification.length < 5) {
+              showNotification(notification[i]["title"], notification[i]["message"], notification[i]["type"])
+              if(Status === "Offline" || Status === "Busy") {
+                  try{
+                    electronApi.sendNotificationToMain([notification[i]["title"], notification[i]["message"]])
+                  } catch(e) {
+  
+                  }
+              }
+            } else {
+              if(i == 0) {
+                showNotification( notification.length + " New Notifications From SYNK", "You can view all you notifications from the notification center", "info", auth.currentUser.uid)
+              try{
+                electronApi.sendNotificationToMain([notification.length + " New Notifications Found", "You can view all you notifications from the notification center"])
+              } catch(e) {
+    
+              }
+              }
+            }
             setTimeout(() => {
               deleteNotification(notification, i)
             }, 50)
