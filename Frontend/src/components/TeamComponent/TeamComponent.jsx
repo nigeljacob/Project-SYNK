@@ -8,6 +8,58 @@ const { differenceInDays, differenceInMonths } = require('date-fns');
 import ReactHover, {Trigger, Hover} from 'react-hover'
 import UserComponent from '../UserComponent/UserComponent';
 
+
+const TeamMemberProfileComponent = ({item, profilePictures, index}) => {
+
+  const [isHovering, setIsHovering] = useState(false);
+  const handleMouseOver = () => {
+    setIsHovering(true);
+  };
+
+  const handleMouseOut = () => {
+    setIsHovering(false);
+  };
+
+  return(
+    <div className='memberProfile'>  
+          {isHovering && <UserComponent UID={item.UID} type="Single" setTriger={setIsHovering}/>}
+          <div onMouseOver={handleMouseOver} onMouseOut={handleMouseOut} className='tw-cursor-pointer'>
+            {(profilePictures[index] === undefined || profilePictures[index] === null || profilePictures[index] === "") ? (
+            <div className="memberExtra">
+              <h3 className='tw-text-white tw-text-[13px]'>{item.name[0]}</h3>
+            </div>
+          ) : (
+            <img src= {profilePictures[index]} alt="mmm" className='img'/>
+          )}
+          </div>
+    </div>
+  )
+}
+
+const TeamMemberExtraComponent = ({item, team, index}) => {
+  const [isHovering, setIsHovering] = useState(false);
+  const handleMouseOver = () => {
+    setIsHovering(true);
+  };
+
+  const handleMouseOut = () => {
+    setIsHovering(false);
+  };
+
+  let List = team["teamMemberList"].slice(3, team["teamMemberList"].length)
+
+  return(
+    <div className='memberProfile'> 
+      {isHovering && <UserComponent UID={List} type="All" setTriger={setIsHovering}/>}
+      <div onMouseOver={handleMouseOver} onMouseOut={handleMouseOut} className='tw-cursor-pointer'>
+        <div className="memberExtra">
+        <p>+{team["teamMemberList"].length - index}</p>
+      </div>
+      </div>
+    </div>
+  )
+}
+
 function TeamComponent({team, teamsList}) {
   const isAvailable = team["teamProfile"] !== "";
   const nameList = team["teamName"].split(" ");
@@ -87,50 +139,16 @@ function TeamComponent({team, teamsList}) {
       {team["teamMemberList"].map((item, index) => {
         if(index < 3) {
 
-          const [isHovering, setIsHovering] = useState(false);
-          const handleMouseOver = () => {
-            setIsHovering(true);
-          };
-        
-          const handleMouseOut = () => {
-            setIsHovering(false);
-          };
-
           return(
-            <div className='memberProfile'>  
-                  {isHovering && <UserComponent UID={item.UID} teamsList={teamsList} type="Single" setTriger={setIsHovering}/>}
-                  <div onMouseOver={handleMouseOver} onMouseOut={handleMouseOut} className='tw-cursor-pointer'>
-                    {(profilePictures[index] === undefined || profilePictures[index] === null || profilePictures[index] === "") ? (
-                    <div className="memberExtra">
-                      <h3 className='tw-text-white tw-text-[13px]'>{item.name[0]}</h3>
-                    </div>
-                  ) : (
-                    <img src= {profilePictures[index]} alt="mmm" className='img'/>
-                  )}
-                  </div>
+            <div >  
+                <TeamMemberProfileComponent item={item} profilePictures={profilePictures} index = {index}/>
             </div>
           )
         } else if(index === 3){
 
-          const [isHovering, setIsHovering] = useState(false);
-          const handleMouseOver = () => {
-            setIsHovering(true);
-          };
-        
-          const handleMouseOut = () => {
-            setIsHovering(false);
-          };
-
-          let List = team["teamMemberList"].slice(3, team["teamMemberList"].length)
-
           return(
-            <div className='memberProfile'> 
-              {isHovering && <UserComponent UID={List} teamsList={null} type="All" setTriger={setIsHovering}/>}
-              <div onMouseOver={handleMouseOver} onMouseOut={handleMouseOut} className='tw-cursor-pointer'>
-                <div className="memberExtra">
-                <p>+{team["teamMemberList"].length - index}</p>
-              </div>
-              </div>
+            <div >
+              <TeamMemberExtraComponent item={item} team={team} index={index}/>
             </div>
           )
         } else {
