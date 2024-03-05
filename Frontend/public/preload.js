@@ -3,7 +3,7 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('electronApi', {
-  // Example: Sending a message to the main process
+
   receiveAppListFromMain: (callback) => {
     ipcRenderer.on('texsssst', (event, data) => {
       callback(data)
@@ -20,7 +20,6 @@ contextBridge.exposeInMainWorld('electronApi', {
     ipcRenderer.send('openFileDialog', message);
   },
   
-  // Add more functions as needed...
   viewTask: (message) => {
     ipcRenderer.send('viewTask', message);
     console.log("WHOOO MESSAGE WHOOOO")
@@ -28,8 +27,33 @@ contextBridge.exposeInMainWorld('electronApi', {
 
   sendNotificationToMain: (Notification) => {
     ipcRenderer.send("notification", Notification);
-  }
+  },
 
+  receiveStatusUpdateSignalFromMain: (callback) => {
+    ipcRenderer.on("statusUpdate", (event, data) => {
+      callback(data)
+    })
+  },
+
+  sendStatusUpdatedToMain: (updated) => {
+    console.log(updated)
+    ipcRenderer.send("statusUpdated", updated)
+  },
+
+  sendShowAlertSignamToMain: (message) => {
+    ipcRenderer.send("showAlertBox", message)
+  },
+
+  receiveConfirmBoxResponseFromMain: (callback) => {
+    ipcRenderer.on("YesClicked", (event, data) => {
+      callback(data)
+    })
+  },
+
+  sendConfirmBoxSignalToMain: (message) => {
+    ipcRenderer.send("showConfirmBox", message)
+  }
+  
 });
 
 console.log("preload script loaded")

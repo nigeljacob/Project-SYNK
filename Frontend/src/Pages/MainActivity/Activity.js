@@ -20,12 +20,14 @@ function Home(props) {
 
   var greeting = "";
 
-  if (curHr < 12) {
-    greeting = "Morning"
-  } else if (curHr < 18) {
-    greeting = "Afternoon"
+  if (curHr < 12 && curHr > 5) {
+    greeting = "Good Morning"
+  } else if (curHr < 16 && curHr >= 12) {
+    greeting = "Good Afternoon"
+  } else if(curHr < 0 & curHr >= 16){
+    greeting = "Good Evening"
   } else {
-    greeting = "Evening"
+    greeting = "Time for Bed"
   }
 
   const [allTeams, setAllTeams] = useState([]);
@@ -102,7 +104,7 @@ function Home(props) {
         </div>
         </div>
       <div className={MainContentResult}>
-      <h1>Good <span>{greeting}</span> <span id='displayName'>{props.user.displayName.split(" ")[0]}</span> !</h1>
+      <h1><span>{greeting}</span> <span id='displayName'>{props.user.displayName.split(" ")[0]}</span> !</h1>
       <div className='reminderTask'>
         
       </div>

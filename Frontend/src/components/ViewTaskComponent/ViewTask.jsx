@@ -107,8 +107,8 @@ export default function ViewTask(props) {
   //useEffect that retrieves the list of installed applications from the viewTaskFunctions.js file by using ipcRenderer. useEffect retrieves the data everytime the component is used
   useEffect(() => {
     electronApi.receiveAppListFromMain((data) => {
-      // console.log("data:" + data);
-      setInstalledApps(data);//retrieves the data and sets it to the array of installed apps
+
+      setInstalledApps(data);
     });
   }, []);
 

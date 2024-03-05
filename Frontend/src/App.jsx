@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import * as MDIcons from "react-icons/md";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import { getCurrentUser, getStatus, updateStatus } from "../../Backend/src/UserAccount";
+import { getCurrentUser, getStatus, runOnDisconnect, updateStatus } from "../../Backend/src/UserAccount";
 import { auth } from "../../Backend/src/firebase";
 import "./App.css";
 import CreateAccount from "./Pages/CreateAccount/CreateAccount";
@@ -28,7 +28,7 @@ import { Card } from "./shadCN-UI/ui/card";
 import * as IOSIcons from "react-icons/io5";
 import "./Pages/MainTeamsPage/Teams.css";
 import ProfileSettings from "./Pages/ProfileSettings/ProfileSettings";
-import { read_OneValue_from_Database } from "../../Backend/src/firebaseCRUD";
+import { readOnceFromDatabase, read_OneValue_from_Database, updateDatabase } from "../../Backend/src/firebaseCRUD";
 const electronApi = window?.electronApi;
 
 let result = "";
@@ -84,13 +84,13 @@ function App() {
 
   useEffect(() => {
     if (isLogoutClicked) {
-      handleItemClick(false);
-      localStorage.setItem("loggedIN", "false");
-      auth.signOut();
-      setTimeout(() => {
-        window.location.reload(false);
-      }),
-        2000;
+      updateDatabase("Users/" + auth.currentUser.uid, {"userStatus" : "Offline"}).then(() => {
+        setUser(null)
+        auth.signOut();
+        localStorage.setItem("loggedIN", "false")
+        setIsLoggedIn(false)
+        handleItemClick(false);
+      })
     }
   }, [isLogoutClicked]);
 
@@ -105,6 +105,16 @@ function App() {
   };
 
   detectOS();
+
+  const [Status, setStatus] = useState("Offline")
+
+  useEffect(() => {
+    if(user != null) {
+      getStatus(auth.currentUser.uid, (status) => {
+        setStatus(status)
+      })
+    }
+  }, [])
 
   const [isMinimized, setIsMinimized] = useState(false);
 
@@ -137,22 +147,48 @@ function App() {
     };
   }, []);
 
-  if(user != null) {
-    if(isMinimized) {
-      updateStatus("Offline")
-    } else {
-      updateStatus("Active")
+  const [isAppClosing, setAppClosing] = useState(false)
+
+  if(!isAppClosing) {
+    if(!isLogoutClicked) {
+      if(user != null) {
+        if(isMinimized) {
+          readOnceFromDatabase("Users/" + auth.currentUser.uid + "/userStatus", (status) => {
+            if(status != "Busy" && status != "Offline") {
+              updateStatus("Away")
+            }
+          })
+        } else if(Status != "Busy") {
+          readOnceFromDatabase("Users/" + auth.currentUser.uid + "/userStatus", (status) => {
+            if(status != "Busy") {
+              updateStatus("Active")
+            }
+          })
+        }
+      }
     }
   }
 
-  const [Status, setStatus] = useState("Offline")
+  useEffect(() => {
+    try{
+      electronApi.receiveStatusUpdateSignalFromMain((data) => {
+        setAppClosing(true)
+        setTimeout(() => {
+          updateDatabase("Users/" + auth.currentUser.uid, {"userStatus" : "Offline"}).then(() => {
+            electronApi.sendStatusUpdatedToMain("statusUpdated")
+          })
+        }, 1000)
+      })
+    } catch(e) {
+
+    }
+  }, [])
+
 
   useEffect(() => {
-    if(user != null) {
-      getStatus(auth.currentUser.uid, (status) => {
-        setStatus(status)
-      })
-    }
+    electronApi.receiveConfirmBoxResponseFromMain((data) => {
+      handleItemClick(data)
+    })
   }, [])
 
 
@@ -191,15 +227,35 @@ function App() {
             setTimeout(() => {
               deleteNotification(notification, i)
             }, 50)
-            if(notification[i].type != "success" || notification[i].type != "danger" || notification[i].type != "warning") {
-              Notifications.push(notification[i])
+            if(notification[i].type != "success" && notification[i].type != "danger" && notification[i].type != "warning") {
+              let notificationDict = {...notification[i], seen: false }
+              Notifications.push(notificationDict)
             }
           }
         }
         setNotifications(Notifications)
+        try{
+          let notificationsList = JSON.parse(localStorage.getItem("notifications") || "[]");
+          let newNotificationsList = [...new Set([...notificationsList, ...Notifications])];
+          let uniqueArray = newNotificationsList.filter((value, index, self) => 
+            index === self.findIndex((t) => (
+                JSON.stringify(t) === JSON.stringify(value)
+            ))
+        );
+
+          localStorage.setItem("notifications", JSON.stringify(uniqueArray));
+        } catch(e) {
+          let uniqueArray = Notifications.filter((value, index, self) => 
+            index === self.findIndex((t) => (
+                JSON.stringify(t) === JSON.stringify(value)
+            ))
+        );
+          localStorage.setItem("notifications", JSON.stringify(uniqueArray));
+        }
       })
     }
   }, user)
+
 
   const [userData, setUserData] = useState({});
 
@@ -290,7 +346,7 @@ function App() {
             </div>
             <div className="main" id="main">
               <Router>
-                <SideBar user={user} setOpen={setIsOpen} isOpen={isOpen}/>
+                <SideBar user={user} setOpen={setIsOpen} isOpen={isOpen} />
                 <Routes>
                   <Route
                     path="/"
@@ -305,7 +361,7 @@ function App() {
                   />
                   <Route
                     path="/notifications"
-                    element={<NotificationsCenter Notifications = {notifications} className="notifications"/>}
+                    element={<NotificationsCenter className="notifications"/>}
                   />
                   <Route
                     path="/profileUpdate"
@@ -317,9 +373,7 @@ function App() {
                 <MDIcons.MdOutlineSettings
                   className="SettingIcon"
                   onClick={(event) => {
-                    confirm("Are you sure you want to Sign out")
-                      ? handleItemClick(true)
-                      : null;
+                    electronApi.sendConfirmBoxSignalToMain(["Are your Sure..??", "Are you sure you want to sign out..?"])
                   }}
                 />
               </div>

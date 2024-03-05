@@ -4,10 +4,11 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { User } from "./classes";
-import { auth } from "./firebase";
+import { auth, firebaseRealtimeDatabase } from "./firebase";
 import { readOnceFromDatabase, read_OneValue_from_Database, updateDatabase, uploadToStrorage, writeToDatabase } from "./firebaseCRUD";
 import { sendNotification } from "./teamFunctions";
 import { getDownloadURL } from "firebase/storage";
+import { OnDisconnect, ref } from "firebase/database";
 
 export const createUser = async (email, password, displayName) => {
   return createUserWithEmailAndPassword(auth, email, password)
@@ -64,7 +65,7 @@ export const uploadProfilePic = (UID, Image, onImageUploaded) => {
     );
 }
 
-export const updateProfileData = (displayName, email, phoneNumber, profileImage, about) => {
+export const updateProfileData = (displayName, email, phoneNumber, profileImage, about, setLoadingTriger) => {
 
   if(profileImage != null) {
     uploadProfilePic(auth.currentUser.uid, profileImage, (photoURL) => {
@@ -76,6 +77,7 @@ export const updateProfileData = (displayName, email, phoneNumber, profileImage,
           photoURL: photoURL
         }).catch((error) => {
            sendNotification("Failed to Update Data", "An error occured while trying to update your data",  "danger", auth.currentUser.uid);
+           setLoadingTriger(false)
         });
       } else {
         updateProfile(auth.currentUser, {
@@ -84,6 +86,7 @@ export const updateProfileData = (displayName, email, phoneNumber, profileImage,
           photoURL: photoURL
         }).catch((error) => {
           sendNotification("Failed to Update Data", "An error occured while trying to update your data",  "danger", auth.currentUser.uid);
+          setLoadingTriger(false)
         });
       }
 
@@ -93,15 +96,19 @@ export const updateProfileData = (displayName, email, phoneNumber, profileImage,
           console.log(user)
           updateDatabase("Users/" + auth.currentUser.uid, user).then(() => {
             sendNotification("Profile Updated Succesfully", "Your Profile has been updated", "success", auth.currentUser.uid)
+            setLoadingTriger(false)
           }).catch((error) => {
             sendNotification("Profile Updated Failed", error.message, "danger", auth.currentUser.uid)
+            setLoadingTriger(false)
           })
         })
       } else {
         updateDatabase("Users/" + auth.currentUser.uid + "/profile", photoURL).then(() => {
           sendNotification("Profile Updated Succesfully", "Your Profile has been updated", "success", auth.currentUser.uid)
+          setLoadingTriger(false)
         }).catch((error) => {
           sendNotification("Profile Updated Failed", error.message, "danger", auth.currentUser.uid)
+          setLoadingTriger(false)
         })
       }
     })
@@ -114,6 +121,7 @@ export const updateProfileData = (displayName, email, phoneNumber, profileImage,
         phoneNumber: phoneNumber
       }).catch((error) => {
          sendNotification("Failed to Update Data", "An error occured while trying to update your data",  "danger", auth.currentUser.uid);
+         setLoadingTriger(false)
       });
     } else {
       updateProfile(auth.currentUser, {
@@ -121,6 +129,7 @@ export const updateProfileData = (displayName, email, phoneNumber, profileImage,
         email: email
       }).catch((error) => {
         sendNotification("Failed to Update Data", "An error occured while trying to update your data",  "danger", auth.currentUser.uid);
+        setLoadingTriger(false)
       });
     }
 
@@ -130,14 +139,34 @@ export const updateProfileData = (displayName, email, phoneNumber, profileImage,
         console.log(user)
         updateDatabase("Users/" + auth.currentUser.uid, user).then(() => {
           sendNotification("Profile Updated Succesfully", "Your Profile has been updated", "success", auth.currentUser.uid)
+          setLoadingTriger(false)
         }).catch((error) => {
           sendNotification("Profile Updated Failed", error.message, "danger", auth.currentUser.uid)
+          setLoadingTriger(false)
+        })
+      })
+    } else {
+      readOnceFromDatabase("Users/" + auth.currentUser.uid, (user) => {
+        user = {email: email, uid: auth.currentUser.uid, userStatus: "Active", username: displayName}
+        console.log(user)
+        updateDatabase("Users/" + auth.currentUser.uid, user).then(() => {
+          sendNotification("Profile Updated Succesfully", "Your Profile has been updated", "success", auth.currentUser.uid)
+          setLoadingTriger(false)
+        }).catch((error) => {
+          sendNotification("Profile Updated Failed", error.message, "danger", auth.currentUser.uid)
+          setLoadingTriger(false)
         })
       })
     }
 
   }
 } 
+
+export const runOnDisconnect = () => {
+  const presenceRef = ref(firebaseRealtimeDatabase, "Users/" + auth.currentUser.uid);
+
+  OnDisconnect(presenceRef).set("Offline");
+}
 
 export const getProfilePicture = (UID, onDataReceived) => {
   read_OneValue_from_Database("Users/" + UID + "/profile", onDataReceived)

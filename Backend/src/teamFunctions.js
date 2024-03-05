@@ -179,7 +179,7 @@ export const acceptMembers = (member, teamID, index) => {
         teamMemberList: team.teamMemberList,
         teamPendingInvites: team.teamPendingInvites
       }).then(
-        sendNotification("Join Request Accepted", "You have been accepted into " + team.teamName + ". You can view the team in the teams panel", "success", member.UID)
+        sendNotification("Join Request Accepted @ " + team.teamName, "You have been accepted into " + team.teamName + ". You can view the team in the teams panel", "info", member.UID)
       );
 
     for(let i = 0; i < team.teamMemberList.length; i++) {
