@@ -17,6 +17,86 @@ import TeamMemberDashboard from "./TeamMemberActivity/TeamMemberDashboard";
 import TeamYourProgress from "./TeamPersonalProgress/TeamYourProgress";
 import { read_OneValue_from_Database, read_from_Database_onChange } from "../../../../Backend/src/firebaseCRUD";
 import { auth } from "../../../../Backend/src/firebase";
+import UserComponent from "../../components/UserComponent/UserComponent";
+
+const MemberComponent = ({ info, currentTeam, buttonClass}) => {
+  const [isHovering, setIsHovering] = useState(false);
+
+  const handleMouseOver = () => {
+    setIsHovering(true);
+  };
+
+  const handleMouseOut = () => {
+    setIsHovering(false);
+  };
+
+  return(
+    <>
+    <div>
+    <div className="memberContainer tw-flex tw-items-center tw-w-full tw-justify-between">
+    {isHovering && <UserComponent UID={info.UID} type="Single" setTriger={setIsHovering}/>}
+      {info.UID === currentTeam.teamLeader.UID ? (
+        <h3 className="Leader tw-cursor-pointer" onMouseOver={handleMouseOver} onMouseOut={handleMouseOut}>{info.name} (L)</h3>
+      ) : (
+        <p className="side-text tw-cursor-pointer" onMouseOver={handleMouseOver} onMouseOut={handleMouseOut}>{info.name}</p>
+      )}
+      <IOIcons.IoIosAdd
+        className={buttonClass}
+        onClick={(event) => {
+          setTeamMemberIndex(index)
+          let popupLayout =
+            document.getElementById("popupLayout");
+          if (isAssignTaskOpen) {
+            popupLayout.style.background = "rgba(0,0,0,0)";
+          } else {
+            popupLayout.style.visibility = "visible";
+            setTimeout(() => {
+              popupLayout.style.background = "rgba(0,0,0,0.7)";
+            }, 100);
+          }
+
+          setAssignTaskOpen(!isAssignTaskOpen);
+          setAssignTaskPopup(true);
+          setSelectedUser(info);
+        }}
+      />
+    </div>
+    <div className="line"></div>
+  </div>
+  </>
+  )
+};
+
+const PendingMemberComponent = ({info, handleAcceptMembers, index}) => {
+  const [isHovering, setIsHovering] = useState(false);
+
+  const handleIN = () => {
+    setIsHovering(true);
+  };
+
+  const handleOut = () => {
+    setIsHovering(false);
+  };
+
+  return (
+  <div className="tw-w-full">
+    <div className="line"></div>
+    <div className="memberContainer tw-flex tw-items-center tw-w-full tw-justify-between">
+      {isHovering && <UserComponent UID={info.UID} type="Single" setTriger={setIsHovering}/>}
+      <p className="side-text tw-cursor-pointer" onMouseOver={handleIN} onMouseOut={handleOut}>{info.name}</p>
+      <button
+        className="tw-py-[5px] tw-px-[10px] tw-cursor-pointer tw-bg-[#5bceff] tw-text-black tw-mr-[15px] tw-text-[12px] tw-rounded-lg"
+        onClick={(event) => {
+          handleAcceptMembers(info, index);
+        }}
+      >
+        Accept
+      </button>
+    </div>
+    <div className="line"></div>
+  </div>
+)
+}
 
 const TeamDashboard = ({ user }) => {
   const [assignTaskPopup, setAssignTaskPopup] = useState(false);
@@ -52,16 +132,18 @@ const TeamDashboard = ({ user }) => {
   }, [])
 
 
-  const [pendingInvites, setPendingInvites] = useState(
-    currentTeam.teamPendingInvites
-  );
+  // const [pendingInvites, setPendingInvites] = useState(
+  //   currentTeam.teamPendingInvites
+  // );
 
-  useEffect(() => {
-    const onDataReceived = (data) => {
-      setPendingInvites(data);
-    };
-    fetchPendingInvites(onDataReceived, currentTeam.teamCode);
-  }, []);
+  // useEffect(() => {
+  //   const onDataReceived = (data) => {
+  //     setTimeout(() => {
+  //       setPendingInvites(data);
+  //     }, 1000)
+  //   };
+  //   fetchPendingInvites(onDataReceived, currentTeam.teamCode);
+  // }, []);
 
   const handleAcceptMembers = (info, index) => {
     acceptMembers(info, currentTeam.teamCode);
@@ -121,13 +203,14 @@ const TeamDashboard = ({ user }) => {
           viewTaskTrigger={viewTaskPopup}
           setViewTaskTrigger={setViewTaskPopup}
           taskTrigger = {setSelectedTask}
+          className = "tw-z-[-1000]"
         />
       ),
       className: "teamActivity",
     },
     {
       title: "Chat",
-      element: <Chat user={user} team={currentTeam} />,
+      element: <Chat user={user} team={currentTeam} className = "tw-z-[-2000]" />,
       className: "teamChat",
     },
     {
@@ -149,6 +232,7 @@ const TeamDashboard = ({ user }) => {
         taskTrigger = {setSelectedTask}
         team={currentTeam}
         sideBarStatus={isOpen}
+        className = "tw-z-[-1000]"
       />
     );
     dashboard = (
@@ -158,6 +242,7 @@ const TeamDashboard = ({ user }) => {
         taskTrigger = {setSelectedTask}
         team={currentTeam}
         sideBarStatus={isOpen}
+        className = "tw-z-[-1000]"
       />
     );
     buttonClass =
@@ -168,6 +253,7 @@ const TeamDashboard = ({ user }) => {
         viewTaskTrigger={viewTaskPopup}
         setViewTaskTrigger={setViewTaskPopup}
         taskTrigger = {setSelectedTask}
+        className = "tw-z-[-1000]"
       />
     );
     dashboard = (
@@ -175,6 +261,7 @@ const TeamDashboard = ({ user }) => {
         viewTaskTrigger={viewTaskPopup}
         setViewTaskTrigger={setViewTaskPopup}
         taskTrigger = {setSelectedTask}
+        className = "tw-z-[-1000]"
       />
     );
     buttonClass =
@@ -189,7 +276,7 @@ const TeamDashboard = ({ user }) => {
         <Loading message="Loading Team Details" />
       ) : (
         <div className="teamDashboard">
-          <div className={SideBarResult + " sidebar-main"}>
+          <div className={SideBarResult + " sidebar-main tw-max-h-screen tw-overflow-y-scroll tw-z-1000"}>
             <p className="tw-text-[20px]">{currentTeam["teamName"]}</p>
             <p className="info-text">{currentTeam.teamCode}</p>
 
@@ -252,62 +339,34 @@ const TeamDashboard = ({ user }) => {
 
               <div className="line"></div>
 
-              {currentTeam["teamMemberList"].map((info, index) => (
-                <>
-                  <div className="memberContainer tw-flex tw-items-center tw-w-full tw-justify-between">
-                    {info.UID === currentTeam.teamLeader.UID ? (
-                      <h3 className="Leader">{info.name} (L)</h3>
-                    ) : (
-                      <p className="side-text">{info.name}</p>
-                    )}
-                    <IOIcons.IoIosAdd
-                      className={buttonClass}
-                      onClick={(event) => {
-                        setTeamMemberIndex(index)
-                        let popupLayout =
-                          document.getElementById("popupLayout");
-                        if (isAssignTaskOpen) {
-                          popupLayout.style.background = "rgba(0,0,0,0)";
-                        } else {
-                          popupLayout.style.visibility = "visible";
-                          setTimeout(() => {
-                            popupLayout.style.background = "rgba(0,0,0,0.7)";
-                          }, 100);
-                        }
+              <div className="tw-w-full tw-max-h-[300px] tw-overflow-y-scroll">
+              {currentTeam["teamMemberList"].map((info, index) => {
 
-                        setAssignTaskOpen(!isAssignTaskOpen);
-                        setAssignTaskPopup(true);
-                        setSelectedUser(info);
-                      }}
-                    />
-                  </div>
-                  <div className="line"></div>
+                return(
+                  <>
+                    <MemberComponent info={info} currentTeam={currentTeam} buttonClass={buttonClass}/>
                 </>
-              ))}
+                )
+              })}
+              </div>
 
-              {pendingInvites[0] !== "" && (
+              <div className="tw-w-full tw-max-h-[300px] tw-overflow-y-scroll">
+                {currentTeam.teamPendingInvites[0] !== "" && (
                 <>
                   <h2 className="tw-mt-[50px] tw-mb-[10px]">Pending Invites</h2>
 
-                  {pendingInvites.map((info, index) => (
-                    <div className="tw-w-full">
-                      <div className="line"></div>
-                      <div className="memberContainer tw-flex tw-items-center tw-w-full tw-justify-between">
-                        <p className="side-text">{info.name}</p>
-                        <button
-                          className="tw-py-[5px] tw-px-[10px] tw-cursor-pointer tw-bg-[#5bceff] tw-text-black tw-mr-[15px] tw-text-[12px] tw-rounded-lg"
-                          onClick={(event) => {
-                            handleAcceptMembers(info, index);
-                          }}
-                        >
-                          Accept
-                        </button>
+                  {currentTeam.teamPendingInvites.map((info, index) => {
+                    
+                    return(
+                      <div>
+                        <PendingMemberComponent info={info} handleAcceptMembers={handleAcceptMembers} index={index} />
                       </div>
-                      <div className="line"></div>
-                    </div>
-                  ))}
+                    )
+                    })}
                 </>
-              )}
+                )}
+              </div>
+
             </div>
 
             <div
@@ -321,7 +380,7 @@ const TeamDashboard = ({ user }) => {
             </div>
           </div>
 
-          <div className={MainContentResult}>{element}</div>
+          <div className={MainContentResult + 'tw-z-0'}>{element}</div>
 
           <div
             className={

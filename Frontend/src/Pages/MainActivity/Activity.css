@@ -5,7 +5,8 @@
     width: 200px;
     background: #121212;
     transition: 0.3s all ease-in-out;
-    flex-shrink: 0
+    flex-shrink: 0;
+    z-index: 7000;
 }
 
 .closeButton {
@@ -22,7 +23,7 @@
     margin-bottom: 30px;
     transform: translateX(10px);
     cursor: pointer;
-    z-index: 1000;
+    z-index: 6000;
     transition: 0.3s all ease-in-out;
 }
 
@@ -49,11 +50,13 @@
 .extendMainContent{
     transform: translateX(-180px);
     margin-right: -160px;
+    z-index: -2000;
 }
 
 .bringBackMainContent{
     transform: translateX(0px);
     margin-right: 20px;
+    z-index: -2000;
 }
 
 .activityContent {

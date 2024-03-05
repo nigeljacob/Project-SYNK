@@ -3,7 +3,7 @@ import { readOnceFromDatabase, read_OneValue_from_Database, read_from_Database_o
 import { CircularProgress } from '@mui/material'
 import { auth } from '../../../../Backend/src/firebase'
 
-const UserComponent = ({UID, teamsList, type, setTriger}) => {
+const UserComponent = ({UID, type, setTriger}) => {
 
     const [user, setUser] = useState(null)
     const [users, setUsers] = useState(null)
@@ -27,19 +27,21 @@ const UserComponent = ({UID, teamsList, type, setTriger}) => {
 
         useEffect(() => {
             let count = 0;
-            read_from_Database_onChange("Teams/" + UID, (receievedTeams) => {{
-                if(UID != auth.currentUser.uid) {
-                    for(let i = 0;  i < receievedTeams.length; i++) {
-                        if(teamsList.some((team) => team.teamCode === receievedTeams[i].teamCode)) {
-                            count++
+            read_from_Database_onChange("Teams/" + auth.currentUser.uid, (myTemams) => {
+                read_from_Database_onChange("Teams/" + UID, (receievedTeams) => {{
+                    if(UID != auth.currentUser.uid) {
+                        for(let i = 0;  i < receievedTeams.length; i++) {
+                            if(myTemams.some((team) => team.teamCode === receievedTeams[i].teamCode)) {
+                                count++
+                            }
                         }
+            
+                        setTeams(count);
+                    } else {
+                        setTeams(myTemams.length)
                     }
-        
-                    setTeams(count);
-                } else {
-                    setTeams(receievedTeams.length)
-                }
-            }})
+                }})
+            })
         })
 
     } else {
@@ -57,7 +59,7 @@ const UserComponent = ({UID, teamsList, type, setTriger}) => {
     }
 
   return (
-    <div className='tw-absolute tw-mt-[-198px] tw-w-[200px] tw-h-[200px] tw-max-h-[200px] tw-max-w-[200px] tw-bg-[#0B0B0B] tw-rounded-[10px] tw-p-[10px] tw-overflow-y-scroll' onMouseOver={handleMouseOver} onMouseOut={handleMouseOut}>
+    <div className='tw-absolute tw-mt-[-198px] tw-ml-[-20px] tw-w-[200px] tw-h-[200px] tw-max-h-[200px] tw-max-w-[200px] tw-bg-[#0B0B0B] tw-rounded-[10px] tw-p-[10px] tw-overflow-y-scroll tw-z-[1000]' onMouseOver={handleMouseOver} onMouseOut={handleMouseOut}>
         {type === "Single" ? (
             <>
                 {user != null ? (
@@ -68,7 +70,7 @@ const UserComponent = ({UID, teamsList, type, setTriger}) => {
                         <img src={user.profile} alt="profile picture" className='tw-w-full tw-h-full tw-object-cover tw-rounded-[5px]'/>
                     </div>
                 ) : (
-                    <div className="tw-flex tw-justify-center tw-rounded-[5px] tw-items-center tw-text-[18px] tw-w-[50px] tw-h-[50px] tw-bg-[#0B0B0B]">
+                    <div className="tw-flex tw-justify-center tw-rounded-[5px] tw-items-center tw-text-[18px] tw-w-[50px] tw-h-[50px] tw-bg-[#272727]">
                     {user["username"][0]}
                     </div>
                 )}
