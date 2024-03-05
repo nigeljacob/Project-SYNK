@@ -19,11 +19,16 @@ const CreateAccount = (props) => {
     e.preventDefault(); // Prevent form submission
 
     if (!email.includes("@")) {
-      return alert("Invalid Email");
+      electronApi.sendShowAlertSignamToMain(["Ooops!!", "Entered Email is Invalid"])
+      return
     }
 
     await createUser(email, password, firstName).catch((e) => {
-      alert(e.message);
+      const errorMessage = e.message;
+      const errorCode = errorMessage.match(/\(auth\/([^)]+)\)/)[1]; 
+      const formattedErrorCode = errorCode.replace(/-/g, ' ');
+      const message = formattedErrorCode.charAt(0).toUpperCase() + formattedErrorCode.slice(1);
+      electronApi.sendShowAlertSignamToMain(["Ooops!!", message])
       return;
     });
 

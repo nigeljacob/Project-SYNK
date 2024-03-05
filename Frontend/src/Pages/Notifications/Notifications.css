@@ -1,5 +1,9 @@
 .notifications {
-    transform: translateX(-500px);
+    
+}
+
+.maxHeight{
+  height: calc(100vh - 100px);
 }
 
 @keyframes move {

@@ -60,7 +60,7 @@ const TeamProgressComponent = ({
               {status}
             </p>
             {status == "Busy" ? (
-              <p className="tw-absolute tw-top-0 tw-right-0 tw-text-[11px] tw-text-[#FF0000] tw-bg-[#341d1d] tw-py-[4px] tw-px-[6px] tw-rounded-[5px]">
+              <p className="tw-absolute tw-top-0 tw-right-0 tw-text-[11px] tw-text-[#5BCEFF] tw-bg-[#224a5b] tw-py-[4px] tw-px-[6px] tw-rounded-[5px]">
               Busy
               </p>
             ) : status == "Offline" ? (
@@ -68,9 +68,15 @@ const TeamProgressComponent = ({
               Offline
               </p>
             ) : (
-              <p className="tw-absolute tw-top-0 tw-right-0 tw-text-[11px] tw-text-[#00FF00] tw-bg-[#284829] tw-py-[4px] tw-px-[6px] tw-rounded-[5px]">
+              status === "Away" ? (
+                <p className="tw-absolute tw-top-0 tw-right-0 tw-text-[11px] tw-text-[#e4ec45] tw-bg-[#575a1d] tw-py-[4px] tw-px-[6px] tw-rounded-[5px]">
+              Away
+              </p>
+              ) : (
+                <p className="tw-absolute tw-top-0 tw-right-0 tw-text-[11px] tw-text-[#00FF00] tw-bg-[#284829] tw-py-[4px] tw-px-[6px] tw-rounded-[5px]">
               {member["status"]}
               </p>
+              )
             )}
           </div>
         </div>

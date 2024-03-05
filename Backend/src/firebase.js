@@ -2,7 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import {getAuth} from 'firebase/auth'
-import { getDatabase } from "firebase/database";
+import { getDatabase, onDisconnect } from "firebase/database";
 import { getStorage } from "firebase/storage";
 
 
@@ -24,4 +24,4 @@ const auth = getAuth(app)
 const firebaseRealtimeDatabase = getDatabase(app)
 const firebaseStorage = getStorage(app);
 
-export {app, auth, firebaseRealtimeDatabase, firebaseStorage}
+export {app, auth, firebaseRealtimeDatabase, firebaseStorage, onDisconnect}

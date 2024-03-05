@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import { getCurrentUser, loginUser } from "../../../../Backend/src/UserAccount";
 import { auth } from "../../../../Backend/src/firebase";
 import "./Login.css";
-
 import React from "react";
+const electronApi = window?.electronApi;
 
 function Login(props) {
   const [username, setUsername] = useState("");
@@ -14,11 +14,16 @@ function Login(props) {
     e.preventDefault(); // Prevent form submission
 
     if (!username.includes("@")) {
-      return alert("Invalid Email");
+      electronApi.sendShowAlertSignamToMain(["Ooops!!", "Entered Email is Invalid"])
+      return
     }
 
     await loginUser(username, password).catch((e) => {
-      alert("Invalid email or password");
+      const errorMessage = e.message;
+      const errorCode = errorMessage.match(/\(auth\/([^)]+)\)/)[1]; 
+      const formattedErrorCode = errorCode.replace(/-/g, ' ');
+      const message = formattedErrorCode.charAt(0).toUpperCase() + formattedErrorCode.slice(1);
+      electronApi.sendShowAlertSignamToMain(["Ooops!!", message])
       return;
     });
 

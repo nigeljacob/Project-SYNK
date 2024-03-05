@@ -19,7 +19,7 @@ import { read_OneValue_from_Database, read_from_Database_onChange } from "../../
 import { auth } from "../../../../Backend/src/firebase";
 import UserComponent from "../../components/UserComponent/UserComponent";
 
-const MemberComponent = ({ info, currentTeam, buttonClass}) => {
+const MemberComponent = ({ info, currentTeam, buttonClass, setTeamMemberIndex, setAssignTaskOpen, setAssignTaskPopup, setSelectedUser, index, isAssignTaskOpen}) => {
   const [isHovering, setIsHovering] = useState(false);
 
   const handleMouseOver = () => {
@@ -344,7 +344,7 @@ const TeamDashboard = ({ user }) => {
 
                 return(
                   <>
-                    <MemberComponent info={info} currentTeam={currentTeam} buttonClass={buttonClass}/>
+                    <MemberComponent info={info} currentTeam={currentTeam} buttonClass={buttonClass} setTeamMemberIndex = {setTeamMemberIndex} setAssignTaskOpen = {setAssignTaskOpen} setAssignTaskPopup = {setAssignTaskPopup} setSelectedUser  = {setSelectedUser} index={index} isAssignTaskOpen={isAssignTaskOpen}/>
                 </>
                 )
               })}
@@ -380,7 +380,7 @@ const TeamDashboard = ({ user }) => {
             </div>
           </div>
 
-          <div className={MainContentResult + 'tw-z-0'}>{element}</div>
+          <div className={MainContentResult}>{element}</div>
 
           <div
             className={
