@@ -9,7 +9,7 @@ const TeamProgressComponent = ({
 }) => {
 
   const [status, setStatus] = useState("Offline");
-  const [profilePic, setProfilePic] = useState(null);
+  const [profilePic, setProfilePic] = useState("");
   
   let StartedTasks = 0;
   let CompletedTasks = 0;
@@ -36,6 +36,7 @@ const TeamProgressComponent = ({
         })
         getProfilePicture(member["UID"], (data) => {
           setProfilePic(data)
+          console.log(data)
         })
     }, [])
 
@@ -44,10 +45,12 @@ const TeamProgressComponent = ({
     <div className="tw-mt-[30px] tw-w-[255px] tw-min-w-[255px] tw-min-h-[255px] tw-h-[255px] tw-bg-[#272727] tw-mb-[40px] tw-rounded-[10px] tw-py-[20px] tw-px-[15px] tw-flex tw-flex-col tw-justify-between">
       <div className="tw-flex tw-flex-col tw-relative">
         <div className="tw-flex tw-items-center tw-w-full">
-          {photo ? (
-            <img src={profilePic} alt="profile picture" />
+          {profilePic != "" ? (
+            <div className='tw-w-[50px] tw-h-[50px] tw-rounded-[5px] tw-bg-[#0B0B0B]'>
+              <img src={profilePic} alt="profile picture" className='tw-w-[50px] tw-h-[50px] tw-object-cover tw-rounded-[5px]'/>
+            </div>
           ) : (
-            <div className="tw-flex tw-justify-center tw-items-center tw-text-[18px] tw-w-[50px] tw-h-[50px] tw-bg-[#0B0B0B]">
+            <div className="tw-flex tw-justify-center tw-rounded-[5px] tw-items-center tw-text-[18px] tw-w-[50px] tw-h-[50px] tw-bg-[#0B0B0B]">
               {member["name"][0]}
             </div>
           )}

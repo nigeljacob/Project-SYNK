@@ -5,11 +5,19 @@ import { Link } from 'react-router-dom';
 import { getProfilePicture } from '../../../../Backend/src/UserAccount';
 import { Tooltip } from '@mui/material';
 const { differenceInDays, differenceInMonths } = require('date-fns');
+import ReactHover, {Trigger, Hover} from 'react-hover'
+import UserComponent from '../UserComponent/UserComponent';
 
-function TeamComponent({team}) {
+function TeamComponent({team, teamsList}) {
   const isAvailable = team["teamProfile"] !== "";
   const nameList = team["teamName"].split(" ");
   const isLarger = nameList.length > 1;
+
+  const optionsCursorTrueWithMargin = {
+    followCursor:true,
+    shiftX:20,
+    shiftY:0
+}
 
   let [profilePictures, setProfilePictures] = useState(["","",""])
 
@@ -36,7 +44,6 @@ function TeamComponent({team}) {
   useEffect(() => {
     setTimeout(() => {
       setProfilePictures(tempProfilePictures)
-      console.log(tempProfilePictures)
     }, 500)
   }, tempProfilePictures)
   
@@ -79,26 +86,50 @@ function TeamComponent({team}) {
       <div className='memberProfiles'>
       {team["teamMemberList"].map((item, index) => {
         if(index < 3) {
+
+          const [isHovering, setIsHovering] = useState(false);
+          const handleMouseOver = () => {
+            setIsHovering(true);
+          };
+        
+          const handleMouseOut = () => {
+            setIsHovering(false);
+          };
+
           return(
             <div className='memberProfile'>  
-              <Tooltip title={item.name}>
-
-              {(profilePictures[index] === undefined || profilePictures[index] === null || profilePictures[index] === "") ? (
-                <div className="memberExtra">
-                  <h3 className='tw-text-white tw-text-[13px]'>{item.name[0]}</h3>
-                </div>
-              ) : (
-                <img src= {profilePictures[index]} alt="mmm" />
-              )}
-
-              </Tooltip>
+                  {isHovering && <UserComponent UID={item.UID} teamsList={teamsList} type="Single" setTriger={setIsHovering}/>}
+                  <div onMouseOver={handleMouseOver} onMouseOut={handleMouseOut} className='tw-cursor-pointer'>
+                    {(profilePictures[index] === undefined || profilePictures[index] === null || profilePictures[index] === "") ? (
+                    <div className="memberExtra">
+                      <h3 className='tw-text-white tw-text-[13px]'>{item.name[0]}</h3>
+                    </div>
+                  ) : (
+                    <img src= {profilePictures[index]} alt="mmm" className='img'/>
+                  )}
+                  </div>
             </div>
           )
         } else if(index === 3){
+
+          const [isHovering, setIsHovering] = useState(false);
+          const handleMouseOver = () => {
+            setIsHovering(true);
+          };
+        
+          const handleMouseOut = () => {
+            setIsHovering(false);
+          };
+
+          let List = team["teamMemberList"].slice(3, team["teamMemberList"].length)
+
           return(
-            <div className='memberProfile'>  
-              <div className="memberExtra">
+            <div className='memberProfile'> 
+              {isHovering && <UserComponent UID={List} teamsList={null} type="All" setTriger={setIsHovering}/>}
+              <div onMouseOver={handleMouseOver} onMouseOut={handleMouseOut} className='tw-cursor-pointer'>
+                <div className="memberExtra">
                 <p>+{team["teamMemberList"].length - index}</p>
+              </div>
               </div>
             </div>
           )
