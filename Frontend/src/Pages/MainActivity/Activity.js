@@ -4,6 +4,8 @@ import './Activity.css';
 import { read_from_Database_onChange } from '../../../../Backend/src/firebaseCRUD';
 import { auth } from '../../../../Backend/src/firebase';
 import { CircularProgress } from '@mui/material';
+import DeadlineComponent from '../../components/ActivityDeadlineComponent/DeadlineComponent';
+const { parse, differenceInMilliseconds, closestTo } = require('date-fns');
 
 function Home(props) {
 
@@ -32,18 +34,114 @@ function Home(props) {
 
   const [allTeams, setAllTeams] = useState([]);
 
+  const [allTasks, setAllTasks] = useState([]);
+
   useEffect(() => {
     read_from_Database_onChange("Teams/" + auth.currentUser.uid, (Teams) => {
       setAllTeams(Teams)
     })
   }, [])
 
+  let [deadlines, setDeadlines] = useState([]);
+
+  let [closestDeadLine, setClosestDeadline] = useState([])
+  let tempTasksList = []
+
+  useEffect(() => {
+
+    tempTasksList = []
+    for(let i = 0; i < allTeams.length; i++) {
+        const currentMember = allTeams[i].teamMemberList.filter(teamMember => teamMember["UID"] === auth.currentUser.uid);
+        if(currentMember[0].taskList[0] != "") {
+          tempTasksList.push(currentMember[0]["taskList"])
+        }
+    }
+
+    setTimeout(() => {
+      setAllTasks(tempTasksList)
+    }, 1000)
+
+  }, [allTeams])
+
+  useEffect(() => {
+    let tempDeadlines = []
+    for(let i = 0; i < allTasks.length; i++) {
+      let teamTasks = allTasks[i]
+      for(let j = 0; j < teamTasks.length; j++) {
+        if(teamTasks[0] !=  "") {
+          if(teamTasks[j].taskStatus != "Completed") {
+            tempDeadlines.push(teamTasks[j].deadline)
+          }
+        }
+      }
+    }
+
+    setTimeout(() => {
+      setDeadlines(tempDeadlines)
+      console.log(tempDeadlines)
+    }, 3000)
+
+  }, [allTasks])
+
+  useEffect(() => {
+    if(deadlines.length > 0) {
+
+      const currentDate = new Date();
+  
+      // Convert each date and time string to a Date object
+    const parsedDatesWithTimes = deadlines.map(([dateStr, timeStr]) => {
+      const combinedDateTimeStr = `${dateStr} ${timeStr}`;
+      return parse(combinedDateTimeStr, "dd/MM/yyyy HH:mm", new Date());
+    });
+  
+  
+    // Find the closest date/time and its index in the list
+    const { value: closestDate, index: closestIndex } = parsedDatesWithTimes.reduce((acc, date, index) => {
+      const diff = Math.abs(currentDate - date);
+      if (diff < acc.minDiff) {
+          return { value: date, minDiff: diff, index: index };
+      }
+      return acc;
+    }, { value: null, minDiff: Infinity, index: -1 });
+  
+    setClosestDeadline([closestDate, closestIndex])
+  
+      let dueDatePast = currentDate;
+  
+      for(let i = 0; i < deadlines.length; i++) {
+        // Separate date and time from the array
+        const [dateString, timeString] = deadlines[i]; // Note the date format here: "dd/mm/yyyy"
+  
+        // Split the date string into day, month, and year
+        const [day, month, year] = dateString.split('/');
+  
+        // Combine date and time into a single string
+        const combinedDateTimeString = `${year}-${month}-${day} ${timeString}`; // Reformat to "yyyy-mm-dd" for consistency with ISO 8601
+  
+        // Parse the combined date and time string into a Date object
+        const targetDate = new Date(combinedDateTimeString);
+  
+        // Check if the target date is in the past
+        if (targetDate < dueDatePast) {
+          setClosestDeadline([targetDate, i])
+            dueDatePast = targetDate
+        } 
+      }
+    }
+    console.log(closestDeadLine)
+  }, [deadlines])
+
+  const [displayList, setDisplayList] = useState(allTasks);
+
   const [isAvailable, setAvailable] = useState(true)
+
+  const [isLoading, setLoading] = useState(true)
 
   setTimeout(() => {
     setAvailable(false)
   }, 3000)
-  
+
+
   const [isOpen, setIsOpen] = useState(sideBarStatus);
   const SideBarResult = isOpen ? "sideBar show_SideBar" : "sideBar hide_SideBar";
   const MainContentResult = isOpen
@@ -105,6 +203,35 @@ function Home(props) {
         </div>
       <div className={MainContentResult}>
       <h1><span>{greeting}</span> <span id='displayName'>{props.user.displayName.split(" ")[0]}</span> !</h1>
+
+      {allTasks.length != 0 && deadlines.length != 0 && closestDeadLine.length != 0 ? (
+        <DeadlineComponent
+        task={allTasks[0][closestDeadLine[1]]}
+        closestDate= {closestDeadLine[0]}
+        />
+      ) : (
+        <div className="deadline-container tw-flex tw-items-center tw-justify-center tw-h-[140px] tw-mt-[20px]">
+          <div className="clock-container tw-flex tw-items-center tw-justify-center tw-w-full">
+            <CircularProgress />
+            {/* <h3 className="tw-text-center tw-w-full">No Tasks assigned yet to show deadlines</h3> */}
+          </div>
+        </div>
+      )}
+
+      {allTasks.length != 0 ? (
+          allTasks.map((item, index) => {
+            return(
+              <>
+                {allTasks[index].map((task, taskIndex) => {
+                  return(
+                    <h3>{task.taskName}</h3>
+                  )
+                })}
+              </>
+            )
+          })
+      ): null}
+
       <div className='reminderTask'>
         
       </div>

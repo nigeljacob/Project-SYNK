@@ -2,6 +2,7 @@ const { Tray, app, BrowserWindow, Menu, ipcMain, Notification, dialog } = requir
 const windowStateKeeper = require("electron-window-state");
 const path = require("path");
 const {getappsfunc} = require('../../Backend/src/electronFunctions/viewTaskFunctions')
+const os = require('node:os')
 const {checkActiveApplication, getCurrentlyActiveApplication, openFileDialog} = require('../../Backend/src/electronFunctions/ProgressTrackerFunctions')
 
 function createWindow() {
@@ -157,7 +158,9 @@ function createWindow() {
 
 app.on("ready", createWindow);
 
-app.dock.setIcon(path.join(__dirname, "icon.png"))
+if(os.platform() == "darwin") {
+  app.dock.setIcon(path.join(__dirname, "icon.png"))
+}
 
 
 app.on("activate", function () {
