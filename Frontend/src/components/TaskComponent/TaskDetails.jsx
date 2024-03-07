@@ -6,7 +6,7 @@ import { MdEdit } from "react-icons/md";
 import { updateTaskStatus } from "../../../../Backend/src/AssignTask/taskFunctions";
 import { auth } from "../../../../Backend/src/firebase";
 
-const TaskDetails = ({ index, task, team, teamMemberIndex, setViewTaskTrigger, viewTaskTrigger, taskTrigger}) => {
+const TaskDetails = ({ index, task, team, teamMemberIndex, setViewTaskTrigger, viewTaskTrigger, taskTrigger, startButton }) => {
 
   const [Status, setStatus] = useState(task.taskStatus);
 
@@ -96,7 +96,7 @@ const TaskDetails = ({ index, task, team, teamMemberIndex, setViewTaskTrigger, v
         {Status === "Start" ? (
           <Tooltip title = "Start Task">
             <div >
-          <button className="status" onClick={event => {
+              {startButton ? <button className="status" onClick={event => {
           let popupLayout = document.getElementById("popupLayout2");
             if(viewTaskTrigger) {
               popupLayout.style.background = "rgba(0,0,0,0)"
@@ -110,7 +110,7 @@ const TaskDetails = ({ index, task, team, teamMemberIndex, setViewTaskTrigger, v
           taskTrigger([task, team])
           handleConfirm()
 
-          }}}>{Status}</button>
+          }}}>{Status}</button> : <></>}
         </div>
           </Tooltip>
         ) : (

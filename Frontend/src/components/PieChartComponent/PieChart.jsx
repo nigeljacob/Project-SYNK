@@ -9,7 +9,7 @@ const PieChart = () => {
         labels: PieData.map((data) => data.label),
         datasets: [
             {
-                label: "Count",
+                label: "Total Miniutes Spent",
                 data:PieData.map((data) => data.value),
             },
 

@@ -132,7 +132,7 @@ const TeamDashboard = ({ user }) => {
     },
     {
       title: "Your Progress",
-      element: <TeamYourProgress />,
+      element: <TeamYourProgress team={currentTeam} sideBarStatus={isOpen} />,
       className: "teamProgress",
     },
   ];
