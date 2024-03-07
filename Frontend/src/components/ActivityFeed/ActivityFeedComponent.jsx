@@ -14,7 +14,7 @@ const ActivityFeedComponent = ({ isLast, notification}) => {
   }, [])
 
   return (
-    <div className="tw-mt-[10px] tw-flex-shrink-0">
+    <div className="tw-mt-[10px] tw-flex-shrink-0 feedAnimation">
       <div className="tw-flex tw-items-center">
         <div className="tw-w-[35px] tw-h-[35px] tw-rounded-[50%] tw-bg-[#0B0B0B] tw-flex tw-items-center tw-justify-center tw-flex-shrink-0">
 
@@ -36,14 +36,14 @@ const ActivityFeedComponent = ({ isLast, notification}) => {
             ) : (
               notification.notificationType === "feed -teamRequestAccepted" ? (
                 notification.title.split("@")[1].trim().split(" ").length > 1 ? (
-                  <h3 className="tw-text-[12px] tw-font-bold">{notification.title.split("@")[1].trim().split(" ")[0][0].toUpperCase()} {notification.title.split("@")[1].trim().split(" ")[1][0].toUpperCase()}</h3>
+                  <h3 className="tw-text-[12px] tw-font-bold">{notification.title.split("@")[1].trim().split(" ")[0][0].toUpperCase()}{notification.title.split("@")[1].trim().split(" ")[1][0].toUpperCase()}</h3>
                 ) : (
                   <h3 className="tw-text-[12px] tw-font-bold">{notification.title.split("@")[1].trim().split(" ")[0][0].toUpperCase()}</h3>
                 )
               ) : (
                 notification.notificationType === "feed -taskAssigned" ? (
                   notification.title.split("@")[1].trim().split(" ").length > 1 ? (
-                    <h3 className="tw-text-[12px] tw-font-bold">{notification.title.split("@")[1].trim().split(" ")[0][0].toUpperCase()} {notification.title.split("@")[1].trim().split(" ")[1][0].toUpperCase()}</h3>
+                    <h3 className="tw-text-[12px] tw-font-bold">{notification.title.split("@")[1].trim().split(" ")[0][0].toUpperCase()}{notification.title.split("@")[1].trim().split(" ")[1][0].toUpperCase()}</h3>
                   ) : (
                     <h3 className="tw-text-[12px] tw-font-bold">{notification.title.split("@")[1].trim().split(" ")[0][0].toUpperCase()}</h3>
                   )
