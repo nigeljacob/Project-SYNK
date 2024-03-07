@@ -146,7 +146,6 @@ const TeamLeaderDashboard = (props) => {
             setViewTaskTrigger={props.setViewTaskTrigger}
             viewTaskTrigger={props.viewTaskTrigger}
             taskTrigger = {props.taskTrigger}
-
             startButton={true}
             />
           ))
