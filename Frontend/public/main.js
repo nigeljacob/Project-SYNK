@@ -1,9 +1,9 @@
-const { Tray, app, BrowserWindow, Menu, ipcMain, contextBridge } = require("electron");
+const { Tray, app, BrowserWindow, Menu, ipcMain, Notification, dialog } = require("electron");
 const windowStateKeeper = require("electron-window-state");
 const path = require("path");
 const {getappsfunc} = require('../../Backend/src/electronFunctions/viewTaskFunctions')
-const {checkActiveApplication, getCurrentlyActiveApplication, openFileDialog} = require('../../Backend/src/electronFunctions/ProgressTrackerFunctions')
 const os = require('node:os')
+const {checkActiveApplication, getCurrentlyActiveApplication, openFileDialog} = require('../../Backend/src/electronFunctions/ProgressTrackerFunctions')
 
 function createWindow() {
   let mainWindowState = windowStateKeeper({
@@ -26,7 +26,7 @@ function createWindow() {
     },
     // frame: false,
     show: false,
-    icon: "/logo.png",
+    icon: path.join(__dirname, "icon.png"),
     webPreferences: {
       webSecurity: false,
       enableRemoteModule: true,
@@ -49,7 +49,7 @@ function createWindow() {
   });
 
   splashScreen.loadFile("./public/preload.html");
-  splashScreen.setIcon(path.join(__dirname, "logo.png"));
+  splashScreen.setIcon(path.join(__dirname, "icon.png"));
   splashScreen.center();
   splashScreen.show();
 
@@ -62,6 +62,50 @@ function createWindow() {
     win.setIcon(path.join(__dirname, "logo.png"));
     win.show();
   }, 7000);
+
+  win.on('close', e => { // Line 49
+    e.preventDefault()
+    dialog.showMessageBox({
+      type: 'info',
+      buttons: ['No', 'Yes'],
+      cancelId: 1,
+      defaultId: 0,
+      icon: path.join(__dirname, "icon.png"),
+      title: 'Are you sure ?',
+      detail: 'Are you sure you want to quit SYNK'
+    }).then(({ response, checkboxChecked }) => {
+      console.log(`response: ${response}`)
+      if (response === 1) {
+        win.hide()
+        win.webContents.send("statusUpdate", "Offline")
+        ipcMain.on("statusUpdated", (event, data) => {
+          win.destroy()
+          app.quit()
+        })
+      }
+    })
+  })
+
+  ipcMain.on('showAlertBox', (event, message) => {
+    dialog.showErrorBox(message[0], message[1])
+  })
+
+  ipcMain.on('showConfirmBox', (event, message) => {
+    dialog.showMessageBox({
+      type: 'info',
+      buttons: ['No', 'Yes'],
+      cancelId: 1,
+      defaultId: 0,
+      icon: path.join(__dirname, "icon.png"),
+      title: message[0],
+      detail: message[1]
+    }).then(({ response, checkboxChecked }) => {
+      console.log(`response: ${response}`)
+      if (response === 1) {
+        win.webContents.send("YesClicked", true)
+      }
+    })
+    })
 
   ipcMain.on('viewTask', (event, message) => {
     console.log('Received message from renderer process:', );
@@ -97,11 +141,26 @@ function createWindow() {
   });
   })
 
+  ipcMain.on("notification", (event, notification) => {
+    const NOTIFICATION_TITLE = notification[0]
+    const NOTIFICATION_BODY = notification[1]    
+
+    new Notification({
+      title: NOTIFICATION_TITLE,
+      body: NOTIFICATION_BODY,
+      icon: path.join(__dirname, "icon.png")
+    }).show()
+
+  })
+
 }
 
 
-
 app.on("ready", createWindow);
+
+if(os.platform() == "darwin") {
+  app.dock.setIcon(path.join(__dirname, "icon.png"))
+}
 
 
 app.on("activate", function () {

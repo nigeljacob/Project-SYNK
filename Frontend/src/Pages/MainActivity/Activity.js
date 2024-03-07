@@ -4,6 +4,9 @@ import './Activity.css';
 import { read_from_Database_onChange } from '../../../../Backend/src/firebaseCRUD';
 import { auth } from '../../../../Backend/src/firebase';
 import { CircularProgress } from '@mui/material';
+import DeadlineComponent from '../../components/ActivityDeadlineComponent/DeadlineComponent';
+import ActivityFeedComponent from '../../components/ActivityFeed/ActivityFeedComponent';
+const { parse, differenceInMilliseconds, closestTo, isToday, isTomorrow } = require('date-fns');
 
 function Home(props) {
 
@@ -20,28 +23,66 @@ function Home(props) {
 
   var greeting = "";
 
-  if (curHr < 12) {
-    greeting = "Morning"
-  } else if (curHr < 18) {
-    greeting = "Afternoon"
+  if (curHr < 12 && curHr > 5) {
+    greeting = "Good Morning"
+  } else if (curHr < 16 && curHr >= 12) {
+    greeting = "Good Afternoon"
+  } else if(curHr < 24 & curHr >= 16){
+    greeting = "Good Evening"
   } else {
-    greeting = "Evening"
+    greeting = "Time for Bed"
   }
 
   const [allTeams, setAllTeams] = useState([]);
 
+  const [todayTasks, setTodayTasks] = useState([]);
+
+  const [tomorrowTasks, setTomorrowTasks] = useState([]);
+
   useEffect(() => {
     read_from_Database_onChange("Teams/" + auth.currentUser.uid, (Teams) => {
       setAllTeams(Teams)
+      
+      // let tempTodayTasks = [];
+      // let tempTomorrowTasks = [];
+
+      // const getTasks = (callback) => {
+      //   for(let i = 0; i < Teams.length; i++) {
+      //     let currentMember = Teams[i].filter(member => member.UID === auth.currentUser.uid)
+      //     let taskList = currentMember[0].taskList;
+      //     tempTodayTasks = [...tempTodayTasks, taskList.filter(task => isToday(new Date(task.deadline[0])))]
+      //     tempTomorrowTasks = [...tempTomorrowTasks, taskList.filter(task => isTomorrow(new Date(task.deadline[0])))]
+      //   }
+      //   setTimeout(() => {
+      //     callback([tempTodayTasks, tempTomorrowTasks])
+      //   }, 1000)
+      // }
+
+      // getTasks((tasksList) => {
+      //   setTodayTasks(tasksList[0])
+      //   setTomorrowTasks(tasksList[1])
+      // })
+
     })
   }, [])
 
+  let notifications = [];
+
+  try{
+    notifications = JSON.parse(localStorage.getItem("notifications") || "[]");
+  } catch (e) {
+
+  }
+
   const [isAvailable, setAvailable] = useState(true)
+
+  const [isLoading, setLoading] = useState(true)
 
   setTimeout(() => {
     setAvailable(false)
   }, 3000)
-  
+
+
   const [isOpen, setIsOpen] = useState(sideBarStatus);
   const SideBarResult = isOpen ? "sideBar show_SideBar" : "sideBar hide_SideBar";
   const MainContentResult = isOpen
@@ -50,13 +91,13 @@ function Home(props) {
   const IconResult = isOpen ? "rotateIcon0" : "rotateIcon180";
 
   return (
-    <div className='home tw-max-h-screen'>
+    <div className='home tw-max-h-screen tw-overflow-hidden'>
       <div className={SideBarResult}>
-        <div className='allButton'>
-          <div className='dot'></div>
-          <h3>All</h3>
-        </div>
-        <h2 id='teamsHeading'>Teams</h2>
+          <div className= 'tw-w-[85%] tw-mt-[20px] tw-flex tw-flex-col tw-justify-center tw-items-center tw-ml-[20px]'>
+            <h3 className='tw-mt-[10px] tw-text-[14px]'>Main</h3>
+            <h3 className='tw-font-bold tw-text-[28px]'>Activities</h3>
+          </div>
+        <h2 id='teamsHeading'>Your Teams</h2>
         <div className='taskTeams tw-w-full tw-min-h-[100px] tw-flex tw-flex-col tw-justify-center tw-mt-[-10px] tw-max-h-[76%] tw-overflow-y-scroll tw-pb-[30px]'>
 
         {allTeams.length > 0 ? (
@@ -102,13 +143,22 @@ function Home(props) {
         </div>
         </div>
       <div className={MainContentResult}>
-      <h1>Good <span>{greeting}</span> <span id='displayName'>{props.user.displayName.split(" ")[0]}</span> !</h1>
-      <div className='reminderTask'>
-        
+      <h1><span>{greeting}</span> <span id='displayName'>{props.user.displayName.split(" ")[0]}</span> !</h1>
+
+      <div className='tw-w-full tw-flex heightMain' > 
+        <div className='tw-flex-1 tw-rounded-[10px] tw-m-[10px]'>
+          <h3 className='tw-mt-[20px]'>Latest Activity Feed</h3>
+
+          <ActivityFeedComponent />
+        </div>
+
+        <div className='tw-flex-1 tw-m-[10px] tw-rounded-[10px]'>
+        <h3 className='tw-mt-[20px]'>Today Tasks</h3>
+        </div>
+
       </div>
-      <div className='tasks'>
-        
-      </div>
+
+
       </div>
     </div>
   );

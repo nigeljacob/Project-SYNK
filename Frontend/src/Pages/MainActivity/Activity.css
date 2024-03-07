@@ -5,7 +5,7 @@
     width: 200px;
     background: #121212;
     transition: 0.3s all ease-in-out;
-    flex-shrink: 0
+    flex-shrink: 0;
 }
 
 .closeButton {
@@ -22,7 +22,7 @@
     margin-bottom: 30px;
     transform: translateX(10px);
     cursor: pointer;
-    z-index: 1000;
+    z-index: 6000;
     transition: 0.3s all ease-in-out;
 }
 
@@ -49,11 +49,13 @@
 .extendMainContent{
     transform: translateX(-180px);
     margin-right: -160px;
+    z-index: -2000;
 }
 
 .bringBackMainContent{
     transform: translateX(0px);
     margin-right: 20px;
+    z-index: -2000;
 }
 
 .activityContent {
@@ -94,7 +96,7 @@
 .sideBar #teamsHeading {
     margin-left: 20px;
     margin-top: 30px;
-    font-size: 20px;
+    font-size: 16 px;
     color: #d2d2d2;
 }
 
@@ -109,5 +111,9 @@
     height: 1px;
     width: 100%;
     background-color: #272727;
+  }
+
+  .heightMain{
+    height: calc(100vh - 110px);
   }
 

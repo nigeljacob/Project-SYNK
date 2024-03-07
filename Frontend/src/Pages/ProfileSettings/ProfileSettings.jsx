@@ -36,6 +36,8 @@ const ProfileSettings = (props) => {
 
    handleLoad()
 
+   const [isUploading, setUploading] = useState(false)
+
    const goBack = () => {
     if(userName === props.user.displayName && email === props.user.email && number === props.user.phoneNumber && about === props.userData.about ) {
       history(-1)
@@ -74,7 +76,12 @@ const ProfileSettings = (props) => {
    }
 
    const handleUpdateProfile = () => {
-    updateProfileData(userName, email, number, profilePic, about)
+    setUploading(true)
+    if(profilePic === props.user.photoURL) {
+      updateProfileData(userName, email, number, null, about, setUploading)
+    } else {
+      updateProfileData(userName, email, number, profilePic, about, setUploading)
+    }
    }
 
   return (
@@ -134,9 +141,15 @@ const ProfileSettings = (props) => {
         ) : null}
         </div>
 
-        <div className="tw-absolute tw-bottom-0 tw-w-[90%] tw-py-[7px] tw-bg-[#5BCEFF] tw-rounded-[10px] tw-mb-[15px] tw-flex tw-items-center tw-justify-center tw-text-black" onClick={event => {handleUpdateProfile()}}>
+        {isUploading ? (
+          <div className="tw-absolute tw-bottom-0 tw-w-[90%] tw-py-[7px] tw-mb-[15px] tw-flex tw-items-center tw-justify-center tw-text-black">
+            <CircularProgress />
+          </div>
+        ) : (
+          <div className="tw-absolute tw-bottom-0 tw-w-[90%] tw-py-[7px] tw-bg-[#5BCEFF] tw-rounded-[10px] tw-mb-[15px] tw-flex tw-items-center tw-justify-center tw-text-black tw-cursor-pointer" onClick={event => {handleUpdateProfile()}}>
           <p className='tw-font-bold'>Update Profile</p>
-        </div>
+          </div>
+        )}
 
       </div>
       
@@ -158,7 +171,7 @@ const ProfileSettings = (props) => {
       <input type="tel" name="email" id="email" className='tw-bg-[#0B0B0B] tw-text-white tw-border-none' value={number} onChange={event => {setNumber(event.target.value)}}/>
 
       <h4 className='tw-text-[15px] tw-ml-[5px] tw-mt-[15px]'>About</h4>
-      <textarea type="text" rows="5" name="about" id="about" className='tw-bg-[#0B0B0B] tw-text-white tw-border-none' value={about} onChange={event => {setAbout(event.target.value)}}/>
+      <textarea type="text" rows="1" maxLength={30} name="about" id="about" className='tw-bg-[#0B0B0B] tw-text-white tw-border-none' value={about} onChange={event => {setAbout(event.target.value)}}/>
 
     </form>
    </div>

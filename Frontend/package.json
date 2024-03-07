@@ -20,7 +20,6 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
-    "archiver": "^7.0.0",
     "chart.js": "^4.4.2",
     "child_process": "^1.0.2",
     "class-variance-authority": "^0.7.0",
@@ -34,6 +33,7 @@
     "electron-window-state": "^5.0.3",
     "eslint-config-react-app": "6",
     "lucide-react": "^0.325.0",
+    "node-notifier": "^10.0.1",
     "path-browserify": "^1.0.1",
     "react": "^18.2.0",
     "react-chartjs-2": "^5.2.0",
@@ -43,7 +43,9 @@
     "react-dom": "^18.2.0",
     "react-dropzone": "^14.2.3",
     "react-element-to-jsx-string": "^15.0.0",
+    "react-hover": "^3.0.1",
     "react-icons": "^5.0.1",
+    "react-live-clock": "^6.1.20",
     "react-notifications-component": "^4.0.1",
     "react-push-notification": "^1.5.4",
     "react-router-dom": "^6.21.3",
@@ -68,6 +70,11 @@
     "eject": "craco eject",
     "electron:start": "electron .",
     "electron:serve": "concurrently -k \"cross-env BROWSER=none yarn start\" \"yarn electron:start\""
+  },
+  "build": {
+    "appId": "com.clueluessJellybiens.SYNK",
+    "productName": "SYNK",
+    "icon": "public/icon.png"
   },
   "main": "public/main.js",
   "keywords": [],
