@@ -72,7 +72,7 @@ const TeamChat = ({ user, team }) => {
      }
     }
 
-    sendNotification("New Chat" + " @ " + team.teamName, user.displayName + ": " + message, "info", teamMembers)
+    sendNotification("New Chat" + " @ " + team.teamName, user.displayName + ": " + message, "info", teamMembers, "chat", auth.currentUser.uid)
 
   };
 

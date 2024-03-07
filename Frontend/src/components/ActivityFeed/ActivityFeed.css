@@ -1,0 +1,11 @@
+.fade {
+  background: rgb(39, 39, 39);
+  background: linear-gradient(
+    0deg,
+    rgba(39, 39, 39, 1) 0%,
+    rgba(217, 217, 217, 1) 100%
+  );
+  width: 1.5px;
+  border: none;
+  /* rotate: 180deg; */
+}
