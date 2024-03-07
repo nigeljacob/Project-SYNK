@@ -5,7 +5,8 @@ import { read_from_Database_onChange } from '../../../../Backend/src/firebaseCRU
 import { auth } from '../../../../Backend/src/firebase';
 import { CircularProgress } from '@mui/material';
 import DeadlineComponent from '../../components/ActivityDeadlineComponent/DeadlineComponent';
-const { parse, differenceInMilliseconds, closestTo } = require('date-fns');
+import ActivityFeedComponent from '../../components/ActivityFeed/ActivityFeedComponent';
+const { parse, differenceInMilliseconds, closestTo, isToday, isTomorrow } = require('date-fns');
 
 function Home(props) {
 
@@ -34,16 +35,44 @@ function Home(props) {
 
   const [allTeams, setAllTeams] = useState([]);
 
-  const [allTasks, setAllTasks] = useState([]);
+  const [todayTasks, setTodayTasks] = useState([]);
+
+  const [tomorrowTasks, setTomorrowTasks] = useState([]);
 
   useEffect(() => {
     read_from_Database_onChange("Teams/" + auth.currentUser.uid, (Teams) => {
       setAllTeams(Teams)
       
+      // let tempTodayTasks = [];
+      // let tempTomorrowTasks = [];
+
+      // const getTasks = (callback) => {
+      //   for(let i = 0; i < Teams.length; i++) {
+      //     let currentMember = Teams[i].filter(member => member.UID === auth.currentUser.uid)
+      //     let taskList = currentMember[0].taskList;
+      //     tempTodayTasks = [...tempTodayTasks, taskList.filter(task => isToday(new Date(task.deadline[0])))]
+      //     tempTomorrowTasks = [...tempTomorrowTasks, taskList.filter(task => isTomorrow(new Date(task.deadline[0])))]
+      //   }
+      //   setTimeout(() => {
+      //     callback([tempTodayTasks, tempTomorrowTasks])
+      //   }, 1000)
+      // }
+
+      // getTasks((tasksList) => {
+      //   setTodayTasks(tasksList[0])
+      //   setTomorrowTasks(tasksList[1])
+      // })
+
     })
   }, [])
 
-  const [displayList, setDisplayList] = useState(allTasks);
+  let notifications = [];
+
+  try{
+    notifications = JSON.parse(localStorage.getItem("notifications") || "[]");
+  } catch (e) {
+
+  }
 
   const [isAvailable, setAvailable] = useState(true)
 
@@ -62,7 +91,7 @@ function Home(props) {
   const IconResult = isOpen ? "rotateIcon0" : "rotateIcon180";
 
   return (
-    <div className='home tw-max-h-screen'>
+    <div className='home tw-max-h-screen tw-overflow-hidden'>
       <div className={SideBarResult}>
           <div className= 'tw-w-[85%] tw-mt-[20px] tw-flex tw-flex-col tw-justify-center tw-items-center tw-ml-[20px]'>
             <h3 className='tw-mt-[10px] tw-text-[14px]'>Main</h3>
@@ -116,14 +145,20 @@ function Home(props) {
       <div className={MainContentResult}>
       <h1><span>{greeting}</span> <span id='displayName'>{props.user.displayName.split(" ")[0]}</span> !</h1>
 
-      <div> </div>
+      <div className='tw-w-full tw-flex heightMain' > 
+        <div className='tw-flex-1 tw-rounded-[10px] tw-m-[10px]'>
+          <h3 className='tw-mt-[20px]'>Latest Activity Feed</h3>
 
-      <div className='reminderTask'>
-        
+          <ActivityFeedComponent />
+        </div>
+
+        <div className='tw-flex-1 tw-m-[10px] tw-rounded-[10px]'>
+        <h3 className='tw-mt-[20px]'>Today Tasks</h3>
+        </div>
+
       </div>
-      <div className='tasks'>
-        
-      </div>
+
+
       </div>
     </div>
   );
