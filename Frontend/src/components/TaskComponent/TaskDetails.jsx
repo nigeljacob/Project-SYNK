@@ -8,7 +8,7 @@ import { auth } from "../../../../Backend/src/firebase";
 import { read_OneValue_from_Database } from "../../../../Backend/src/firebaseCRUD";
 import { Indent } from "lucide-react";
 
-const TaskDetails = ({ index, task, team, teamMemberIndex, setViewTaskTrigger, viewTaskTrigger, taskTrigger}) => {
+const TaskDetails = ({ index, task, team, teamMemberIndex, setViewTaskTrigger, viewTaskTrigger, taskTrigger, startButton }) => {
 
   const [currentTask, setCurrentTask] = useState(task)
 
@@ -108,7 +108,7 @@ const TaskDetails = ({ index, task, team, teamMemberIndex, setViewTaskTrigger, v
         {Status === "Start" ? (
           <Tooltip title = "Start Task">
             <div >
-          <button className="status" onClick={event => {
+              {startButton ? <button className="status" onClick={event => {
           let popupLayout = document.getElementById("popupLayout2");
             if(viewTaskTrigger) {
               popupLayout.style.background = "rgba(0,0,0,0)"
@@ -122,7 +122,7 @@ const TaskDetails = ({ index, task, team, teamMemberIndex, setViewTaskTrigger, v
           taskTrigger([currentTask, team, parseInt(index - 1)])
           handleConfirm()
 
-          }}}>{Status}</button>
+          }}}>{Status}</button> : <></>}
         </div>
           </Tooltip>
         ) : (
