@@ -65,12 +65,20 @@ body {
 
 /* Fragment Styling */
 
-.home,
 .chat,
 .teams {
   display: flex;
   height: 100vh;
   overflow-y: scroll;
+  color: white;
+  background: none;
+  display: flex;
+  flex: 2;
+}
+
+.home {
+  display: flex;
+  height: 100vh;
   color: white;
   background: none;
   display: flex;
