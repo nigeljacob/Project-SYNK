@@ -94,7 +94,7 @@ const TeamMemberDashboard = (props) => {
   }
 
   return (
-    <>
+    <div className="tw-overflow-y-scroll tw-h-screen tw-pb-[70px]">
       {tasksList[0] != "" ? (
         <DeadlineComponent
         task={tasksList[closestDeadLine[1]]}
@@ -127,7 +127,7 @@ const TeamMemberDashboard = (props) => {
           </p>
         )}
       </div>
-    </>
+    </div>
   );
 };
 
