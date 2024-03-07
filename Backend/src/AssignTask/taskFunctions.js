@@ -19,7 +19,7 @@ export const assignTask = (userID, team, index , taskName, taskDesc, deadline, o
             ()=>{
                 updateDatabase("Teams/" + userID + "/" + team.teamCode + "/teamMemberList/" + index, {taskList: taskList}).then(
                     ()=>{
-                        sendNotification("Task assigned @ " + team.teamName, taskName +         `\nDeadline: ${deadline}` , "info", userID)
+                        sendNotification("Task assigned @ " + team.teamName, taskName +         `\nDeadline: ${deadline}` , "info", userID, "feed -taskAssigned", userID)
                         onSuccess(true)
         
                     }
@@ -72,12 +72,12 @@ export const updateViewTask = (team, task, taskIndex, newApplicationList, filePa
 
                 updateDatabase("Teams/" + auth.currentUser.uid + "/" + team.teamCode + "/teamMemberList/" + i + "/taskList/" + taskIndex, task).then(() => {
                     updateDatabase("Teams/" + team.teamLeader.UID + "/" + team.teamCode + "/teamMemberList/" + i + "/taskList/" + taskIndex, task).then(() => {
-                        sendNotification("Task Details Updated", "Task details have been updated... You can now start the task", "success", auth.currentUser.uid )
-                        sendNotification(member.name + " @ " + team.teamName, "Updated their task details for task " + parseInt(taskIndex + 1) , "info", team.teamLeader.UID )
+                        sendNotification("Task Details Updated", "Task details have been updated... You can now start the task", "success", auth.currentUser.uid, "success", auth.currentUser.uid)
+                        sendNotification(member.name + " @ " + team.teamName, "Updated their task details for task " + parseInt(taskIndex + 1) , "info", team.teamLeader.UID, "feed -taskDetailsUpdatedLeader", team.teamLeader.UID)
                         callback(true)
                     })
                 }).catch(() => {
-                    sendNotification("Failed to update task details", "An error occured while updating task details", "danger", auth.currentUser.uid)
+                    sendNotification("Failed to update task details", "An error occured while updating task details", "danger", auth.currentUser.uid, "error", auth.currentUser.uid)
                     callback(false)
                 })
 
@@ -93,7 +93,7 @@ export const updateTaskStatus = (team, memberIndex, taskIndex, taskStatus, membe
     updateDatabase("Teams/" + auth.currentUser.uid + "/" + team.teamCode + "/" + "teamMemberList/" + memberIndex + "/taskList/" + taskIndex, {taskStatus: taskStatus}).then(() => {
         updateDatabase("Teams/" + team.teamLeader["UID"] + "/" + team.teamCode + "/" + "teamMemberList/" + memberIndex + "/taskList/" + taskIndex, {taskStatus: taskStatus}).then(() => {
             if(taskStatus === "Completed") {
-                sendNotification("Task Completed @" + team.teamName, memberName + " has succesfully completed task " + parseInt(taskIndex + 1)  + ".", "info", team.teamLeader["UID"])
+                sendNotification("Task Completed @" + team.teamName, memberName + " has succesfully completed task " + parseInt(taskIndex + 1)  + ".", "info", team.teamLeader["UID"], "feed -taskCompleted", team.teamLeader["UID"])
                 updateDatabase("Teams/" + auth.currentUser.uid + "/" + team.teamCode + "/" + "teamMemberList/" + memberIndex + "/taskList/" + taskIndex, {taskCompletedDate: getTimeDate()})
                 updateDatabase("Teams/" + team.teamLeader["UID"] + "/" + team.teamCode + "/" + "teamMemberList/" + memberIndex + "/taskList/" + taskIndex, {taskCompletedDate: getTimeDate()})
             }

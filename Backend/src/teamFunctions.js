@@ -81,7 +81,7 @@ export const fetchPendingInvites = (onDataReceived, teamCode) => {
 export const joinTeam = (teamCode, onRequestSent) => {
   const onDataReceived = (data) => {
     if (data === null) {
-      sendNotification("Team doesn't exist", "The code you entered seems to be invalid", "danger", auth.currentUser.uid)
+      sendNotification("Team doesn't exist", "The code you entered seems to be invalid", "danger", auth.currentUser.uid, "error", teamCode)
     } else {
       const onListReceived = (dataList) => {
         if (dataList.includes("")) {
@@ -119,7 +119,7 @@ export const joinTeam = (teamCode, onRequestSent) => {
             "Teams/" + auth.currentUser.uid + "/" + team.teamCode,
             team
           ).then(() => {
-            sendNotification("New Join Request @ " + team.teamName, auth.currentUser.displayName + " has requested to join the team", "info", data.teamLeader)
+            sendNotification("New Join Request @ " + team.teamName, auth.currentUser.displayName + " has requested to join the team", "info", data.teamLeader, "feed -joinRequest", teamCode)
             onRequestSent("success");
           });
         };
@@ -179,7 +179,7 @@ export const acceptMembers = (member, teamID, index) => {
         teamMemberList: team.teamMemberList,
         teamPendingInvites: team.teamPendingInvites
       }).then(
-        sendNotification("Join Request Accepted @ " + team.teamName, "You have been accepted into " + team.teamName + ". You can view the team in the teams panel", "info", member.UID)
+        sendNotification("Join Request Accepted @ " + team.teamName, "You have been accepted into " + team.teamName + ". You can view the team in the teams panel", "info", member.UID, "feed -teamRequestAccepted", teamID)
       );
 
     for(let i = 0; i < team.teamMemberList.length; i++) {
@@ -202,9 +202,16 @@ export const fetchNotification = (onNotificationReceived) => {
 }
 
 
-export const sendNotification = (title, message, type, receiverUID) => {
+export const sendNotification = (title, message, type, receiverUID, notificationType, ID) => {
 
-  let notification = {title: title, message: message, type: type}
+  let date = new Date()
+  let day = date.getDate()
+  let month = date.getMonth() + 1
+  let year = date.getFullYear()
+  let hour = date.getHours();
+  let minute = date.getMinutes();
+
+  let notification = {title: title, message: message, type: type, notificationType: notificationType, date: [day + "/" + month + "/" + year, hour + ":" + minute], ID: ID}
 
   if(Array.isArray(receiverUID)){
     for(let i = 0; i < receiverUID.length; i++) {

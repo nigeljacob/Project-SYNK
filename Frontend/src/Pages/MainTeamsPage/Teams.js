@@ -179,7 +179,7 @@ function Teams() {
           popupLayout.style.background = "rgba(0,0,0,0)";
         }
 
-        sendNotification("Team Created Successfully", "Team " + teamName + " was created successfully. You can now view the team in the teams panel", "success", auth.currentUser.uid)
+        sendNotification("Team Created Successfully", "Team " + teamName + " was created successfully. You can now view the team in the teams panel", "success", auth.currentUser.uid, "success", auth.currentUser.uid)
         setIsOpen(!isOpen);
       });
     }
@@ -205,14 +205,14 @@ function Teams() {
 
         setIsOpen(!isOpen);
 
-        sendNotification("Sent Successfully", "Join Request successfuly sent to team admin", "success", auth.currentUser.uid)
+        sendNotification("Sent Successfully", "Join Request successfuly sent to team admin", "success", auth.currentUser.uid, "success", auth.currentUser.uid)
 
       } else if (data === "alreadyJoined") {
-        sendNotification("Already Joined", "You have already joined this team as a member", "warning", auth.currentUser.uid)
+        sendNotification("Already Joined", "You have already joined this team as a member", "warning", auth.currentUser.uid, "error", auth.currentUser.uid)
       } else if(data === "alreadySent") {
-        sendNotification("Join Request sent already", "A join request to this team has been sent to the admin already", "warning", auth.currentUser.uid)
+        sendNotification("Join Request sent already", "A join request to this team has been sent to the admin already", "warning", auth.currentUser.uid, "error", auth.currentUser.uid)
       } else {
-        sendNotification("Failed to join team", "An error occured while trying to join a team", "danger", auth.currentUser.uid)
+        sendNotification("Failed to join team", "An error occured while trying to join a team", "danger", auth.currentUser.uid, "error", auth.currentUser.uid)
 
       }
     };
