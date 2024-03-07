@@ -79,19 +79,27 @@ const Notifications = (props) => {
           <div className="notificationCenter tw-w-[90%] tw-mt-[40px]">
           <h3 className='tw-mt-[30px] tw-mb-[20px] tw-flex-1'>New Notifications ({newNotifications.length})</h3>
           <div className='tw-max-h-[400px] tw-overflow-y-scroll tw-w-full'>
-            {newNotifications.map((item, index) => (
-            !newNotifications[index]["seen"] ? (
-              <div className="tw-w-[95%] tw-h-fit tw-mr-[10px] tw-ml-[10px] tw-bg-[#0B0B0B] tw-p-[20px] tw-rounded-[10px] tw-mb-[10px] tw-flex tw-items-center">
-              <div className='tw-w-[50px] tw-h-[50px] tw-flex tw-justify-center tw-items-center tw-rounded-[5px] tw-bg-[#272727] tw-mr-[20px]'>
-                <h3 className="tw-text-[20px] tw-font-bold ">{item.title.split("@")[1].trim().split(" ")[0][0]} {item.title.split("@")[1].trim().split(" ")[1][0]}</h3>
-              </div>
-              <div>
-                <h3 className="tw-text-[15px] tw-mb-[5px]">{item.title}</h3>
-                <p>{item.message}</p>
-              </div>
-              </div>
-            ) : null
-            ))}
+            {newNotifications.length > 0 ? (
+              newNotifications.map((item, index) => (
+                !item["seen"] ? (
+                  <div className="tw-w-[95%] tw-h-fit tw-mr-[10px] tw-ml-[10px] tw-bg-[#0B0B0B] tw-p-[20px] tw-rounded-[10px] tw-mb-[10px] tw-flex tw-items-center">
+                  <div className='tw-w-[50px] tw-h-[50px] tw-flex tw-justify-center tw-items-center tw-rounded-[5px] tw-bg-[#272727] tw-mr-[20px]'>
+
+                    {item.title.split("@")[1].trim().split(" ").length > 1 ? (
+                      <h3 className="tw-text-[20px] tw-font-bold ">{item.title.split("@")[1].trim().split(" ")[0][0]} {item.title.split("@")[1].trim().split(" ")[1][0]}</h3>
+                    ) : (
+                      <h3 className="tw-text-[20px] tw-font-bold ">{item.title.split("@")[1].trim().split(" ")[0][0]}</h3>
+                    )}
+                    
+                  </div>
+                  <div>
+                    <h3 className="tw-text-[15px] tw-mb-[5px]">{item.title}</h3>
+                    <p>{item.message}</p>
+                  </div>
+                  </div>
+                ) : null
+                ))
+            ) : null}
           </div>
 
           <div className='tw-w-full tw-relative tw-flex tw-items-center'>
@@ -118,7 +126,11 @@ const Notifications = (props) => {
                 oldNotifications[index]["seen"] ? (
                   <div className="tw-w-[95%] tw-h-fit tw-mr-[10px] tw-ml-[10px] tw-bg-[#0B0B0B] tw-p-[20px] tw-rounded-[10px] tw-mb-[10px] tw-flex tw-items-center">
                   <div className='tw-w-[50px] tw-h-[50px] tw-flex tw-justify-center tw-items-center tw-rounded-[5px] tw-bg-[#272727] tw-mr-[20px]'>
-                    <h3 className="tw-text-[20px] tw-font-bold ">{item.title.split("@")[1].trim().split(" ")[0][0]} {item.title.split("@")[1].trim().split(" ")[1][0]}</h3>
+                    {item.title.split("@")[1].trim().split(" ").length > 1 ? (
+                      <h3 className="tw-text-[20px] tw-font-bold ">{item.title.split("@")[1].trim().split(" ")[0][0]} {item.title.split("@")[1].trim().split(" ")[1][0]}</h3>
+                    ) : (
+                      <h3 className="tw-text-[20px] tw-font-bold ">{item.title.split("@")[1].trim().split(" ")[0][0]}</h3>
+                    )}
                   </div>
                   <div>
                     <h3 className="tw-text-[15px] tw-mb-[5px]">{item.title}</h3>
