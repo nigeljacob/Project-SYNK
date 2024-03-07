@@ -252,6 +252,26 @@ function App() {
         );
           localStorage.setItem("notifications", JSON.stringify(uniqueArray));
         }
+
+        try{
+          let AllFeedList = Notifications.filter(notification => notification.notificationType.includes("feed"))
+          let feedList = JSON.parse(localStorage.getItem("feedList") || "[]");
+          let newFeedList = [...new Set([...feedList, ...AllFeedList])];
+          let uniqueFeedList = newFeedList.filter((value, index, self) => 
+            index === self.findIndex((t) => (
+                JSON.stringify(t) === JSON.stringify(value)
+            ))
+          );
+          localStorage.setItem("feedList", JSON.stringify(uniqueFeedList));
+        } catch(e) {
+          let AllFeedList = Notifications.filter(notification => notification.notificationType.includes("feed"))
+          let uniqueFeedList = AllFeedList.filter((value, index, self) => 
+          index === self.findIndex((t) => (
+              JSON.stringify(t) === JSON.stringify(value)
+          ))
+          );
+          localStorage.setItem("feedList", JSON.stringify(uniqueFeedList));
+        }
       })
     }
   }, user)

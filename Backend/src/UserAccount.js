@@ -55,7 +55,7 @@ export const uploadProfilePic = (UID, Image, onImageUploaded) => {
     uploadTask.on("state_changed",
       (snapshot) => {},
       (error) => {
-        sendNotification("Image Upload Failed", "Your Profile Picture failed at upload", "danger", UID)
+        sendNotification("Image Upload Failed", "Your Profile Picture failed at upload", "danger", UID, "error", UID)
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
@@ -76,7 +76,7 @@ export const updateProfileData = (displayName, email, phoneNumber, profileImage,
           phoneNumber: phoneNumber,
           photoURL: photoURL
         }).catch((error) => {
-           sendNotification("Failed to Update Data", "An error occured while trying to update your data",  "danger", auth.currentUser.uid);
+           sendNotification("Failed to Update Data", "An error occured while trying to update your data",  "danger", auth.currentUser.uid, "error", UID);
            setLoadingTriger(false)
         });
       } else {
@@ -85,7 +85,7 @@ export const updateProfileData = (displayName, email, phoneNumber, profileImage,
           email: email,
           photoURL: photoURL
         }).catch((error) => {
-          sendNotification("Failed to Update Data", "An error occured while trying to update your data",  "danger", auth.currentUser.uid);
+          sendNotification("Failed to Update Data", "An error occured while trying to update your data",  "danger", auth.currentUser.uid, "error", UID);
           setLoadingTriger(false)
         });
       }
@@ -95,19 +95,19 @@ export const updateProfileData = (displayName, email, phoneNumber, profileImage,
           user = {email: email, profile: photoURL, uid: auth.currentUser.uid, userStatus: "Active", username: displayName, about: about}
           console.log(user)
           updateDatabase("Users/" + auth.currentUser.uid, user).then(() => {
-            sendNotification("Profile Updated Succesfully", "Your Profile has been updated", "success", auth.currentUser.uid)
+            sendNotification("Profile Updated Succesfully", "Your Profile has been updated", "success", auth.currentUser.uid, "error", UID)
             setLoadingTriger(false)
           }).catch((error) => {
-            sendNotification("Profile Updated Failed", error.message, "danger", auth.currentUser.uid)
+            sendNotification("Profile Updated Failed", error.message, "danger", auth.currentUser.uid, "error", UID)
             setLoadingTriger(false)
           })
         })
       } else {
         updateDatabase("Users/" + auth.currentUser.uid + "/profile", photoURL).then(() => {
-          sendNotification("Profile Updated Succesfully", "Your Profile has been updated", "success", auth.currentUser.uid)
+          sendNotification("Profile Updated Succesfully", "Your Profile has been updated", "success", auth.currentUser.uid, "error", UID)
           setLoadingTriger(false)
         }).catch((error) => {
-          sendNotification("Profile Updated Failed", error.message, "danger", auth.currentUser.uid)
+          sendNotification("Profile Updated Failed", error.message, "danger", auth.currentUser.uid, "error", UID)
           setLoadingTriger(false)
         })
       }
@@ -120,7 +120,7 @@ export const updateProfileData = (displayName, email, phoneNumber, profileImage,
         email: email,
         phoneNumber: phoneNumber
       }).catch((error) => {
-         sendNotification("Failed to Update Data", "An error occured while trying to update your data",  "danger", auth.currentUser.uid);
+         sendNotification("Failed to Update Data", "An error occured while trying to update your data",  "danger", auth.currentUser.uid, "error", UID);
          setLoadingTriger(false)
       });
     } else {
@@ -128,7 +128,7 @@ export const updateProfileData = (displayName, email, phoneNumber, profileImage,
         displayName: displayName,
         email: email
       }).catch((error) => {
-        sendNotification("Failed to Update Data", "An error occured while trying to update your data",  "danger", auth.currentUser.uid);
+        sendNotification("Failed to Update Data", "An error occured while trying to update your data",  "danger", auth.currentUser.uid, "error", UID);
         setLoadingTriger(false)
       });
     }
@@ -138,10 +138,10 @@ export const updateProfileData = (displayName, email, phoneNumber, profileImage,
         user = {email: email, uid: auth.currentUser.uid, userStatus: "Active", username: displayName, about: about}
         console.log(user)
         updateDatabase("Users/" + auth.currentUser.uid, user).then(() => {
-          sendNotification("Profile Updated Succesfully", "Your Profile has been updated", "success", auth.currentUser.uid)
+          sendNotification("Profile Updated Succesfully", "Your Profile has been updated", "success", auth.currentUser.uid, "error", UID)
           setLoadingTriger(false)
         }).catch((error) => {
-          sendNotification("Profile Updated Failed", error.message, "danger", auth.currentUser.uid)
+          sendNotification("Profile Updated Failed", error.message, "danger", auth.currentUser.uid, "error", UID)
           setLoadingTriger(false)
         })
       })
@@ -150,10 +150,10 @@ export const updateProfileData = (displayName, email, phoneNumber, profileImage,
         user = {email: email, uid: auth.currentUser.uid, userStatus: "Active", username: displayName}
         console.log(user)
         updateDatabase("Users/" + auth.currentUser.uid, user).then(() => {
-          sendNotification("Profile Updated Succesfully", "Your Profile has been updated", "success", auth.currentUser.uid)
+          sendNotification("Profile Updated Succesfully", "Your Profile has been updated", "success", auth.currentUser.uid, "error", UID)
           setLoadingTriger(false)
         }).catch((error) => {
-          sendNotification("Profile Updated Failed", error.message, "danger", auth.currentUser.uid)
+          sendNotification("Profile Updated Failed", error.message, "danger", auth.currentUser.uid, "error", UID)
           setLoadingTriger(false)
         })
       })
