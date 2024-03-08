@@ -29,6 +29,7 @@ import * as IOSIcons from "react-icons/io5";
 import "./Pages/MainTeamsPage/Teams.css";
 import ProfileSettings from "./Pages/ProfileSettings/ProfileSettings";
 import { readOnceFromDatabase, read_OneValue_from_Database, updateDatabase } from "../../Backend/src/firebaseCRUD";
+import { Tooltip } from "@mui/material";
 const electronApi = window?.electronApi;
 
 let result = "";
@@ -390,12 +391,16 @@ function App() {
                 </Routes>
               </Router>
               <div className={result}>
-                <MDIcons.MdOutlineSettings
+                <Tooltip title="Logout">
+                  <div>
+                  <MDIcons.MdOutlineLogout
                   className="SettingIcon"
                   onClick={(event) => {
                     electronApi.sendConfirmBoxSignalToMain(["Are your Sure..??", "Are you sure you want to sign out..?"])
                   }}
                 />
+                  </div>
+                </Tooltip>
               </div>
 
               {!isOnline ? (
