@@ -77,6 +77,12 @@ const ProfileSettings = (props) => {
 
    const handleUpdateProfile = () => {
     setUploading(true)
+
+    if(about === "" || about === null) {
+      electronApi.sendShowAlertSignamToMain(["Ooops!!", "About field is required"])
+      return
+    }
+
     if(profilePic === props.user.photoURL) {
       updateProfileData(userName, email, number, null, about, setUploading)
     } else {

@@ -143,7 +143,7 @@ function Home(props) {
           <h3 className="tw-font-bold tw-text-[28px]">Activities</h3>
         </div>
         <h2 id="teamsHeading">Your Teams</h2>
-        <div className="taskTeams tw-w-full tw-min-h-[100px] tw-flex tw-flex-col tw-justify-center tw-mt-[-10px] heightMain2 tw-overflow-y-scroll tw-pb-[30px]">
+        <div className="taskTeams tw-w-full tw-min-h-[100px] tw-flex tw-flex-col tw-mt-[-10px] heightMain2 tw-overflow-y-scroll tw-pb-[30px]">
           {allTeams.length > 0 ? (
             allTeams.map((team, index) => (
               <>

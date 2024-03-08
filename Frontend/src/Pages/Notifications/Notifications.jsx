@@ -74,13 +74,13 @@ const Notifications = (props) => {
         <h1 className=' tw-ml-[30px] tw-text-[22px]'>Notifications</h1>
       </div>
 
-      {notifications.length > 0 ? (
+      {notifications.reverse().length > 0 ? (
           <div className='tw-w-full tw-flex tw-justify-center tw-overflow-y-scroll maxHeight'>
           <div className="notificationCenter tw-w-[90%] tw-mt-[40px]">
           <h3 className='tw-mt-[30px] tw-mb-[20px] tw-flex-1'>New Notifications ({newNotifications.length})</h3>
           <div className='tw-max-h-[400px] tw-overflow-y-scroll tw-w-full'>
-            {newNotifications.length > 0 ? (
-              newNotifications.map((item, index) => (
+            {newNotifications.reverse().length > 0 ? (
+              newNotifications.reverse().map((item, index) => (
                 !item["seen"] ? (
                   <div className="tw-w-[95%] tw-h-fit tw-mr-[10px] tw-ml-[10px] tw-bg-[#0B0B0B] tw-p-[20px] tw-rounded-[10px] tw-mb-[10px] tw-flex tw-items-center">
                   <div className='tw-w-[50px] tw-h-[50px] tw-flex tw-justify-center tw-items-center tw-rounded-[5px] tw-bg-[#272727] tw-mr-[20px]'>
@@ -121,9 +121,9 @@ const Notifications = (props) => {
           </div>
           <div className='tw-w-full'>
           {viewOldNotifications ? (
-            oldNotifications.length != 0 ? (
-              oldNotifications.map((item, index) => (
-                oldNotifications[index]["seen"] ? (
+            oldNotifications.reverse().length != 0 ? (
+              oldNotifications.reverse().map((item, index) => (
+                item["seen"] ? (
                   <div className="tw-w-[95%] tw-h-fit tw-mr-[10px] tw-ml-[10px] tw-bg-[#0B0B0B] tw-p-[20px] tw-rounded-[10px] tw-mb-[10px] tw-flex tw-items-center">
                   <div className='tw-w-[50px] tw-h-[50px] tw-flex tw-justify-center tw-items-center tw-rounded-[5px] tw-bg-[#272727] tw-mr-[20px]'>
                     {item.title.split("@")[1].trim().split(" ").length > 1 ? (
