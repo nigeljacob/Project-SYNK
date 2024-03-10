@@ -16,6 +16,7 @@ const {
 } = require("date-fns");
 import { FaClock } from "react-icons/fa6";
 import { Team } from "../../../../Backend/src/classes";
+import FolderViewer from "../../components/FolderViewer/FolderViewer";
 
 function Home(props) {
   var sideBarStatus = true;
@@ -314,7 +315,10 @@ function Home(props) {
               )}
             </div>
           </div>
+
         </div>
+
+       
       </div>
     </div>
   );
