@@ -114,7 +114,27 @@
   }
 
   .heightMain{
-    height: calc(100vh - 110px);
+    height: calc(100vh - 100px);
     overflow-y: scroll;
   }
 
+  .heightMain2{
+    height: calc(100vh - 130px);
+    overflow-y: scroll;
+  }
+
+  .feedAnimation {
+    animation: anim 0.5s ease-in-out;
+  }
+
+  @keyframes anim {
+    0% {
+        opacity: 0%;
+        transform: translateX(-400px);
+    }
+
+    100% {
+        opacity: 100%;
+        transform: translateX(0px);
+    }
+  }

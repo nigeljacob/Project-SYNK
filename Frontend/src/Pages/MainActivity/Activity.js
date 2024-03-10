@@ -6,8 +6,7 @@ import { auth } from "../../../../Backend/src/firebase";
 import { CircularProgress, Tooltip } from "@mui/material";
 import DeadlineComponent from "../../components/ActivityDeadlineComponent/DeadlineComponent";
 import ActivityFeedComponent from "../../components/ActivityFeed/ActivityFeedComponent";
-import { Line } from "react-chartjs-2";
-import { Link } from "react-router-dom";
+import { MdOutlineTaskAlt } from "react-icons/md";
 const {
   parse,
   differenceInMilliseconds,
@@ -16,6 +15,8 @@ const {
   isTomorrow,
 } = require("date-fns");
 import { FaClock } from "react-icons/fa6";
+import { Team } from "../../../../Backend/src/classes";
+import FolderViewer from "../../components/FolderViewer/FolderViewer";
 
 function Home(props) {
   var sideBarStatus = true;
@@ -70,13 +71,27 @@ function Home(props) {
               tempTodayTasks = [
                 ...tempTodayTasks,
                 tasksList.filter(
-                  (task) => task.deadline[0] === day + "/" + month + "/" + year
+                  (task, index) =>
+                    task.deadline[0] === day + "/" + month + "/" + year
                 ),
               ];
               tempTomorrowTasks = [
                 ...tempTomorrowTasks,
                 tasksList.filter(
-                  (task) => task.deadline[0] != day + "/" + month + "/" + year
+                  (task, index) =>
+                    {
+
+                      let currentDate = new Date()
+                      const [day, month, year] = task.deadline[0].split('/');
+
+                      const combinedDateTimeString = `${year}-${month}-${day}`;
+
+                      const targetDate = new Date(combinedDateTimeString);
+
+                      if(!isToday(targetDate) && targetDate > currentDate) {
+                        return true
+                      } return false
+                    }
                 ),
               ];
             }
@@ -94,8 +109,6 @@ function Home(props) {
     });
   }, []);
 
-  console.log(todayTasks);
-
   let feedNotifications = [];
 
   try {
@@ -108,7 +121,11 @@ function Home(props) {
 
   setTimeout(() => {
     setAvailable(false);
-  }, 3000);
+  }, 5000);
+
+  setTimeout(() => {
+    setLoading(false)
+  }, 7000)
 
   const [isOpen, setIsOpen] = useState(sideBarStatus);
   const SideBarResult = isOpen
@@ -127,7 +144,7 @@ function Home(props) {
           <h3 className="tw-font-bold tw-text-[28px]">Activities</h3>
         </div>
         <h2 id="teamsHeading">Your Teams</h2>
-        <div className="taskTeams tw-w-full tw-min-h-[100px] tw-flex tw-flex-col tw-justify-center tw-mt-[-10px] tw-max-h-[76%] tw-overflow-y-scroll tw-pb-[30px]">
+        <div className="taskTeams tw-w-full tw-min-h-[100px] tw-flex tw-flex-col tw-mt-[-10px] heightMain2 tw-overflow-y-scroll tw-pb-[30px]">
           {allTeams.length > 0 ? (
             allTeams.map((team, index) => (
               <>
@@ -189,23 +206,25 @@ function Home(props) {
 
         <div className="tw-w-full tw-flex heightMain">
           <div className="tw-flex-1 tw-rounded-[10px] tw-m-[10px] tw-flex-shrink-0">
-            <h3 className="tw-mt-[20px] tw-mb-[10px]">Latest Activity Feed</h3>
+            <h3 className="tw-mt-[20px] tw-mb-[20px]">Latest Activity Feed</h3>
 
             {feedNotifications.length > 0 ? (
               feedNotifications.reverse().map((feed, index) => {
                 if (index === feedNotifications.length - 1) {
                   return (
-                    <ActivityFeedComponent isLast={true} notification={feed} />
+                    <ActivityFeedComponent isLast={true} notification={feed} className="feedAnimation"/>
                   );
                 } else {
                   return (
-                    <ActivityFeedComponent isLast={false} notification={feed} />
+                    <ActivityFeedComponent isLast={false} notification={feed} className="feedAnimation" />
                   );
                 }
               })
             ) : (
-              <div className="tw-w-full tw-h-30px">
-                <h4>No Feed</h4>
+              <div className="tw-w-full tw-min-h-[80px] tw-flex tw-justify-center tw-items-center">
+                <h4 className="tw-text-[13px] tw-h-full tw-text-[#A7A7A7]">
+                  No Feed
+                </h4>
               </div>
             )}
           </div>
@@ -221,33 +240,7 @@ function Home(props) {
                           <div className="tw-w-[95%] tw-h-fit tw-rounded-[10px] tw-bg-[#0B0B0B] tw-px-[15px] tw-py-[10px] tw-flex tw-items-center tw-my-[10px]">
                             <div className="tw-flex-1 tw-flex tw-items-center">
                               <div className="tw-bg-[#272727] tw-rounded-[5px] tw-w-[35px] tw-h-[35px] tw-flex tw-justify-center tw-items-center">
-                                {allTeams[index].teamName.split(" ").length >
-                                1 ? (
-                                  <Tooltip title={allTeams[index].teamName}>
-                                    <h4 className="tw-font-bold">
-                                      {
-                                        allTeams[index].teamName.split(
-                                          " "
-                                        )[0][0]
-                                      }{" "}
-                                      {
-                                        allTeams[index].teamName.split(
-                                          " "
-                                        )[1][0]
-                                      }
-                                    </h4>
-                                  </Tooltip>
-                                ) : (
-                                  <Tooltip title={allTeams[index].teamName}>
-                                    <h4 className="tw-font-bold">
-                                      {
-                                        allTeams[index].teamName.split(
-                                          " "
-                                        )[0][0]
-                                      }
-                                    </h4>
-                                  </Tooltip>
-                                )}
+                                <MdOutlineTaskAlt className="tw-text-[#5BCEFF] tw-w-[70%] tw-h-[70%]" />
                               </div>
 
                               <div>
@@ -268,9 +261,15 @@ function Home(props) {
                     : null;
                 })
               ) : (
-                <div className="tw-w-full tw-h-full tw-flex tw-justify-center tw-items-center tw-p-[10px]">
+                isLoading ? (
+                  <div className="tw-w-full tw-h-full tw-flex tw-justify-center tw-items-center tw-p-[10px]">
                   <CircularProgress />
-                </div>
+                  </div>
+                ) : (
+                  <div className="tw-w-full tw-h-full tw-flex tw-justify-center tw-items-center tw-p-[10px]">
+                    <h3 className="tw-text-[13px] tw-yexy-[#A7A7A7]">No Tasks Today</h3>
+                  </div>
+                )
               )}
             </div>
 
@@ -284,33 +283,7 @@ function Home(props) {
                           <div className="tw-w-[95%] tw-h-fit tw-rounded-[10px] tw-bg-[#0B0B0B] tw-px-[15px] tw-py-[10px] tw-flex tw-items-center tw-my-[10px]">
                             <div className="tw-flex-1 tw-flex tw-items-center">
                               <div className="tw-bg-[#272727] tw-rounded-[5px] tw-w-[35px] tw-h-[35px] tw-flex tw-justify-center tw-items-center">
-                                {allTeams[index].teamName.split(" ").length >
-                                1 ? (
-                                  <Tooltip title={allTeams[index].teamName}>
-                                    <h4 className="tw-font-bold">
-                                      {
-                                        allTeams[index].teamName.split(
-                                          " "
-                                        )[0][0]
-                                      }{" "}
-                                      {
-                                        allTeams[index].teamName.split(
-                                          " "
-                                        )[1][0]
-                                      }
-                                    </h4>
-                                  </Tooltip>
-                                ) : (
-                                  <Tooltip title={allTeams[index].teamName}>
-                                    <h4 className="tw-font-bold">
-                                      {
-                                        allTeams[index].teamName.split(
-                                          " "
-                                        )[0][0]
-                                      }
-                                    </h4>
-                                  </Tooltip>
-                                )}
+                                <MdOutlineTaskAlt className="tw-text-[#5BCEFF] tw-w-[70%] tw-h-[70%]" />
                               </div>
 
                               <div>
@@ -330,13 +303,22 @@ function Home(props) {
                     : null;
                 })
               ) : (
-                <div className="tw-w-full tw-h-full tw-flex tw-justify-center tw-items-center tw-p-[10px]">
+                isLoading ? (
+                  <div className="tw-w-full tw-h-full tw-flex tw-justify-center tw-items-center tw-p-[10px]">
                   <CircularProgress />
-                </div>
+                  </div>
+                ) : (
+                  <div className="tw-w-full tw-h-full tw-flex tw-justify-center tw-items-center tw-p-[10px]">
+                    <h3 className="tw-text-[13px] tw-yexy-[#A7A7A7]">No Tasks Assigned Yet</h3>
+                  </div>
+                )
               )}
             </div>
           </div>
+
         </div>
+
+       
       </div>
     </div>
   );

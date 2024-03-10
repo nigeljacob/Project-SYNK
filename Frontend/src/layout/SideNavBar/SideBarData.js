@@ -1,6 +1,6 @@
 import * as FaIcons6 from "react-icons/fa6";
 import * as MDIcons from "react-icons/md";
-
+import * as IOIcons from "react-icons/io";
 import React from "react";
 
 export const SideBarData = [
@@ -10,12 +10,12 @@ export const SideBarData = [
     path: "/",
     cName: "nav_item",
   },
-  // {
-  //     title: "Chat",
-  //     icon: <IOIcons.IoIosChatboxes className='MenuIcon'/>,
-  //     path: "/Chats",
-  //     cName: "nav_item"
-  // },
+  {
+      title: "Chat",
+      icon: <IOIcons.IoIosChatboxes className='MenuIcon'/>,
+      path: "/Chats",
+      cName: "nav_item"
+  },
   {
     title: "Teams",
     icon: <FaIcons6.FaPeopleGroup className="MenuIcon" />,

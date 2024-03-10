@@ -3,7 +3,7 @@ const windowStateKeeper = require("electron-window-state");
 const path = require("path");
 const {getappsfunc} = require('../../Backend/src/electronFunctions/viewTaskFunctions')
 const os = require('node:os')
-const {checkActiveApplication, getCurrentlyActiveApplication, openFileDialog} = require('../../Backend/src/electronFunctions/ProgressTrackerFunctions')
+const {checkActiveApplication, getCurrentlyActiveApplication, openFileDialog, sendSignalwithzip, createZipFromFolder, uploadFileToWordPress, createZipAndUpload} = require('../../Backend/src/electronFunctions/ProgressTrackerFunctions')
 
 function createWindow() {
   let mainWindowState = windowStateKeeper({
@@ -131,6 +131,13 @@ function createWindow() {
   .then((filePath) => {
     if (filePath) {
       console.log('Selected file:', filePath);
+    //   createZipAndUpload(filePath, filePath)
+    // .then(() => {
+    //     console.log('Zip file created and uploaded successfully.');
+    // })
+    // .catch(error => {
+    //     console.error('Error:', error);
+    // });
       win.webContents.send("filePath", filePath)
     } else {
       console.log('No file selected.');

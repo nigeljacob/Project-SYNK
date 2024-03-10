@@ -119,7 +119,7 @@ export const joinTeam = (teamCode, onRequestSent) => {
             "Teams/" + auth.currentUser.uid + "/" + team.teamCode,
             team
           ).then(() => {
-            sendNotification("New Join Request @ " + team.teamName, auth.currentUser.displayName + " has requested to join the team", "info", data.teamLeader, "feed -joinRequest", teamCode)
+            sendNotification("New Join Request @ " + team.teamName, auth.currentUser.displayName + " has requested to join the team", "info", data.teamLeader, "feed -joinRequest", auth.currentUser.uid)
             onRequestSent("success");
           });
         };
