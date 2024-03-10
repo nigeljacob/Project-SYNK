@@ -106,7 +106,7 @@ const TaskDetails = ({ index, task, team, teamMemberIndex, setViewTaskTrigger, v
             )
           )}
         {Status === "Start" ? (
-          <Tooltip title = {startButton ? "Start Task" : "View Task"}>
+          <Tooltip title = {startButton ? "Start Task" : "View Task details & Progress"}>
             <div >
               {startButton ? <button className="status" onClick={event => {
           let popupLayout = document.getElementById("popupLayout2");
@@ -122,7 +122,7 @@ const TaskDetails = ({ index, task, team, teamMemberIndex, setViewTaskTrigger, v
           taskTrigger([currentTask, team, parseInt(index - 1)])
           handleConfirm()
 
-          }}}>{Status}</button> : <button   className="viewTaskNew">View Button</button>}
+          }}}>{Status}</button> : <button  className="tw-text-cyan-500 tw-bg-black tw-rounded-lg tw-p-1 tw-h-[35px] tw-w-[90px]">Progress</button>}
         </div>
           </Tooltip>
         ) : (
