@@ -23,7 +23,6 @@ const {
   createZipAndUpload,
   getFocusedWindow,
 } = require("../../Backend/src/electronFunctions/ProgressTrackerFunctions");
-const { Task } = require("../../Backend/src/classes");
 
 function createWindow() {
   let mainWindowState = windowStateKeeper({
