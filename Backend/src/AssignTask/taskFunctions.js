@@ -155,7 +155,7 @@ export const updateViewTask = (
                 "info",
                 team.teamLeader.UID,
                 "feed -taskDetailsUpdatedLeader",
-                team.teamLeader.UID
+                auth.currentUser.uid
               );
               callback(true);
             });
@@ -293,7 +293,7 @@ export const startTask = (task, taskIndex, team, teamMemberIndex, onTaskStarted)
                 parseInt(taskIndex + 1) +
                 ".",
               "info",
-              auth.currentUser.uid,
+              team.teamLeader.UID,
               "info",
               team.teamLeader.UID
             );
