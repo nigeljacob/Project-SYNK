@@ -67,11 +67,7 @@ const DeadlineComponent = ({task, closestDate}) => {
         </div>
       </div>
 
-     {task.taskStatus == "Start" ? (
-       <button className="tw-bg-black tw-rounded-[10px] tw-px-[35px] tw-py-[12px]">Start</button>
-     ) : task.taskStatus == "In Progress" ? (
-      <button className="tw-bg-black tw-rounded-[10px] tw-px-[35px] tw-py-[12px]">Continue</button>
-     ): null }
+
     </div>
         </>
       )}

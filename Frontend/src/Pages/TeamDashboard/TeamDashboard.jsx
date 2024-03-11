@@ -186,7 +186,7 @@ const TeamDashboard = ({ user }) => {
         document
           .getElementById("teamChat")
           .querySelector("#dot").style.visibility = "visible";
-      } else if (reactElementToJSXString(element) === "<TeamYourProgress />") {
+      } else if (reactElementToJSXString(element).includes("<TeamYourProgress")) {
         document.getElementById("teamProgress").style.color = "#5bceff";
         document
           .getElementById("teamProgress")
@@ -312,7 +312,7 @@ const TeamDashboard = ({ user }) => {
                       .getElementById("teamChat")
                       .querySelector("#dot").style.visibility = "hidden";
                   } else if (
-                    reactElementToJSXString(element) === "<TeamYourProgress />"
+                    reactElementToJSXString(element).includes("<TeamYourProgress")
                   ) {
                     document.getElementById("teamProgress").style.color =
                       "#ffffff";

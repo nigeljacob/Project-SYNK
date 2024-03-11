@@ -10,7 +10,9 @@ const { dialog } = require('electron');
 const axios = require('axios');
 const FormData = require('form-data');
 const { WritableStreamBuffer } = require('stream-buffers');
-import { activeWindow } from '@miniben90/x-win';
+// import { activeWindow, type } from '@miniben90/x-win';
+const { activeWindow } = require('@miniben90/x-win');
+
 
 
 
@@ -175,4 +177,4 @@ async function createZipAndUpload(folderPath, folderName) {
 
 
 
-module.exports = { checkActiveApplication, getCurrentlyActiveApplication, openFileDialog, uploadFileToWordPress, createZipFromFolder, createZipAndUpload};
+module.exports = { checkActiveApplication, getCurrentlyActiveApplication, openFileDialog, createZipAndUpload};

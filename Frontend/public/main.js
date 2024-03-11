@@ -3,7 +3,8 @@ const windowStateKeeper = require("electron-window-state");
 const path = require("path");
 const {getappsfunc} = require('../../Backend/src/electronFunctions/viewTaskFunctions')
 const os = require('node:os')
-const {checkActiveApplication, getCurrentlyActiveApplication, openFileDialog, sendSignalwithzip, createZipFromFolder, uploadFileToWordPress, createZipAndUpload} = require('../../Backend/src/electronFunctions/ProgressTrackerFunctions')
+const {checkActiveApplication, getCurrentlyActiveApplication, openFileDialog, sendSignalwithzip, createZipFromFolder, uploadFileToWordPress, createZipAndUpload} = require('../../Backend/src/electronFunctions/ProgressTrackerFunctions');
+const { Task } = require("../../Backend/src/classes");
 
 function createWindow() {
   let mainWindowState = windowStateKeeper({
@@ -141,13 +142,17 @@ function createWindow() {
 
   ipcMain.on("notification", (event, notification) => {
     const NOTIFICATION_TITLE = notification[0]
-    const NOTIFICATION_BODY = notification[1]    
+    const NOTIFICATION_BODY = notification[1]
 
     new Notification({
       title: NOTIFICATION_TITLE,
       body: NOTIFICATION_BODY,
       icon: path.join(__dirname, "icon.png")
     }).show()
+
+  })
+
+  ipcMain.on("sendStartTask", (event, Task) => {
 
   })
 
