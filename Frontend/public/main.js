@@ -115,15 +115,6 @@ function createWindow() {
       win.webContents.send("texsssst", appsList)
     })
     .catch(error => console.error("Error:", error));
-
-
-  //   zipFolder('../ViewTaskComponent', "../")
-  //   .then(() => {
-  //       console.log('Folder zipped successfully.');
-  //   })
-  //   .catch((error) => {
-  //       console.error('Error zipping folder:', error);
-  //   });
   });
 
   ipcMain.on("openFileDialog", (event, message) => {

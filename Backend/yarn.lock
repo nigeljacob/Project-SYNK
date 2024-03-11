@@ -430,6 +430,54 @@
     semver "^7.3.5"
     tar "^6.1.11"
 
+"@miniben90/x-win-darwin-arm64@1.7.1":
+  version "1.7.1"
+  resolved "https://registry.yarnpkg.com/@miniben90/x-win-darwin-arm64/-/x-win-darwin-arm64-1.7.1.tgz#3e0dee6e861b528c1ba9850685cce4083d87adb4"
+  integrity sha512-LwVS21ViFhdn3JuwKP3gLdSZ8s2XbhxmebUo2qgTUUa6INSpekV7CDSAYWqw6Ea7T+jlNXJgKN1AYYNQ6sJgzg==
+
+"@miniben90/x-win-darwin-universal@1.7.1":
+  version "1.7.1"
+  resolved "https://registry.yarnpkg.com/@miniben90/x-win-darwin-universal/-/x-win-darwin-universal-1.7.1.tgz#270cdea6878932173ba39ec31236c7198b7a923b"
+  integrity sha512-K3geXQeyNbEJveYPK2egXsZtHeQYwEZYDXmbDV1wZljzV9I5yIx1D8vE/pzjUPOPluLKiDzbGdpMHOrgATU5Cg==
+
+"@miniben90/x-win-darwin-x64@1.7.1":
+  version "1.7.1"
+  resolved "https://registry.yarnpkg.com/@miniben90/x-win-darwin-x64/-/x-win-darwin-x64-1.7.1.tgz#4d7a5a0f9fa0c39cae30e9e25f7b0beca5aa2bff"
+  integrity sha512-ol++FgV9b0iRDgBBG1M0t4nCOdH640M1YcvkoeSF/a/BmiiHfi+5Dcxjp31eX6uFCoptG+UKO/Gtz+c/dlfbyA==
+
+"@miniben90/x-win-linux-x64-gnu@1.7.1":
+  version "1.7.1"
+  resolved "https://registry.yarnpkg.com/@miniben90/x-win-linux-x64-gnu/-/x-win-linux-x64-gnu-1.7.1.tgz#77cf380cec2d7e2b79c688479bf54a3db473f9c8"
+  integrity sha512-LvkVOKrvrbzNl33M8hRv8+spXl7RurqfjfCJrsH6nBeU9ORqkL5GOmabsPhpMoSjwA2StQRgkJteH+1VBh+bZw==
+
+"@miniben90/x-win-win32-arm64-msvc@1.7.1":
+  version "1.7.1"
+  resolved "https://registry.yarnpkg.com/@miniben90/x-win-win32-arm64-msvc/-/x-win-win32-arm64-msvc-1.7.1.tgz#37aed820ac744829a6f8793d427bdf7a17c51f50"
+  integrity sha512-5zxnvh8FD9hcUrdwWeBTlX5khHyGDt5D7M10a29GV5YuFlvSh8V8iJitYVNlvzW3H3oZDklOwBjEmdf85KI3Qg==
+
+"@miniben90/x-win-win32-ia32-msvc@1.7.1":
+  version "1.7.1"
+  resolved "https://registry.yarnpkg.com/@miniben90/x-win-win32-ia32-msvc/-/x-win-win32-ia32-msvc-1.7.1.tgz#62e1379c5d1143568b8bc5910232c7c057d6bdcc"
+  integrity sha512-pUmTVLHQPoAPjonUa0eeh4Xd+VIcr0I52+DXgSEe4Ya4LktuSGUOZOZof2ztCf/mxi6w/C4+xNYUwHslV9+hSA==
+
+"@miniben90/x-win-win32-x64-msvc@1.7.1":
+  version "1.7.1"
+  resolved "https://registry.yarnpkg.com/@miniben90/x-win-win32-x64-msvc/-/x-win-win32-x64-msvc-1.7.1.tgz#89c071528edc84ec808063b4dc1a19628d3f961c"
+  integrity sha512-D3o6pLgZYBd1eorkpA4MFtFfQbY9OIgzX432ISvbEEQoATMCLHpvhg7MaClqPGoTqEUr3bGY/tVdBpDZwpYCvQ==
+
+"@miniben90/x-win@^1.7.1":
+  version "1.7.1"
+  resolved "https://registry.yarnpkg.com/@miniben90/x-win/-/x-win-1.7.1.tgz#74ed41ec6873f9a09067154f0a4e2ea68972d898"
+  integrity sha512-JoTG6r671mIeWw0096+km95cOSYj4Xqzf0ALobeWdqqdUTB0T+QNqceEvf87oKsecuwcMoPFsPQAeBjlMb156Q==
+  optionalDependencies:
+    "@miniben90/x-win-darwin-arm64" "1.7.1"
+    "@miniben90/x-win-darwin-universal" "1.7.1"
+    "@miniben90/x-win-darwin-x64" "1.7.1"
+    "@miniben90/x-win-linux-x64-gnu" "1.7.1"
+    "@miniben90/x-win-win32-arm64-msvc" "1.7.1"
+    "@miniben90/x-win-win32-ia32-msvc" "1.7.1"
+    "@miniben90/x-win-win32-x64-msvc" "1.7.1"
+
 "@npmcli/fs@^2.1.0":
   version "2.1.2"
   resolved "https://registry.npmjs.org/@npmcli/fs/-/fs-2.1.2.tgz"
