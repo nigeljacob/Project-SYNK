@@ -24,13 +24,13 @@ const ActivityFeedComponent = ({ isLast, notification}) => {
                 <img
                   src= {userProfile}
                   alt=""
-                  className="tw-rounded-[50%] tw-object-cover"
+                  className="tw-rounded-[50%] tw-object-cover tw-w-[35px] tw-h-[35px]"
               />
               ) : (
                 <img
                   src="https://www.w3schools.com/howto/img_avatar.png"
                   alt=""
-                  className="tw-rounded-[50%] tw-object-cover"
+                  className="tw-rounded-[50%] tw-object-cover tw-w-[35px] tw-h-[35px]"
                 />
               )
             ) : (
@@ -53,13 +53,13 @@ const ActivityFeedComponent = ({ isLast, notification}) => {
                       <img
                         src= {userProfile}
                         alt=""
-                        className="tw-rounded-[50%] tw-object-cover"
+                        className="tw-rounded-[50%] tw-object-cover tw-w-[35px] tw-h-[35px]"
                     />
                     ) : (
                       <img
                         src="https://www.w3schools.com/howto/img_avatar.png"
                         alt=""
-                        className="tw-rounded-[50%] tw-object-cover"
+                        className="tw-rounded-[50%] tw-object-cover tw-w-[35px] tw-h-[35px]"
                       />
                     )
                   ) : (
@@ -68,13 +68,13 @@ const ActivityFeedComponent = ({ isLast, notification}) => {
                         <img
                           src= {userProfile}
                           alt=""
-                          className="tw-rounded-[50%] tw-object-cover"
+                          className="tw-rounded-[50%] tw-object-cover tw-w-[35px] tw-h-[35px]"
                       />
                       ) : (
                         <img
                           src="https://www.w3schools.com/howto/img_avatar.png"
                           alt=""
-                          className="tw-rounded-[50%] tw-object-cover"
+                          className="tw-rounded-[50%] tw-object-cover tw-w-[35px] tw-h-[35px]"
                         />
                       )
                     ) : null

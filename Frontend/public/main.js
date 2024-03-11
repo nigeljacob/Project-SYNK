@@ -201,26 +201,27 @@ function createWindow() {
             
             if(taskApplications.some((appItem) => appItem.name.includes(currentWindow.info.name) || currentWindow.info.name.includes(appItem.name))) {
 
+              let appItemName = taskApplications[taskApplications.findIndex((appItem) => appItem.name.includes(currentWindow.info.name) || currentWindow.info.name.includes(appItem.name))].name
+
               if (trackedApplications.find((app) => app.appName === currentWindow.info.name)) {
                 let index = trackedApplications.findIndex((app) => app.appName === currentWindow.info.name);
                 trackedApplications[index].endTime = null
                 trackedApplications[index].startTime = new Date();
                 currentlyTrackingApplication = trackedApplications[index]
               } else {
-                currentlyTrackingApplication = {appName: currentWindow.info.name, startTime: new Date(), endTime: null, duration: 0}
+                currentlyTrackingApplication = {appName: appItemName, startTime: new Date(), endTime: null, duration: 0}
                 trackedApplications.push(currentlyTrackingApplication);
               }
             }
-            
           }
         } else {
           if(taskApplications.some((appItem) => appItem.name.includes(currentWindow.info.name) || currentWindow.info.name.includes(appItem.name))) {
-            currentlyTrackingApplication = {appName: currentWindow.info.name, startTime: new Date(), endTime: null, duration: 0}
+            let appItemName = taskApplications[taskApplications.findIndex((appItem) => appItem.name.includes(currentWindow.info.name) || currentWindow.info.name.includes(appItem.name))].name
+            currentlyTrackingApplication = {appName: appItemName, startTime: new Date(), endTime: null, duration: 0}
             trackedApplications.push(currentlyTrackingApplication);
           }
         }
         win.webContents.send("activeApp", {...Task, currentlyTrackingApplication: currentlyTrackingApplication})
-        console.log(trackedApplications)
 
     }, 1000);
   });
