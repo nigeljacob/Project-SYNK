@@ -192,6 +192,40 @@ function App() {
     })
   }, [])
 
+  const [currentlyWorkingApplication, setCurrentlyWorkingApplication] = useState("")
+
+  useEffect(() => {
+    electronApi.receiveStartTaskFromMain((data) => {
+        if(data.currentlyTrackingApplication.appName != currentlyWorkingApplication) {
+          setCurrentlyWorkingApplication(data.currentlyTrackingApplication.appName)
+          console.log(data.currentlyTrackingApplication.appName)
+          updateDatabase(
+            "Teams/" +
+              auth.currentUser.uid +
+              "/" +
+              data.team.teamCode +
+              "/teamMemberList/" +
+              data.teamMemberIndex +
+              "/taskList/" +
+              parseInt(data.taskIndex - 1) + "/progress",
+            {lastApplication: data.currentlyTrackingApplication.appName}
+          ).then(() => {
+            updateDatabase(
+              "Teams/" +
+                data.team.teamLeader.UID +
+                "/" +
+                data.team.teamCode +
+                "/teamMemberList/" +
+                data.teamMemberIndex +
+                "/taskList/" +
+                parseInt(data.taskIndex - 1) + "/progress",
+              {lastApplication: data.currentlyTrackingApplication.appName}
+            )
+          })
+        }
+    })
+  }, [])
+
 
   let [notifications, setNotifications] = useState([]);
 
