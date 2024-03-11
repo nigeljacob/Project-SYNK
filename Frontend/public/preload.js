@@ -52,6 +52,10 @@ contextBridge.exposeInMainWorld('electronApi', {
 
   sendConfirmBoxSignalToMain: (message) => {
     ipcRenderer.send("showConfirmBox", message)
+  },
+
+  sendTaskStarted: (task) => {
+    ipcRenderer.send("sendStartTask", task)
   }
   
 });

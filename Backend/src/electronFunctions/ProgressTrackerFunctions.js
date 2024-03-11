@@ -10,7 +10,13 @@ const { dialog } = require('electron');
 const axios = require('axios');
 const FormData = require('form-data');
 const { WritableStreamBuffer } = require('stream-buffers');
+// import { activeWindow, type } from '@miniben90/x-win';
+const { activeWindow } = require('@miniben90/x-win');
 
+
+
+
+// to get currently active app on mac
 function getActiveWindowMac() {
     return new Promise((resolve, reject) => {
         exec('osascript -e \'tell application "System Events" to name of application processes whose frontmost is true\'', (err, stdout, stderr) => {
@@ -24,6 +30,7 @@ function getActiveWindowMac() {
     });
 }
 
+// to get currently active app on mac
 function checkActiveApplication() {
     getActiveWindowMac()
         .then(activeWindow => {
@@ -36,34 +43,35 @@ function checkActiveApplication() {
 }
 
 
-// Function to get currently running applications
-function getRunningApplications() {
-    return new Promise((resolve, reject) => {
-        exec('tasklist /fo csv /nh', (error, stdout, stderr) => {
-            if (error) {
-                reject(error);
-                return;
-            }
-            if (stderr) {
-                reject(stderr);
-                return;
-            }
+// // Function to get currently running applications
+// function getRunningApplications() {
+//     return new Promise((resolve, reject) => {
+//         exec('tasklist /fo csv /nh', (error, stdout, stderr) => {
+//             if (error) {
+//                 reject(error);
+//                 return;
+//             }
+//             if (stderr) {
+//                 reject(stderr);
+//                 return;
+//             }
 
-            // Parse the stdout to extract application names
-            const applications = stdout
-                .split('\r\n')
-                .filter(Boolean) // Remove empty lines
-                .map(line => {
-                    const columns = line.split('","');
-                    return columns[0].replace('"', ''); // Extract application name
-                });
+//             // Parse the stdout to extract application names
+//             const applications = stdout
+//                 .split('\r\n')
+//                 .filter(Boolean) // Remove empty lines
+//                 .map(line => {
+//                     const columns = line.split('","');
+//                     return columns[0].replace('"', ''); // Extract application name
+//                 });
 
-            resolve(applications);
-        });
-    });
-}
+//             resolve(applications);
+//         });
+//     });
+// }
 
-function getActiveWindow() {
+// ti get currently running apps as a list on windows
+function getRunningApps() {
     return new Promise((resolve, reject) => {
         exec('powershell.exe "Get-Process | Where-Object { $_.MainWindowHandle -ne 0 -and $_.MainWindowTitle -ne \'\' } | Select-Object MainWindowTitle"', (error, stdout, stderr) => {
             if (error) {
@@ -83,46 +91,11 @@ function getActiveWindow() {
     });
 }
 
-
-function zipFolder(sourceFolder, outputZip) {
-    return new Promise((resolve, reject) => {
-        // Create a write stream to the output zip file
-        const output = fs.createWriteStream(outputZip);
-        const archive = archiver('zip', {
-            zlib: { level: 9 } // set compression level
-        });
-
-        // Listen for all archive data to be written
-        output.on('close', () => {
-            console.log(archive.pointer() + ' total bytes');
-            console.log('archiver has been finalized and the output file descriptor has closed.');
-
-            resolve();
-        });
-
-        // Catch any errors
-        archive.on('error', (err) => {
-            reject(err);
-        });
-
-        // Pipe archive data to the file
-        archive.pipe(output);
-
-        // Add entire folder to the archive
-        archive.directory(sourceFolder, false);
-
-        // Finalize the archive (create the zip file)
-        archive.finalize();
-    });
-}
-
-
-
+// to get currently active apps all as a list on windows
 async function getCurrentlyActiveApplication() {
     try {
-        const runningApplications =  getRunningApplications();
 
-        const activeWindow = await getActiveWindow();
+        const activeWindow = await getRunningApps();
 
         let activeAppList = []
         
@@ -136,6 +109,11 @@ async function getCurrentlyActiveApplication() {
     } catch (error) {
         console.error('Error:', error);
     }
+}
+
+function getFocusedWindow() {
+    const currentWindow = activeWindow();
+    return currentWindow
 }
 
 // Function to open a file dialog and return the selected file path
@@ -153,53 +131,8 @@ async function openFileDialog() {
       return null;
   }
 
- // Function to create a zip file from a folder
-function createZipFromFolder(folderPath, callback) {
-    const output = fs.createWriteStream(`${folderPath}.zip`);
-    const archive = archiver('zip');
 
-    output.on('close', () => {
-        console.log('Zip file created successfully.');
-        callback(null, `${folderPath}.zip`);
-    });
-
-    archive.on('error', err => {
-        console.error('Error creating zip file:', err);
-        callback(err);
-    });
-
-    archive.pipe(output);
-    archive.directory(folderPath, false);
-    archive.finalize();
-}
-
-// Function to send a file to the WordPress REST API endpoint
-async function uploadFileToWordPress(filePath) {
-    try {
-        // Read the file as a buffer
-        const fileData = fs.readFileSync(filePath);
-
-        // Prepare form data
-        const formData = new FormData();
-        formData.append('file', fileData, {
-            filename: 'myfile.zip', // Set the desired filename
-            contentType: 'application/zip' // Set the MIME type
-        });
-
-        // Send the file using Axios
-        const response = await axios.post("https://nnjtrading.com/wp-json/myapp/v1/upload-file", formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-        });
-
-        console.log('File uploaded successfully:', response.data);
-    } catch (error) {
-        console.error('Error uploading file:', error.message);
-    }
-}
-
-// Function to create a zip file from a folder and upload it to WordPress
+// Function to create a zip file from a folder and upload it to WordPress REST API endpoint
 async function createZipAndUpload(folderPath, folderName) {
     return new Promise((resolve, reject) => {
         // Create a zip buffer
@@ -244,4 +177,4 @@ async function createZipAndUpload(folderPath, folderName) {
 
 
 
-module.exports = { checkActiveApplication, getCurrentlyActiveApplication, openFileDialog, uploadFileToWordPress, createZipFromFolder, createZipAndUpload};
+module.exports = { checkActiveApplication, getCurrentlyActiveApplication, openFileDialog, createZipAndUpload, getFocusedWindow };
