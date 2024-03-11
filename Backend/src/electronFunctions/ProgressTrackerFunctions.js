@@ -10,6 +10,8 @@ const { dialog } = require('electron');
 const axios = require('axios');
 const FormData = require('form-data');
 const { WritableStreamBuffer } = require('stream-buffers');
+import { activeWindow } from '@miniben90/x-win';
+
 
 
 // to get currently active app on mac
@@ -107,7 +109,10 @@ async function getCurrentlyActiveApplication() {
     }
 }
 
-
+function getFocusedWindow() {
+    const currentWindow = activeWindow();
+    return currentWindow
+}
 
 // Function to open a file dialog and return the selected file path
 async function openFileDialog() {
