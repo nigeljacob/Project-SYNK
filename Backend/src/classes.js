@@ -24,7 +24,7 @@ export const Team = (
     gitConfig: gitConfig,
     teamStatus: teamStatus,
     teamPendingInvites: teamPendingInvites,
-    startDate: startDate
+    startDate: startDate,
   };
 };
 
@@ -34,24 +34,37 @@ export const User = (uid, email, username, profilePicture, userStatus) => {
     email: email,
     username: username,
     profile: profilePicture,
-    userStatus: userStatus
+    userStatus: userStatus,
   };
 };
 
 export const Task = (
-  taskName, taskDesc, documentFilePath, applicationsList, progress, assignedDate, deadline, taskCompletedDate, taskStatus 
+  taskName,
+  taskDesc,
+  documentFilePath,
+  applicationsList,
+  progress,
+  assignedDate,
+  deadline,
+  taskCompletedDate,
+  taskStatus,
+  startedDate,
+  teamName,
+  teamCode
 ) => {
-
   return {
-    taskName: taskName, 
-    taskDesc: taskDesc, 
-    documentFilePath: documentFilePath, 
-    applicationsList: applicationsList, 
-    progress: progress, 
-    assignedDate: assignedDate, 
-    deadline: deadline, 
-    taskCompletedDate: taskCompletedDate, 
-    taskStatus: taskStatus 
+    taskName: taskName,
+    taskDesc: taskDesc,
+    documentFilePath: documentFilePath,
+    applicationsList: applicationsList,
+    progress: progress,
+    assignedDate: assignedDate,
+    deadline: deadline,
+    taskCompletedDate: taskCompletedDate,
+    taskStatus: taskStatus,
+    startedDate: startedDate,
+    teamName: teamName,
+    teamCode: teamCode,
   };
 };
 
@@ -73,14 +86,15 @@ export const Message = (
     date: date,
     key: key,
     senderEmail: senderEmail,
-    senderName: senderName
+    senderName: senderName,
   };
 };
 
-export const Progress = (taskLength, folderVersions, applicationTimeList) => {
+export const Progress = (taskLength, folderVersions, applicationTimeList, lastApplication) => {
   return {
     taskLength: taskLength,
     folderVersions: folderVersions,
-    applicationTimeList: applicationTimeList
+    applicationTimeList: applicationTimeList,
+    lastApplication: lastApplication
   };
 };

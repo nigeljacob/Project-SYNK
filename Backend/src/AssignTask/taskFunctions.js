@@ -22,7 +22,10 @@ export const assignTask = (
     getTimeDate(),
     deadline,
     "",
-    "Start"
+    "Start",
+    "",
+    team.teamName,
+    team.teamCode
   );
 
   const onDataReceived = (taskList) => {
@@ -92,7 +95,7 @@ export const updateViewTask = (
             applicationTimeList.push(dict);
           }
 
-          task.progress = Progress("", [""], applicationTimeList);
+          task.progress = Progress("", [""], applicationTimeList, "");
         } else {
           let applicationTimeList = task.progress.applicationTimeList;
 

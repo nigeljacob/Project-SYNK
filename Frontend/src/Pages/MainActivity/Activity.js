@@ -245,7 +245,7 @@ function Home(props) {
 
                               <div>
                                 <h3 className="tw-ml-[10px] tw-text-[13px]">
-                                  {task.taskName}
+                                  {task.taskName} @ {task.teamName}
                                 </h3>
                                 <h3 className="tw-ml-[10px] tw-text-[10px] tw-text-[#A7A7A7]">
                                   {" "}
@@ -288,7 +288,7 @@ function Home(props) {
 
                               <div>
                                 <h3 className="tw-ml-[10px] tw-text-[13px]">
-                                  {task.taskName}
+                                  {task.taskName} @ {task.teamName}
                                 </h3>
                                 <h3 className="tw-ml-[10px] tw-text-[10px] tw-text-[#A7A7A7]">
                                   {" "}

@@ -177,4 +177,4 @@ async function createZipAndUpload(folderPath, folderName) {
 
 
 
-module.exports = { checkActiveApplication, getCurrentlyActiveApplication, openFileDialog, createZipAndUpload};
+module.exports = { checkActiveApplication, getCurrentlyActiveApplication, openFileDialog, createZipAndUpload, getFocusedWindow };
