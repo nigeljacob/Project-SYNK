@@ -183,8 +183,7 @@ function createWindow() {
 
     setInterval(() => {
       let currentWindow = getFocusedWindow();
-      
-      if(taskApplications.some((appItem) => appItem.name.includes(currentWindow.info.name) || currentWindow.info.name.includes(appItem.name))) {
+  
         if(trackedApplications.length > 0) {
           if (currentlyTrackingApplication.appName !== currentWindow.info.name) {
             currentlyTrackingApplication.endTime = new Date();
@@ -196,24 +195,28 @@ function createWindow() {
               trackedApplications[oldIndex].endTime = currentlyTrackingApplication.endTime;
               trackedApplications[oldIndex].duration = currentlyTrackingApplication.duration;
             }
-     
-            if (trackedApplications.find((app) => app.appName === currentWindow.info.name)) {
-              let index = trackedApplications.findIndex((app) => app.appName === currentWindow.info.name);
-              trackedApplications[index].endTime = null
-              trackedApplications[index].startTime = new Date();
-              currentlyTrackingApplication = trackedApplications[index]
-            } else {
-              currentlyTrackingApplication = {appName: currentWindow.info.name, startTime: new Date(), endTime: null, duration: 0}
-              trackedApplications.push(currentlyTrackingApplication);
+            
+            if(taskApplications.some((appItem) => appItem.name.includes(currentWindow.info.name) || currentWindow.info.name.includes(appItem.name))) {
+              if (trackedApplications.find((app) => app.appName === currentWindow.info.name)) {
+                let index = trackedApplications.findIndex((app) => app.appName === currentWindow.info.name);
+                trackedApplications[index].endTime = null
+                trackedApplications[index].startTime = new Date();
+                currentlyTrackingApplication = trackedApplications[index]
+              } else {
+                currentlyTrackingApplication = {appName: currentWindow.info.name, startTime: new Date(), endTime: null, duration: 0}
+                trackedApplications.push(currentlyTrackingApplication);
+              }
             }
-    
+            
           }
         } else {
-          currentlyTrackingApplication = {appName: currentWindow.info.name, startTime: new Date(), endTime: null, duration: 0}
-          trackedApplications.push(currentlyTrackingApplication);
+          if(taskApplications.some((appItem) => appItem.name.includes(currentWindow.info.name) || currentWindow.info.name.includes(appItem.name))) {
+            currentlyTrackingApplication = {appName: currentWindow.info.name, startTime: new Date(), endTime: null, duration: 0}
+            trackedApplications.push(currentlyTrackingApplication);
+          }
         }
         win.webContents.send("activeApp", {...Task, currentlyTrackingApplication: currentlyTrackingApplication})
-      }
+      
 
     }, 1000);
   });
