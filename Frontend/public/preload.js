@@ -56,8 +56,13 @@ contextBridge.exposeInMainWorld('electronApi', {
 
   sendTaskStarted: (task) => {
     ipcRenderer.send("sendStartTask", task)
+  },
+
+  receiveStartTaskFromMain: (callback) => {
+    ipcRenderer.on("activeApp", (event, data) => {
+      callback(data)
+    })
   }
-  
 });
 
 console.log("preload script loaded")

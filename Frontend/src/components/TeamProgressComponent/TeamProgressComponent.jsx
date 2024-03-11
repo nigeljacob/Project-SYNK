@@ -11,23 +11,29 @@ const TeamProgressComponent = ({
   const [status, setStatus] = useState("Offline");
   const [profilePic, setProfilePic] = useState("");
   
-  let StartedTasks = 0;
-  let CompletedTasks = 0;
+  let [StartedTasks, setStartedTasks] = 0;
+  let [CompletedTasks, setCompletedTasks] = 0;
   let StartedTasksIndex = [];
 
   if(tasks[0] === "") {
     tasks.splice(0)
   }
 
+  let tempStartedTasks = 0
+  let tempCompletedTasks = 0
   
   for(let i = 0; i < tasks.length; i++) {
-    if(tasks.taskStatus == "Continue") {
-      StartedTasks++
-      StartedTasksIndex.push(i)
-    } else if(tasks.taskStatus == "Completed") {
-      CompletedTasks++
+    if(tasks.taskStatus === "Continue") {
+      tempStartedTasks++
+    } else if(tasks.taskStatus === "Completed") {
+      tempCompletedTasks++
     }
   }
+
+  setTimeout(() => {
+    setStartedTasks(tempStartedTasks)
+    setCompletedTasks(tempCompletedTasks)
+  }, 500)
 
 
     useEffect(() => {
@@ -84,7 +90,40 @@ const TeamProgressComponent = ({
         <div className="tw-mt-[10px] tw-flex tw-flex-col tw-gap-[5px]">
           
           {StartedTasks > 0 ? (
-            <></> 
+            <>
+              {member.status.split(" ")[0].toUpperCase() === "WORKING" ? (
+                <>
+                  <div className="tw-flex tw-gap-[8px]">
+                    <img src={timeClock} alt="time clock" />
+                    <p className="tw-text-[14px]">Working on task {member.status.split(" ")[member.status.split(" ").length - 1]}</p>
+                    </div>
+                    <div className="tw-flex tw-gap-[8px]">
+                    <img src={timeClock} alt="time clock" />
+                    <p className="tw-text-[14px]">Working on {tasks[parseInt(member.status.split(" ")[member.status.split(" ").length - 1])].progress.lastApplication}</p>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="tw-flex tw-gap-[8px]">
+                    <img src={timeClock} alt="time clock" />
+                    <p className="tw-text-[14px]">Lastly worked on task {member.status.split(" ")[member.status.split(" ").length - 1]}</p>
+                    </div>
+                    <div className="tw-flex tw-gap-[8px]">
+                    <img src={timeClock} alt="time clock" />
+                    <p className="tw-text-[14px]">Lastly worked on {tasks[parseInt(member.status.split(" ")[member.status.split(" ").length - 1])].progress.lastApplication}</p>
+                  </div>
+                </>
+              )}
+              {tasks.length == 1 ? (
+                <p>No More Tasks assigned yet</p>
+              ): (
+                tasks.length < 2 ? (
+                  <p className="tw-text-[14px]">{tasks.length} other task to complete</p>
+               ) : (
+                 <p className="tw-text-[14px]">{tasks.length} other tasks to complete</p>
+               )
+              )}
+            </> 
             // have to implement
           ) : (
             <div>

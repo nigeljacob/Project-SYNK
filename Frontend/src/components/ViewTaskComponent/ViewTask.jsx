@@ -94,7 +94,6 @@ export default function ViewTask(props) {
           })
         } else {
           sendNotification("File path is empty", "Fill in the file path to update task details", "danger",auth.currentUser.uid, "error", auth.currentUser.uid)
-          console.log("DKHBUHD")
         }
     } else {
       sendNotification("No Applications Selected", "Select applications to update task details", "danger", auth.currentUser.uid, "error", auth.currentUser.uid)

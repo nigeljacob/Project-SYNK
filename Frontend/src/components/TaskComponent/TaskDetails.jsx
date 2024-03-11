@@ -96,7 +96,7 @@ const TaskDetails = ({
               </option>
             </select>
           </Tooltip>
-        ) : Status === "Continue" ? (
+        ) : Status === "Continue" || Status === "In Progress" ? (
           <select
             name="status"
             onChange={(event) => setStatus(event.target.value)}
@@ -162,17 +162,23 @@ const TaskDetails = ({
               )}
             </div>
           </Tooltip>
-        ) : Status === "Continue" ? (
+        ) : Status === "Continue" || Status === "In Progress" ? (
           <div className="tw-flex tw-items-center">
-            <button className="status" onClick={event => {
+            {Status === "In Progress" ? (
+            (
+              <button className="status tw-text-white">Pause</button>
+            )
+            ) : (
+              <button className="status" onClick={event => {
 
-              startTask(task, parseInt(index - 1), team, teamMemberIndex, (data) => {
-                if(data != null) {
-                  electronApi.sendTaskStarted(task);
-                }
-              })
+                startTask(task, parseInt(index - 1), team, teamMemberIndex, (data) => {
+                  if(data != null) {
+                    electronApi.sendTaskStarted({task: task, taskIndex: index, team: team, teamMemberIndex: teamMemberIndex});
+                  }
+                })
 
-            }}>{Status}</button>
+                }}>{Status}</button>
+            )}
             <MdEdit
               className="tw-w-[20px] tw-h-[20px] tw-ml-[10px] tw-cursor-pointer"
               onClick={(event) => {
