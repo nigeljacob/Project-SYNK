@@ -166,7 +166,7 @@ const TaskDetails = ({
           <div className="tw-flex tw-items-center">
             <button className="status" onClick={event => {
 
-              startTask(task, index, team, teamMemberIndex, (data) => {
+              startTask(task, parseInt(index - 1), team, teamMemberIndex, (data) => {
                 if(data != null) {
                   electronApi.sendTaskStarted(task);
                 }
