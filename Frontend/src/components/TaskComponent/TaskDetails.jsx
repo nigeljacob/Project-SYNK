@@ -48,7 +48,7 @@ const TaskDetails = ({
 
   useEffect(() => {
     electronApi.receivePauseStatusFromMain((data) => {
-      PauseTask(task, parseInt(index - 1), team, teamMemberIndex, (data) => {
+      PauseTask(task, parseInt(index - 1), team, teamMemberIndex, data, (data) => {
         
       })
     })
@@ -178,7 +178,9 @@ const TaskDetails = ({
           <div className="tw-flex tw-items-center">
             {Status === "In Progress" ? (
             (
-              <button className="status tw-text-white">Pause</button>
+              <button className="status tw-text-white" onClick={event => {
+                electronApi.sendPauseTaskToMain("pauseSignal")
+              }}>Pause</button>
             )
             ) : (
               <button className="status" onClick={event => {
@@ -215,7 +217,7 @@ const TaskDetails = ({
             (
               <div>
                 <button className="status tw-text-white" onClick={event => {
-
+                    electronApi.sendPauseTaskToMain("pauseSignal")
                 }}>Pause</button>
               </div>
             )

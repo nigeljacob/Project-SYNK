@@ -183,10 +183,15 @@ function createWindow() {
 
   let idleTrackingInterval;
 
+  let trackedApplications = [];
+
+  let currentlyTrackingApplication = {};
+
   ipcMain.on("sendStartTask", (event, Task) => {
     // start tracking the windows
-    let currentlyTrackingApplication = {};
-    let trackedApplications = [];
+    currentlyTrackingApplication = {};
+
+    trackedApplications = [];
 
     let taskApplications = Task.task.applicationsList
 
@@ -258,6 +263,8 @@ function createWindow() {
             trackedApplications.push(currentlyTrackingApplication);
             // console.log(currentWindow.info.name + "length: " + currentWindow.info.name.length)
 
+            console.log("firstTime");
+
           }
           else{
             if(!idleDetected) {
@@ -308,7 +315,24 @@ function createWindow() {
 ipcMain.on("sendPauseTaskToMain", (event, message) => {
     clearInterval(idleTrackingInterval)
     clearInterval(appTrackingInterval)
-    win.webContents.send("sendIntervalsPaused", "paused")
+
+    currentlyTrackingApplication.endTime = new Date();
+    let difference = currentlyTrackingApplication.endTime - currentlyTrackingApplication.startTime;
+    console.log(difference);
+    console.log(currentlyTrackingApplication.duration);//this the problem
+    currentlyTrackingApplication.duration = currentlyTrackingApplication.duration + difference;
+    console.log(currentlyTrackingApplication.duration);
+    
+    let oldIndex = trackedApplications.findIndex((app) => app.appName === currentlyTrackingApplication.appName);
+    if(oldIndex != -1) {
+      trackedApplications[oldIndex].endTime = currentlyTrackingApplication.endTime;
+      trackedApplications[oldIndex].duration = currentlyTrackingApplication.duration;
+    }
+
+    console.log(currentlyTrackingApplication)
+    win.webContents.send("sendIntervalsPaused", trackedApplications)
+    trackedApplications = []
+    currentlyTrackingApplication = {}
 })
 
 ipcMain.on("idleCloseClicked", (event, boolean) => {
