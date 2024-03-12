@@ -22,6 +22,7 @@ const {
   uploadFileToWordPress,
   createZipAndUpload,
   getFocusedWindow,
+  idleDetection
 } = require("../../Backend/src/electronFunctions/ProgressTrackerFunctions");
 
 function createWindow() {
@@ -132,10 +133,10 @@ function createWindow() {
   });
 
   ipcMain.on("viewTask", (event, message) => {
-    console.log("Received message from renderer process:");
+    // console.log("Received message from renderer process:");
     getappsfunc()
       .then((appsList) => {
-        console.log(appsList);
+        // console.log(appsList);
         win.webContents.send("texsssst", appsList);
       })
       .catch((error) => console.error("Error:", error));
@@ -183,7 +184,7 @@ function createWindow() {
 
     setInterval(() => {
       let currentWindow = getFocusedWindow();
-  
+  idleDetection("start")
         if(trackedApplications.length > 0) {
           if (currentlyTrackingApplication.appName !== currentWindow.info.name) {
 
@@ -199,7 +200,9 @@ function createWindow() {
               }
             }
             
-            if(taskApplications.some((appItem) => appItem.name.includes(currentWindow.info.name) || currentWindow.info.name.includes(appItem.name))) {
+            if(taskApplications.some((appItem) => appItem.name.includes(currentWindow.info.name) || currentWindow.info.name.includes(appItem.name)) && currentWindow.info.name.length != 0) {
+
+              // idleDetection("start")
 
               let appItemName = taskApplications[taskApplications.findIndex((appItem) => appItem.name.includes(currentWindow.info.name) || currentWindow.info.name.includes(appItem.name))].name
 
@@ -212,19 +215,33 @@ function createWindow() {
                 currentlyTrackingApplication = {appName: appItemName, startTime: new Date(), endTime: null, duration: 0}
                 trackedApplications.push(currentlyTrackingApplication);
               }
+              // console.log(currentWindow.info.name + "length: " + currentWindow.info.name.length)
+            }
+            else {
+              idleDetection("stop")
             }
           }
         } else {
-          if(taskApplications.some((appItem) => appItem.name.includes(currentWindow.info.name) || currentWindow.info.name.includes(appItem.name))) {
+          if(taskApplications.some((appItem) => appItem.name.includes(currentWindow.info.name) || currentWindow.info.name.includes(appItem.name)) && currentWindow.info.name.length != 0) {
+
+            // idleDetection("start")
+
             let appItemName = taskApplications[taskApplications.findIndex((appItem) => appItem.name.includes(currentWindow.info.name) || currentWindow.info.name.includes(appItem.name))].name
             currentlyTrackingApplication = {appName: appItemName, startTime: new Date(), endTime: null, duration: 0}
             trackedApplications.push(currentlyTrackingApplication);
+            // console.log(currentWindow.info.name + "length: " + currentWindow.info.name.length)
+
+          }
+          else{
+            idleDetection("stop")
           }
         }
         win.webContents.send("activeApp", {...Task, currentlyTrackingApplication: currentlyTrackingApplication})
 
+
     }, 1000);
-  });
+
+});
 }
 
 app.on("ready", createWindow);
