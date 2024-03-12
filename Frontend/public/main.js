@@ -187,15 +187,23 @@ function createWindow() {
 
   let currentlyTrackingApplication = {};
 
+  let notCurrentlyTrackingApplication = {};
+
+  let isCurrentApp = false;
+
   ipcMain.on("sendStartTask", (event, Task) => {
     // start tracking the windows
     currentlyTrackingApplication = {};
+
+    console.log(currentlyTrackingApplication);
 
     trackedApplications = [];
 
     let taskApplications = Task.task.applicationsList
 
     let idleDetected = false;
+
+    isCurrentApp = false;
 
     appTrackingInterval = setInterval(() => {
       let currentWindow = getFocusedWindow();
@@ -216,21 +224,25 @@ function createWindow() {
         if(trackedApplications.length > 0) {
           if (currentlyTrackingApplication.appName !== currentWindow.info.name) {
 
-            if(taskApplications.some((appItem) => appItem.name.includes(currentlyTrackingApplication.appName) || currentlyTrackingApplication.appName.includes(appItem.name))) {
-              currentlyTrackingApplication.endTime = new Date();
-              let difference = currentlyTrackingApplication.endTime - currentlyTrackingApplication.startTime;
-              currentlyTrackingApplication.duration = currentlyTrackingApplication.duration + difference;
-              
-              let oldIndex = trackedApplications.findIndex((app) => app.appName === currentlyTrackingApplication.appName);
-              if(oldIndex != -1) {
-                trackedApplications[oldIndex].endTime = currentlyTrackingApplication.endTime;
-                trackedApplications[oldIndex].duration = currentlyTrackingApplication.duration;
+            if(isCurrentApp) {
+              console.log("dhiujhdk");
+              if(taskApplications.some((appItem) => appItem.name.includes(currentlyTrackingApplication.appName) ||  currentlyTrackingApplication.appName.includes(appItem.name))) {
+                currentlyTrackingApplication.endTime = new Date();
+                let difference = currentlyTrackingApplication.endTime - currentlyTrackingApplication.startTime;
+                currentlyTrackingApplication.duration = currentlyTrackingApplication.duration + difference;
+                
+                let oldIndex = trackedApplications.findIndex((app) => app.appName === currentlyTrackingApplication.appName);
+                if(oldIndex != -1) {
+                  trackedApplications[oldIndex].endTime = currentlyTrackingApplication.endTime;
+                  trackedApplications[oldIndex].duration = currentlyTrackingApplication.duration;
+                }
               }
             }
             
             if(taskApplications.some((appItem) => appItem.name.includes(currentWindow.info.name) || currentWindow.info.name.includes(appItem.name)) && currentWindow.info.name.length != 0) {
 
               // idleDetection("start")
+              isCurrentApp = true
 
               let appItemName = taskApplications[taskApplications.findIndex((appItem) => appItem.name.includes(currentWindow.info.name) || currentWindow.info.name.includes(appItem.name))].name
 
@@ -246,6 +258,7 @@ function createWindow() {
               // console.log(currentWindow.info.name + "length: " + currentWindow.info.name.length)
             }
             else {
+              isCurrentApp = false
               if(!idleDetected) {
                 idleDetection("stop", (data) => {
                   console.log("Not App 2")
@@ -254,11 +267,15 @@ function createWindow() {
             }
           }
         } else {
+
           if(taskApplications.some((appItem) => appItem.name.includes(currentWindow.info.name) || currentWindow.info.name.includes(appItem.name)) && currentWindow.info.name.length != 0) {
 
-            // idleDetection("start")
+            // idleDetection("start")\
+          
+            isCurrentApp = true
 
             let appItemName = taskApplications[taskApplications.findIndex((appItem) => appItem.name.includes(currentWindow.info.name) || currentWindow.info.name.includes(appItem.name))].name
+
             currentlyTrackingApplication = {appName: appItemName, startTime: new Date(), endTime: null, duration: 0}
             trackedApplications.push(currentlyTrackingApplication);
             // console.log(currentWindow.info.name + "length: " + currentWindow.info.name.length)
@@ -267,6 +284,7 @@ function createWindow() {
 
           }
           else{
+            isCurrentApp = false
             if(!idleDetected) {
               idleDetection("stop", (data) => {
                 console.log("Not App 2")
@@ -316,17 +334,19 @@ ipcMain.on("sendPauseTaskToMain", (event, message) => {
     clearInterval(idleTrackingInterval)
     clearInterval(appTrackingInterval)
 
-    currentlyTrackingApplication.endTime = new Date();
-    let difference = currentlyTrackingApplication.endTime - currentlyTrackingApplication.startTime;
-    console.log(difference);
-    console.log(currentlyTrackingApplication.duration);//this the problem
-    currentlyTrackingApplication.duration = currentlyTrackingApplication.duration + difference;
-    console.log(currentlyTrackingApplication.duration);
-    
-    let oldIndex = trackedApplications.findIndex((app) => app.appName === currentlyTrackingApplication.appName);
-    if(oldIndex != -1) {
-      trackedApplications[oldIndex].endTime = currentlyTrackingApplication.endTime;
-      trackedApplications[oldIndex].duration = currentlyTrackingApplication.duration;
+    if(isCurrentApp) {
+      currentlyTrackingApplication.endTime = new Date();
+      let difference = currentlyTrackingApplication.endTime - currentlyTrackingApplication.startTime;
+      console.log(difference);
+      console.log(currentlyTrackingApplication.duration);//this the problem
+      currentlyTrackingApplication.duration = currentlyTrackingApplication.duration + difference;
+      console.log(currentlyTrackingApplication.duration);
+      
+      let oldIndex = trackedApplications.findIndex((app) => app.appName === currentlyTrackingApplication.appName);
+      if(oldIndex != -1) {
+        trackedApplications[oldIndex].endTime = currentlyTrackingApplication.endTime;
+        trackedApplications[oldIndex].duration = currentlyTrackingApplication.duration;
+      }
     }
 
     console.log(currentlyTrackingApplication)
