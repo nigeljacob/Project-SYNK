@@ -11,7 +11,8 @@
     "get-installed-apps": "^1.1.0",
     "jszip": "^3.10.1",
     "ps-list": "^7.1.0",
-    "react-moment": "^1.1.3"
+    "react-moment": "^1.1.3",
+    "uiohook-napi": "^1.5.3"
   },
   "keywords": [],
   "author": "",

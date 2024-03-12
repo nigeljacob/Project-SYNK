@@ -6,6 +6,7 @@ import { read_OneValue_from_Database } from "../../../../Backend/src/firebaseCRU
 import "../../Pages/TeamDashboard/TeamDashboard";
 import "./TaskDetails.css";
 import { startTask } from "../../../../Backend/src/AssignTask/taskFunctions";
+import { PauseTask } from "../../../../Backend/src/AssignTask/taskFunctions";
 const electronApi = window?.electronApi;
 
 const TaskDetails = ({
@@ -41,6 +42,17 @@ const TaskDetails = ({
   const handleConfirm = () => {
     electronApi.viewTask("hey there im testing");
   };
+
+  const [isLoading, setLoading] = useState(false)
+
+
+  useEffect(() => {
+    electronApi.receivePauseStatusFromMain((data) => {
+      PauseTask(task, parseInt(index - 1), team, teamMemberIndex, data, (data) => {
+        
+      })
+    })
+  }, [])
 
   const containerClass = dued
     ? "single-task-container_past"
@@ -166,7 +178,9 @@ const TaskDetails = ({
           <div className="tw-flex tw-items-center">
             {Status === "In Progress" ? (
             (
-              <button className="status tw-text-white">Pause</button>
+              <button className="status tw-text-white" onClick={event => {
+                electronApi.sendPauseTaskToMain("pauseSignal")
+              }}>Pause</button>
             )
             ) : (
               <button className="status" onClick={event => {
@@ -202,7 +216,9 @@ const TaskDetails = ({
           Status === "In Progress" ? (
             (
               <div>
-                <button className="status tw-text-white">Pause</button>
+                <button className="status tw-text-white" onClick={event => {
+                    electronApi.sendPauseTaskToMain("pauseSignal")
+                }}>Pause</button>
               </div>
             )
           ) : (

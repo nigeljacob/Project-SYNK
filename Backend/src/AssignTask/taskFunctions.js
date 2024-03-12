@@ -346,6 +346,87 @@ export const startTask = (task, taskIndex, team, teamMemberIndex, onTaskStarted)
   );
 };
 
+export const PauseTask = (task, taskIndex, team, teamMemberIndex, targetApplications, onTaskPaused) => {
+    readOnceFromDatabase("Users/" + auth.currentUser.uid + "/userStatus", (status) => {
+        if(status === "Busy") {
+          updateDatabase("Users/" + auth.currentUser.uid, { userStatus: "Active" });
+
+          updateDatabase(
+            "Teams/" +
+              auth.currentUser.uid +
+              "/" +
+              team.teamCode +
+              "/teamMemberList/" +
+              teamMemberIndex +
+              "/taskList/" +
+              taskIndex,
+            { taskStatus: "Continue"}
+          ).then(() => {
+            updateDatabase(
+              "Teams/" +
+                team.teamLeader.UID +
+                "/" +
+                team.teamCode +
+                "/teamMemberList/" +
+                teamMemberIndex +
+                "/taskList/" +
+                taskIndex,
+              { taskStatus: "Continue"}
+            )
+  
+            updateDatabase(
+              "Teams/" +
+                auth.currentUser.uid +
+                "/" +
+                team.teamCode +
+                "/teamMemberList/" +
+                teamMemberIndex,
+              { status: "Worked on task " + parseInt(taskIndex + 1) }
+            ).then(() => {
+              updateDatabase(
+                "Teams/" +
+                  team.teamLeader.UID +
+                  "/" +
+                  team.teamCode +
+                  "/teamMemberList/" +
+                  teamMemberIndex,
+                { status: "Worked on " + parseInt(taskIndex + 1) }
+              )
+            });
+          }).then(() => {
+            onTaskPaused(false)
+          });
+
+          readOnceFromDatabase("Teams/" + auth.currentUser.uid + "/" + team.teamCode + "/teamMemberList/" + teamMemberIndex + "/taskList/" + taskIndex + "/progress", (progress) => {
+
+            let totalDuration = parseInt(progress.taskLength)
+
+            let list = progress.applicationTimeList
+
+            for(let i = 0; i < targetApplications.length; i++) {
+              if(list.some((app) => app.name.includes(targetApplications[i].appName) || app.name.includes(targetApplications[i].appName))) {
+                  let index = list.findIndex((app) => app.name.includes(targetApplications[i].appName) || app.name.includes(targetApplications[i].appName))
+                  if(list[index].timeLength != "") {
+                    list[index].timeLength = list[index].timeLength + targetApplications[i].duration
+                  } else {
+                    list[index].timeLength = targetApplications[i].duration
+                  }
+                  
+                  totalDuration += targetApplications[i].duration
+                  
+              }
+            }
+
+            setTimeout(() => {
+                updateDatabase("Teams/" + auth.currentUser.uid + "/" + team.teamCode + "/teamMemberList/" + teamMemberIndex + "/taskList/" + taskIndex + "/progress", {applicationTimeList: list, taskLength: totalDuration}).then(() => {
+                  onTaskPaused(true)
+                })
+            }, 500)
+        })
+
+        }})
+}
+
 const getTimeDate = () => {
   let newDate = new Date();
 

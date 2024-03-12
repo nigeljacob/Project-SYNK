@@ -22,6 +22,7 @@ const {
   uploadFileToWordPress,
   createZipAndUpload,
   getFocusedWindow,
+  idleDetection
 } = require("../../Backend/src/electronFunctions/ProgressTrackerFunctions");
 
 function createWindow() {
@@ -132,10 +133,10 @@ function createWindow() {
   });
 
   ipcMain.on("viewTask", (event, message) => {
-    console.log("Received message from renderer process:");
+    // console.log("Received message from renderer process:");
     getappsfunc()
       .then((appsList) => {
-        console.log(appsList);
+        // console.log(appsList);
         win.webContents.send("texsssst", appsList);
       })
       .catch((error) => console.error("Error:", error));
@@ -174,16 +175,44 @@ function createWindow() {
     }).show();
   });
 
+  let idlePopupShown = false;
+
+  let idlePopup;
+
+  let appTrackingInterval;
+
+  let idleTrackingInterval;
+
+  let trackedApplications = [];
+
+  let currentlyTrackingApplication = {};
+
   ipcMain.on("sendStartTask", (event, Task) => {
     // start tracking the windows
-    let currentlyTrackingApplication = {};
-    let trackedApplications = [];
+    currentlyTrackingApplication = {};
+
+    trackedApplications = [];
 
     let taskApplications = Task.task.applicationsList
 
-    setInterval(() => {
+    let idleDetected = false;
+
+    appTrackingInterval = setInterval(() => {
       let currentWindow = getFocusedWindow();
-  
+        if(!idleDetected) {
+          idleDetection("start", (data) => {
+            console.log("detected");
+            idleDetected = true
+            if(idlePopupShown) {
+              idlePopup.destroy()
+              idlePopupShown = false
+            }
+          })
+        } else {
+          idleDetection("stop", (data) => {
+            console.log("stopped")
+          })
+        }
         if(trackedApplications.length > 0) {
           if (currentlyTrackingApplication.appName !== currentWindow.info.name) {
 
@@ -199,7 +228,9 @@ function createWindow() {
               }
             }
             
-            if(taskApplications.some((appItem) => appItem.name.includes(currentWindow.info.name) || currentWindow.info.name.includes(appItem.name))) {
+            if(taskApplications.some((appItem) => appItem.name.includes(currentWindow.info.name) || currentWindow.info.name.includes(appItem.name)) && currentWindow.info.name.length != 0) {
+
+              // idleDetection("start")
 
               let appItemName = taskApplications[taskApplications.findIndex((appItem) => appItem.name.includes(currentWindow.info.name) || currentWindow.info.name.includes(appItem.name))].name
 
@@ -212,19 +243,103 @@ function createWindow() {
                 currentlyTrackingApplication = {appName: appItemName, startTime: new Date(), endTime: null, duration: 0}
                 trackedApplications.push(currentlyTrackingApplication);
               }
+              // console.log(currentWindow.info.name + "length: " + currentWindow.info.name.length)
+            }
+            else {
+              if(!idleDetected) {
+                idleDetection("stop", (data) => {
+                  console.log("Not App 2")
+                })
+              }
             }
           }
         } else {
-          if(taskApplications.some((appItem) => appItem.name.includes(currentWindow.info.name) || currentWindow.info.name.includes(appItem.name))) {
+          if(taskApplications.some((appItem) => appItem.name.includes(currentWindow.info.name) || currentWindow.info.name.includes(appItem.name)) && currentWindow.info.name.length != 0) {
+
+            // idleDetection("start")
+
             let appItemName = taskApplications[taskApplications.findIndex((appItem) => appItem.name.includes(currentWindow.info.name) || currentWindow.info.name.includes(appItem.name))].name
             currentlyTrackingApplication = {appName: appItemName, startTime: new Date(), endTime: null, duration: 0}
             trackedApplications.push(currentlyTrackingApplication);
+            // console.log(currentWindow.info.name + "length: " + currentWindow.info.name.length)
+
+            console.log("firstTime");
+
+          }
+          else{
+            if(!idleDetected) {
+              idleDetection("stop", (data) => {
+                console.log("Not App 2")
+              })
+            }
           }
         }
         win.webContents.send("activeApp", {...Task, currentlyTrackingApplication: currentlyTrackingApplication})
 
+
     }, 1000);
-  });
+
+    idleTrackingInterval = setInterval(() => {
+
+        if(!idleDetected && !idlePopupShown) {
+          idlePopup = new BrowserWindow({
+            width: 500,
+            height: 300,
+            frame: false,
+            alwaysOnTop: true,
+            resizable: false,
+        
+            webPreferences: {
+              webSecurity: false,
+              enableRemoteModule: true,
+              contextIsolation: true,
+              nodeIntegration: false,
+              preload: path.join(__dirname, "preload.js"),
+            },
+          });
+
+          idlePopup.loadFile("./public/Popups/idlePopup.html");
+          idlePopup.setIcon(path.join(__dirname, "icon.png"));
+          idlePopup.center();
+          idlePopup.show();
+
+          idlePopupShown = true;
+
+        }
+
+        idleDetected = false;
+    }, 30000)
+
+});
+
+ipcMain.on("sendPauseTaskToMain", (event, message) => {
+    clearInterval(idleTrackingInterval)
+    clearInterval(appTrackingInterval)
+
+    currentlyTrackingApplication.endTime = new Date();
+    let difference = currentlyTrackingApplication.endTime - currentlyTrackingApplication.startTime;
+    console.log(difference);
+    console.log(currentlyTrackingApplication.duration);//this the problem
+    currentlyTrackingApplication.duration = currentlyTrackingApplication.duration + difference;
+    console.log(currentlyTrackingApplication.duration);
+    
+    let oldIndex = trackedApplications.findIndex((app) => app.appName === currentlyTrackingApplication.appName);
+    if(oldIndex != -1) {
+      trackedApplications[oldIndex].endTime = currentlyTrackingApplication.endTime;
+      trackedApplications[oldIndex].duration = currentlyTrackingApplication.duration;
+    }
+
+    console.log(currentlyTrackingApplication)
+    win.webContents.send("sendIntervalsPaused", trackedApplications)
+    trackedApplications = []
+    currentlyTrackingApplication = {}
+})
+
+ipcMain.on("idleCloseClicked", (event, boolean) => {
+  idlePopup.destroy()
+  idlePopupShown = false
+});
+
 }
 
 app.on("ready", createWindow);
