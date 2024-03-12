@@ -182,9 +182,20 @@ function createWindow() {
 
     let taskApplications = Task.task.applicationsList
 
+    let idleDetected = false;
+
     setInterval(() => {
       let currentWindow = getFocusedWindow();
-  idleDetection("start")
+        if(!idleDetected) {
+          idleDetection("start", (data) => {
+            console.log("detected");
+            idleDetected = true
+          })
+        } else {
+          idleDetection("stop", (data) => {
+            console.log("stopped")
+          })
+        }
         if(trackedApplications.length > 0) {
           if (currentlyTrackingApplication.appName !== currentWindow.info.name) {
 
@@ -218,7 +229,11 @@ function createWindow() {
               // console.log(currentWindow.info.name + "length: " + currentWindow.info.name.length)
             }
             else {
-              idleDetection("stop")
+              if(!idleDetected) {
+                idleDetection("stop", (data) => {
+                  console.log("Not App 2")
+                })
+              }
             }
           }
         } else {
@@ -233,13 +248,21 @@ function createWindow() {
 
           }
           else{
-            idleDetection("stop")
+            if(!idleDetected) {
+              idleDetection("stop", (data) => {
+                console.log("Not App 2")
+              })
+            }
           }
         }
         win.webContents.send("activeApp", {...Task, currentlyTrackingApplication: currentlyTrackingApplication})
 
 
     }, 1000);
+
+    setInterval(() => {
+        idleDetected = false;
+    }, 5000)
 
 });
 }
