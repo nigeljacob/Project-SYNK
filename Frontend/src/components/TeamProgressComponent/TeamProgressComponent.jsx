@@ -11,8 +11,8 @@ const TeamProgressComponent = ({
   const [status, setStatus] = useState("Offline");
   const [profilePic, setProfilePic] = useState("");
   
-  let [StartedTasks, setStartedTasks] = 0;
-  let [CompletedTasks, setCompletedTasks] = 0;
+  let [StartedTasks, setStartedTasks] = useState(0);
+  let [CompletedTasks, setCompletedTasks] = useState(0);
   let StartedTasksIndex = [];
 
   if(tasks[0] === "") {
@@ -23,9 +23,9 @@ const TeamProgressComponent = ({
   let tempCompletedTasks = 0
   
   for(let i = 0; i < tasks.length; i++) {
-    if(tasks.taskStatus === "Continue") {
+    if(tasks[i].taskStatus === "Continue" || tasks[i].taskStatus === "In Progress") {
       tempStartedTasks++
-    } else if(tasks.taskStatus === "Completed") {
+    } else if(tasks[i].taskStatus === "Completed") {
       tempCompletedTasks++
     }
   }
@@ -34,7 +34,6 @@ const TeamProgressComponent = ({
     setStartedTasks(tempStartedTasks)
     setCompletedTasks(tempCompletedTasks)
   }, 500)
-
 
     useEffect(() => {
         getStatus(member["UID"], (status) => {
@@ -99,7 +98,7 @@ const TeamProgressComponent = ({
                     </div>
                     <div className="tw-flex tw-gap-[8px]">
                     <img src={timeClock} alt="time clock" />
-                    <p className="tw-text-[14px]">Working on {tasks[parseInt(member.status.split(" ")[member.status.split(" ").length - 1])].progress.lastApplication}</p>
+                    <p className="tw-text-[14px]">Working on {tasks[parseInt(member.status.split(" ")[member.status.split(" ").length - 1] - 1)].progress.lastApplication}</p>
                   </div>
                 </>
               ) : (
