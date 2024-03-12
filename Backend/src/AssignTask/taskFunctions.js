@@ -346,6 +346,64 @@ export const startTask = (task, taskIndex, team, teamMemberIndex, onTaskStarted)
   );
 };
 
+export const PauseTask = (task, taskIndex, team, teamMemberIndex, onTaskPaused) => {
+    readOnceFromDatabase("Users/" + auth.currentUser.uid + "/userStatus", (status) => {
+        if(status === "Busy") {
+          updateDatabase("Users/" + auth.currentUser.uid, { userStatus: "Active" });
+
+          
+
+          updateDatabase(
+            "Teams/" +
+              auth.currentUser.uid +
+              "/" +
+              team.teamCode +
+              "/teamMemberList/" +
+              teamMemberIndex +
+              "/taskList/" +
+              taskIndex,
+            { taskStatus: "Continue"}
+          ).then(() => {
+            updateDatabase(
+              "Teams/" +
+                team.teamLeader.UID +
+                "/" +
+                team.teamCode +
+                "/teamMemberList/" +
+                teamMemberIndex +
+                "/taskList/" +
+                taskIndex,
+              { taskStatus: "Continue"}
+            )
+  
+            updateDatabase(
+              "Teams/" +
+                auth.currentUser.uid +
+                "/" +
+                team.teamCode +
+                "/teamMemberList/" +
+                teamMemberIndex,
+              { status: "Worked on task " + parseInt(taskIndex + 1) }
+            ).then(() => {
+              updateDatabase(
+                "Teams/" +
+                  team.teamLeader.UID +
+                  "/" +
+                  team.teamCode +
+                  "/teamMemberList/" +
+                  teamMemberIndex,
+                { status: "Worked on " + parseInt(taskIndex + 1) }
+              ).then(() => {
+                onTaskPaused(true)
+              });
+            });
+          }).then(() => {
+            onTaskPaused(false)
+          });
+
+        }})
+}
+
 const getTimeDate = () => {
   let newDate = new Date();
 

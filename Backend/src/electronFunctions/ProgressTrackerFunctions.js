@@ -12,7 +12,7 @@ const FormData = require('form-data');
 const { WritableStreamBuffer } = require('stream-buffers');
 // import { activeWindow, type } from '@miniben90/x-win';
 const { activeWindow } = require('@miniben90/x-win');
-
+const { uIOhook, UiohookKey } = require('uiohook-napi')
 
 
 
@@ -116,6 +116,33 @@ function getFocusedWindow() {
     return currentWindow
 }
 
+//function to detect idle times when tracking application usage times
+function idleDetection(state, callback){
+
+
+    //if the parameter state is "start", then idle detection will start
+    if(state === "start"){
+        uIOhook.on('keydown', (e) => {
+            if (e.keycode === UiohookKey.Q) {
+              callback(true) 
+            }
+          
+            if (e.keycode === UiohookKey.Escape) {
+                callback(true)
+            }
+          })
+    
+          uIOhook.start()
+
+    //else if state is set to "stop", then idle detection will stop
+    }else if(state === "stop"){
+        uIOhook.stop()
+        callback(false)
+
+    }
+      
+}
+
 // Function to open a file dialog and return the selected file path
 async function openFileDialog() {
     const result = await dialog.showOpenDialog({
@@ -177,4 +204,4 @@ async function createZipAndUpload(folderPath, folderName) {
 
 
 
-module.exports = { checkActiveApplication, getCurrentlyActiveApplication, openFileDialog, createZipAndUpload, getFocusedWindow };
+module.exports = { checkActiveApplication, getCurrentlyActiveApplication, openFileDialog, createZipAndUpload, getFocusedWindow, idleDetection};

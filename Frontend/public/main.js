@@ -175,6 +175,14 @@ function createWindow() {
     }).show();
   });
 
+  let idlePopupShown = false;
+
+  let idlePopup;
+
+  let appTrackingInterval;
+
+  let idleTrackingInterval;
+
   ipcMain.on("sendStartTask", (event, Task) => {
     // start tracking the windows
     let currentlyTrackingApplication = {};
@@ -184,12 +192,16 @@ function createWindow() {
 
     let idleDetected = false;
 
-    setInterval(() => {
+    appTrackingInterval = setInterval(() => {
       let currentWindow = getFocusedWindow();
         if(!idleDetected) {
           idleDetection("start", (data) => {
             console.log("detected");
             idleDetected = true
+            if(idlePopupShown) {
+              idlePopup.destroy()
+              idlePopupShown = false
+            }
           })
         } else {
           idleDetection("stop", (data) => {
@@ -260,11 +272,50 @@ function createWindow() {
 
     }, 1000);
 
-    setInterval(() => {
+    idleTrackingInterval = setInterval(() => {
+
+        if(!idleDetected && !idlePopupShown) {
+          idlePopup = new BrowserWindow({
+            width: 500,
+            height: 300,
+            frame: false,
+            alwaysOnTop: true,
+            resizable: false,
+        
+            webPreferences: {
+              webSecurity: false,
+              enableRemoteModule: true,
+              contextIsolation: true,
+              nodeIntegration: false,
+              preload: path.join(__dirname, "preload.js"),
+            },
+          });
+
+          idlePopup.loadFile("./public/Popups/idlePopup.html");
+          idlePopup.setIcon(path.join(__dirname, "icon.png"));
+          idlePopup.center();
+          idlePopup.show();
+
+          idlePopupShown = true;
+
+        }
+
         idleDetected = false;
-    }, 5000)
+    }, 30000)
 
 });
+
+ipcMain.on("sendPauseTaskToMain", (event, message) => {
+    clearInterval(idleTrackingInterval)
+    clearInterval(appTrackingInterval)
+    win.webContents.send("sendIntervalsPaused", "paused")
+})
+
+ipcMain.on("idleCloseClicked", (event, boolean) => {
+  idlePopup.destroy()
+  idlePopupShown = false
+});
+
 }
 
 app.on("ready", createWindow);
