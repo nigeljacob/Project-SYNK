@@ -6,6 +6,7 @@ const {
   ipcMain,
   Notification,
   dialog,
+  screen
 } = require("electron");
 const windowStateKeeper = require("electron-window-state");
 const path = require("path");
@@ -24,12 +25,17 @@ const {
   getFocusedWindow,
   idleDetection
 } = require("../../Backend/src/electronFunctions/ProgressTrackerFunctions");
+const { WindIcon } = require("lucide-react");
 
 function createWindow() {
   let mainWindowState = windowStateKeeper({
     defaultWidth: 1500,
     defaultHeight: 800,
   });
+
+  const displays = screen.getAllDisplays();
+  const primaryDisplay = screen.getPrimaryDisplay();
+  const primaryDisplayBounds = primaryDisplay.bounds;
 
   const win = new BrowserWindow({
     x: mainWindowState.x,
@@ -60,8 +66,11 @@ function createWindow() {
     width: 500,
     height: 300,
     frame: false,
+    x: mainWindowState.x,
+    y: mainWindowState.y,
     alwaysOnTop: true,
     resizable: false,
+    fullscreen: false,
 
     webPreferences: {
       webSecurity: false,
@@ -81,6 +90,9 @@ function createWindow() {
     win.loadURL("http://localhost:3000");
     win.setIcon(path.join(__dirname, "logo.png"));
     win.show();
+    if(os.platform() != "darwin") {
+      win.setFullScreen(true)
+    }
   }, 7000);
 
   win.on("close", (e) => {
@@ -222,7 +234,7 @@ function createWindow() {
           })
         }
         if(trackedApplications.length > 0) {
-          if (currentlyTrackingApplication.appName !== currentWindow.info.name) {
+          if (currentlyTrackingApplication.appName !== currentWindow.info.name && !currentlyTrackingApplication.appName.includes(currentWindow.info.name) && !currentWindow.info.name.includes(currentlyTrackingApplication.appName)) {
 
             if(isCurrentApp) {
               console.log("dhiujhdk");
@@ -303,10 +315,13 @@ function createWindow() {
           idlePopup = new BrowserWindow({
             width: 500,
             height: 300,
+            x: mainWindowState.x,
+            y: mainWindowState.y,
             frame: false,
             alwaysOnTop: true,
             resizable: false,
-        
+            transparent: true,
+
             webPreferences: {
               webSecurity: false,
               enableRemoteModule: true,
