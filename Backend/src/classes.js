@@ -98,3 +98,11 @@ export const Progress = (taskLength, folderVersions, applicationTimeList, lastAp
     lastApplication: lastApplication
   };
 };
+
+export const Version = (filePath, dateTime) => {
+  return {
+    date: dateTime[0],
+    time: dateTime[1],
+    filePath: filePath
+  }
+}

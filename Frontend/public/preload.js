@@ -63,9 +63,8 @@ contextBridge.exposeInMainWorld('electronApi', {
       callback(data)
     })
   },
-  send: (boolean) => {
-    ipcRenderer.send("idleCloseClicked", boolean)
-    console.log("dyguybdugd")
+  send: (data) => {
+    ipcRenderer.send("idleCloseClicked", data)
   },
   sendPauseTaskToMain: (message) => {
     ipcRenderer.send("sendPauseTaskToMain", message)
