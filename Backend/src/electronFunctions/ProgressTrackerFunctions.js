@@ -13,6 +13,7 @@ const { WritableStreamBuffer } = require('stream-buffers');
 // import { activeWindow, type } from '@miniben90/x-win';
 const { activeWindow } = require('@miniben90/x-win');
 const { uIOhook, UiohookKey } = require('uiohook-napi')
+const chokidar = require('chokidar');
 
 
 
@@ -143,14 +144,25 @@ function idleDetection(state, callback){
       
 }
 
-function trackLastModified(path, callback) {
-    fs.stat(path, (err, stats) => {
-      if (err) {
-        callback("error");
-        return;
+function trackLastModified(filePath, type, callback) {
+
+      if(type === "stop") {
+        new Promise((resolve, reject) => {
+            chokidar.watch(filePath).close();
+            resolve();
+          }).then(() => {
+            console.log('Watcher closed.');
+          });
+      } else {
+        chokidar.watch(filePath).on('all', (event, path) => {
+            console.log(event, path);
+            if(event === "error") {
+                callback("error")
+            } else {
+                callback("updated")
+            }
+          });
       }
-      callback(stats.mtime);
-    });
   }
   
 
@@ -211,6 +223,22 @@ async function createZipAndUpload(folderPath, folderName) {
     });
 }
 
+function getDateTime() {
+    let newDate = new Date();
+
+  let month = newDate.getMonth() + 1;
+
+  let hours = newDate.getHours();
+  if (hours < 10) hours = "0" + hours;
+  let minutes = newDate.getMinutes();
+  if (minutes < 10) minutes = "0" + minutes;
+
+  return [
+    newDate.getDate() + "/" + month + "/" + newDate.getFullYear(),
+    hours + ":" + minutes,
+  ];
+}
 
 
-module.exports = { checkActiveApplication, getCurrentlyActiveApplication, openFileDialog, createZipAndUpload, getFocusedWindow, idleDetection, trackLastModified};
+
+module.exports = { checkActiveApplication, getCurrentlyActiveApplication, openFileDialog, createZipAndUpload, getFocusedWindow, idleDetection, trackLastModified, getDateTime};

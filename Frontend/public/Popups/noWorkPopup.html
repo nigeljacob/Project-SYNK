@@ -59,20 +59,22 @@
     </style>
 </head>
 <body>
-    <h2 id="title">Save You Work!!!</h2>
-    <p id="desc">No saves have been detected in 20 minutes...</p>
-    <p id="pause">Pause the task if your working on something else</p>
+    <h2 id="title">Task Paused Automatically !!!</h2>
+    <p id="desc">The task has been paused automatically due to no saves</p>
+    <p id="pause">You can continue the task from the team dashboard</p>
 
     <div class="wrapper">
         <button id="button">Ok</button>
     </div>
 
     <script>
-        let button = document.getElementById("button");
+        
+        electronApi.sendPauseTaskToMain('pauseTask');
 
         button.addEventListener('click', () => {
             electronApi.send('close-timeTrack');
         });
+
     </script>
     
 </body>
