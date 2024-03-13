@@ -143,14 +143,16 @@ function idleDetection(state, callback){
       
 }
 
-async function trackLastModified() {
-    try {
-        const stats = await fs.stat(path);
-        return stats.mtime; // Last modified time
-      } catch (err) {
-        throw new Error(`Error getting last modified time: ${err}`);
+function trackLastModified(path, callback) {
+    fs.stat(path, (err, stats) => {
+      if (err) {
+        callback("error");
+        return;
       }
-}
+      callback(stats.mtime);
+    });
+  }
+  
 
 // Function to open a file dialog and return the selected file path
 async function openFileDialog() {

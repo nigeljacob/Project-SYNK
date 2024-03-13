@@ -226,124 +226,140 @@ function createWindow() {
 
     isCurrentApp = false;
 
-    let folderPath = Task.folderPath
+    let folderPath = Task.task.filePath
 
-    trackLastModified(folderPath)
-    .then(lastModifiedTime => {
-      console.log(`Last modified time of ${folderPath}: ${lastModifiedTime}`);
+    console.log(folderPath)
 
-      let previousLastModified = lastModifiedTime;
+    trackLastModified(folderPath, (lastModified) => {
+      if(lastModified != "error") {
 
-      lastModifiedInterval = setInterval(() => {
-          trackLastModified(folderPath).then((newModified) => {
-            if(previousLastModified === newModified) {
-              if(!lastModifiedPopupShown) {
-                lastModifiedPopup = new BrowserWindow({
-                  width: 500,
-                  height: 300,
-                  x: mainWindowState.x,
-                  y: mainWindowState.y,
-                  frame: false,
-                  alwaysOnTop: true,
-                  resizable: false,
-                  transparent: true,
-      
-                  webPreferences: {
-                    webSecurity: false,
-                    enableRemoteModule: true,
-                    contextIsolation: true,
-                    nodeIntegration: false,
-                    preload: path.join(__dirname, "preload.js"),
-                  },
-                });
-      
-                lastModifiedPopup.loadFile("./public/Popups/lastModifiedPopup.html");
-                lastModifiedPopup.setIcon(path.join(__dirname, "icon.png"));
-                lastModifiedPopup.center();
-                lastModifiedPopup.show();
+        const lastModifiedTime = new Date(lastModified);
+
+        console.log(`Last modified time of ${folderPath}: ${lastModifiedTime}`);
+
+        let previousLastModified = lastModifiedTime;
   
-                lastModifiedPopupShown = true
-              }
-            } else {
-              // upload
-            }
-          }).catch(() => {
-            dialog.showErrorBox("Ünable to find Task Folder", "The task folder was not found in the specified path: " + filePath);
-            clearInterval(idleTrackingInterval)
-            clearInterval(appTrackingInterval)
-            clearInterval(lastModifiedInterval)
-            clearInterval(lastModifiedIntervalExtended)
-            win.webContents.send("sendIntervalsPaused", trackedApplications)
-            trackedApplications = []
-            currentlyTrackingApplication = {}
-            return
-          })
+        lastModifiedInterval = setInterval(() => {
+            trackLastModified(folderPath, (newModifiedTime) => {
+              if(newModifiedTime != "ërror") {
+                const newModified = new Date(newModifiedTime);
 
-          lastModifiedIntervalExtended = setInterval(() => {
-            trackLastModified(folderPath).then((newModified) => {
-              if(previousLastModified === newModified) {
-                if(!lastModifiedPopupShown) {
-                  lastModifiedPopup = new BrowserWindow({
-                    width: 500,
-                    height: 300,
-                    x: mainWindowState.x,
-                    y: mainWindowState.y,
-                    frame: false,
-                    alwaysOnTop: true,
-                    resizable: false,
-                    transparent: true,
-        
-                    webPreferences: {
-                      webSecurity: false,
-                      enableRemoteModule: true,
-                      contextIsolation: true,
-                      nodeIntegration: false,
-                      preload: path.join(__dirname, "preload.js"),
-                    },
-                  });
-        
-                  lastModifiedPopup.loadFile("./public/Popups/lastModifiedPopup.html");
-                  lastModifiedPopup.setIcon(path.join(__dirname, "icon.png"));
-                  lastModifiedPopup.center();
-                  lastModifiedPopup.show();
-    
-                  lastModifiedPopupShown = true
+                if(previousLastModified.getTime() === newModified.getTime()) {
+                  if(!lastModifiedPopupShown) {
+                    lastModifiedPopup = new BrowserWindow({
+                      width: 500,
+                      height: 300,
+                      x: mainWindowState.x,
+                      y: mainWindowState.y,
+                      frame: false,
+                      alwaysOnTop: true,
+                      resizable: false,
+                      transparent: true,
+          
+                      webPreferences: {
+                        webSecurity: false,
+                        enableRemoteModule: true,
+                        contextIsolation: true,
+                        nodeIntegration: false,
+                        preload: path.join(__dirname, "preload.js"),
+                      },
+                    });
+          
+                    lastModifiedPopup.loadFile("./public/Popups/lastModifiedPopup.html");
+                    lastModifiedPopup.setIcon(path.join(__dirname, "icon.png"));
+                    lastModifiedPopup.center();
+                    lastModifiedPopup.show();
+      
+                    lastModifiedPopupShown = true
+                  }
+                } else {
+                  // upload
+                  console.log("upload")
+                  previousLastModified = newModified
                 }
               } else {
-                // upload
-                previousLastModified = newModified
+                dialog.showErrorBox("Ünable to find Task Folder", "The task folder was not found in the specified path: " + folderPath);
+                clearInterval(idleTrackingInterval)
+                clearInterval(appTrackingInterval)
+                clearInterval(lastModifiedInterval)
                 clearInterval(lastModifiedIntervalExtended)
+                win.webContents.send("sendIntervalsPaused", trackedApplications)
+                trackedApplications = []
+                currentlyTrackingApplication = {}
+                return
               }
-            }).catch(() => {
-              dialog.showErrorBox("Ünable to find Task Folder", "The task folder was not found in the specified path: " + filePath);
-              clearInterval(idleTrackingInterval)
-              clearInterval(appTrackingInterval)
-              clearInterval(lastModifiedInterval)
-              clearInterval(lastModifiedIntervalExtended)
-              win.webContents.send("sendIntervalsPaused", trackedApplications)
-              trackedApplications = []
-              currentlyTrackingApplication = {}
-              return
             })
-          }, 2000)
-          
-      }, 30000)
+  
+            lastModifiedIntervalExtended = setInterval(() => {
+              trackLastModified(folderPath, (newModifiedTime) => {
+                if(newModifiedTime != "ërror") {
+                  const newModified = new Date(newModifiedTime);
+
+                  if(previousLastModified.getTime() === newModified.getTime()) {
+                    if(!lastModifiedPopupShown) {
+                      lastModifiedPopup = new BrowserWindow({
+                        width: 500,
+                        height: 300,
+                        x: mainWindowState.x,
+                        y: mainWindowState.y,
+                        frame: false,
+                        alwaysOnTop: true,
+                        resizable: false,
+                        transparent: true,
+            
+                        webPreferences: {
+                          webSecurity: false,
+                          enableRemoteModule: true,
+                          contextIsolation: true,
+                          nodeIntegration: false,
+                          preload: path.join(__dirname, "preload.js"),
+                        },
+                      });
+            
+                      lastModifiedPopup.loadFile("./public/Popups/lastModifiedPopup.html");
+                      lastModifiedPopup.setIcon(path.join(__dirname, "icon.png"));
+                      lastModifiedPopup.center();
+                      lastModifiedPopup.show();
+        
+                      lastModifiedPopupShown = true
+                    }
+                  } else {
+                    // upload
+                    console.log("upload")
+                    previousLastModified = newModified
+                    clearInterval(lastModifiedIntervalExtended)
+                  }
+                } else {
+                  dialog.showErrorBox("Ünable to find Task Folder", "The task folder was not found in the specified path: " + folderPath);
+                  clearInterval(idleTrackingInterval)
+                  clearInterval(appTrackingInterval)
+                  clearInterval(lastModifiedInterval)
+                  clearInterval(lastModifiedIntervalExtended)
+                  win.webContents.send("sendIntervalsPaused", trackedApplications)
+                  trackedApplications = []
+                  currentlyTrackingApplication = {}
+                  return
+                }
+              })
+            }, 10000)
+  
+        }, 30000)
+      } else {
+        dialog.showErrorBox("Ünable to find Task Folder", "The task folder was not found in the specified path: " + folderPath);
+        clearInterval(idleTrackingInterval)
+        clearInterval(appTrackingInterval)
+        win.webContents.send("sendIntervalsPaused", trackedApplications)
+        trackedApplications = []
+        currentlyTrackingApplication = {}
+        return
+      }
     })
-    .catch(error => {
-      dialog.showErrorBox("Ünable to find Task Folder", "The task folder was not found in the specified path: " + filePath);
-      clearInterval(idleTrackingInterval)
-      clearInterval(appTrackingInterval)
-      win.webContents.send("sendIntervalsPaused", trackedApplications)
-      trackedApplications = []
-      currentlyTrackingApplication = {}
-      return
-    });
 
     appTrackingInterval = setInterval(() => {
       let currentWindow = getFocusedWindow();
         if(!idleDetected) {
           idleDetection("start", (data) => {
-            console.log("detected");
+            // console.log("detected");
             idleDetected = true
             if(idlePopupShown) {
               idlePopup.destroy()
@@ -352,7 +368,7 @@ function createWindow() {
           })
         } else {
           idleDetection("stop", (data) => {
-            console.log("stopped")
+            // console.log("stopped")
           })
         }
         if(trackedApplications.length > 0) {
@@ -463,13 +479,15 @@ function createWindow() {
         }
 
         idleDetected = false;
-    }, 30000)
+    }, 60000)
 
 });
 
 ipcMain.on("sendPauseTaskToMain", (event, message) => {
     clearInterval(idleTrackingInterval)
     clearInterval(appTrackingInterval)
+    clearInterval(lastModifiedInterval)
+    clearInterval(lastModifiedIntervalExtended)
 
     if(isCurrentApp) {
       currentlyTrackingApplication.endTime = new Date();
