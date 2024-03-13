@@ -143,18 +143,25 @@ function idleDetection(state, callback){
       
 }
 
+async function trackLastModified() {
+    try {
+        const stats = await fs.stat(path);
+        return stats.mtime; // Last modified time
+      } catch (err) {
+        throw new Error(`Error getting last modified time: ${err}`);
+      }
+}
+
 // Function to open a file dialog and return the selected file path
 async function openFileDialog() {
     const result = await dialog.showOpenDialog({
         properties: ['openDirectory']
       });
     
-      // If the user selected a folder, return its path
       if (!result.canceled && result.filePaths.length > 0) {
         return result.filePaths[0];
       }
     
-      // Return null if no folder was selected
       return null;
   }
 
@@ -204,4 +211,4 @@ async function createZipAndUpload(folderPath, folderName) {
 
 
 
-module.exports = { checkActiveApplication, getCurrentlyActiveApplication, openFileDialog, createZipAndUpload, getFocusedWindow, idleDetection};
+module.exports = { checkActiveApplication, getCurrentlyActiveApplication, openFileDialog, createZipAndUpload, getFocusedWindow, idleDetection, trackLastModified};

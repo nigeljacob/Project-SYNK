@@ -23,7 +23,8 @@ const {
   uploadFileToWordPress,
   createZipAndUpload,
   getFocusedWindow,
-  idleDetection
+  idleDetection,
+  trackLastModified
 } = require("../../Backend/src/electronFunctions/ProgressTrackerFunctions");
 const { WindIcon } = require("lucide-react");
 
@@ -90,9 +91,9 @@ function createWindow() {
     win.loadURL("http://localhost:3000");
     win.setIcon(path.join(__dirname, "logo.png"));
     win.show();
-    if(os.platform() != "darwin") {
-      win.setFullScreen(true)
-    }
+    // if(os.platform() != "darwin") {
+    //   win.setSimpleFullScreen(true)
+    // }
   }, 7000);
 
   win.on("close", (e) => {
@@ -189,11 +190,19 @@ function createWindow() {
 
   let idlePopupShown = false;
 
+  let lastModifiedPopupShown = false;
+
   let idlePopup;
+
+  let lastModifiedPopup;
 
   let appTrackingInterval;
 
   let idleTrackingInterval;
+
+  let lastModifiedInterval;
+
+  let lastModifiedIntervalExtended;
 
   let trackedApplications = [];
 
@@ -216,6 +225,119 @@ function createWindow() {
     let idleDetected = false;
 
     isCurrentApp = false;
+
+    let folderPath = Task.folderPath
+
+    trackLastModified(folderPath)
+    .then(lastModifiedTime => {
+      console.log(`Last modified time of ${folderPath}: ${lastModifiedTime}`);
+
+      let previousLastModified = lastModifiedTime;
+
+      lastModifiedInterval = setInterval(() => {
+          trackLastModified(folderPath).then((newModified) => {
+            if(previousLastModified === newModified) {
+              if(!lastModifiedPopupShown) {
+                lastModifiedPopup = new BrowserWindow({
+                  width: 500,
+                  height: 300,
+                  x: mainWindowState.x,
+                  y: mainWindowState.y,
+                  frame: false,
+                  alwaysOnTop: true,
+                  resizable: false,
+                  transparent: true,
+      
+                  webPreferences: {
+                    webSecurity: false,
+                    enableRemoteModule: true,
+                    contextIsolation: true,
+                    nodeIntegration: false,
+                    preload: path.join(__dirname, "preload.js"),
+                  },
+                });
+      
+                lastModifiedPopup.loadFile("./public/Popups/lastModifiedPopup.html");
+                lastModifiedPopup.setIcon(path.join(__dirname, "icon.png"));
+                lastModifiedPopup.center();
+                lastModifiedPopup.show();
+  
+                lastModifiedPopupShown = true
+              }
+            } else {
+              // upload
+            }
+          }).catch(() => {
+            dialog.showErrorBox("Ünable to find Task Folder", "The task folder was not found in the specified path: " + filePath);
+            clearInterval(idleTrackingInterval)
+            clearInterval(appTrackingInterval)
+            clearInterval(lastModifiedInterval)
+            clearInterval(lastModifiedIntervalExtended)
+            win.webContents.send("sendIntervalsPaused", trackedApplications)
+            trackedApplications = []
+            currentlyTrackingApplication = {}
+            return
+          })
+
+          lastModifiedIntervalExtended = setInterval(() => {
+            trackLastModified(folderPath).then((newModified) => {
+              if(previousLastModified === newModified) {
+                if(!lastModifiedPopupShown) {
+                  lastModifiedPopup = new BrowserWindow({
+                    width: 500,
+                    height: 300,
+                    x: mainWindowState.x,
+                    y: mainWindowState.y,
+                    frame: false,
+                    alwaysOnTop: true,
+                    resizable: false,
+                    transparent: true,
+        
+                    webPreferences: {
+                      webSecurity: false,
+                      enableRemoteModule: true,
+                      contextIsolation: true,
+                      nodeIntegration: false,
+                      preload: path.join(__dirname, "preload.js"),
+                    },
+                  });
+        
+                  lastModifiedPopup.loadFile("./public/Popups/lastModifiedPopup.html");
+                  lastModifiedPopup.setIcon(path.join(__dirname, "icon.png"));
+                  lastModifiedPopup.center();
+                  lastModifiedPopup.show();
+    
+                  lastModifiedPopupShown = true
+                }
+              } else {
+                // upload
+                previousLastModified = newModified
+                clearInterval(lastModifiedIntervalExtended)
+              }
+            }).catch(() => {
+              dialog.showErrorBox("Ünable to find Task Folder", "The task folder was not found in the specified path: " + filePath);
+              clearInterval(idleTrackingInterval)
+              clearInterval(appTrackingInterval)
+              clearInterval(lastModifiedInterval)
+              clearInterval(lastModifiedIntervalExtended)
+              win.webContents.send("sendIntervalsPaused", trackedApplications)
+              trackedApplications = []
+              currentlyTrackingApplication = {}
+              return
+            })
+          }, 2000)
+          
+      }, 30000)
+    })
+    .catch(error => {
+      dialog.showErrorBox("Ünable to find Task Folder", "The task folder was not found in the specified path: " + filePath);
+      clearInterval(idleTrackingInterval)
+      clearInterval(appTrackingInterval)
+      win.webContents.send("sendIntervalsPaused", trackedApplications)
+      trackedApplications = []
+      currentlyTrackingApplication = {}
+      return
+    });
 
     appTrackingInterval = setInterval(() => {
       let currentWindow = getFocusedWindow();
@@ -370,9 +492,14 @@ ipcMain.on("sendPauseTaskToMain", (event, message) => {
     currentlyTrackingApplication = {}
 })
 
-ipcMain.on("idleCloseClicked", (event, boolean) => {
-  idlePopup.destroy()
-  idlePopupShown = false
+ipcMain.on("idleCloseClicked", (event, data) => {
+  if(data === "close-window") {
+    idlePopup.destroy()
+    idlePopupShown = false
+  } else {
+    lastModifiedPopup.destroy()
+    lastModifiedPopupShown = false;
+  }
 });
 
 }

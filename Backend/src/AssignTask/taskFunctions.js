@@ -1,4 +1,4 @@
-import { Progress, Task } from "../classes";
+import { Progress, Task, Version } from "../classes";
 import { auth } from "../firebase";
 import { readOnceFromDatabase, updateDatabase } from "../firebaseCRUD";
 import { sendNotification } from "../teamFunctions";
@@ -425,12 +425,37 @@ export const PauseTask = (task, taskIndex, team, teamMemberIndex, targetApplicat
 
             setTimeout(() => {
                 updateDatabase("Teams/" + auth.currentUser.uid + "/" + team.teamCode + "/teamMemberList/" + teamMemberIndex + "/taskList/" + taskIndex + "/progress", {applicationTimeList: list, taskLength: totalDuration}).then(() => {
-                  onTaskPaused(true)
+                  updateDatabase("Teams/" + team.teamLeader.UID + "/" + team.teamCode + "/teamMemberList/" + teamMemberIndex + "/taskList/" + taskIndex + "/progress", {applicationTimeList: list, taskLength: totalDuration}).then(() => {
+                    onTaskPaused(true)
+                  })
+                  
                 })
             }, 500)
         })
 
         }})
+}
+
+export const uploadVersion = (filePath, task, taskIndex, team, teamMemberIndex) => {
+    let dateTime = getTimeDate()
+    let version = Version(dateTime, filePath)
+
+    readOnceFromDatabase("Teams/" + 
+    auth.currentUser.uid + "/" + 
+    team.teamCode + "/teamMemberList/" + 
+    teamMemberIndex + "/taskList/" + 
+    taskIndex + 
+    "/progress/folderVersions" ((versionList) => {
+        if(versionList[0] === "") {
+          versionList = []
+        }
+
+        versionList.push(version)
+
+        updateDatabase("Teams/" + auth.currentUser.uid + "/" + team.teamCode + "/teamMemberList/" + teamMemberIndex + "/taskList/" + taskIndex + "/progress", {folderVersions: versionList}).then(() => {
+          updateDatabase("Teams/" + team.teamLeader.UID + "/" + team.teamCode + "/teamMemberList/" + teamMemberIndex + "/taskList/" + taskIndex + "/progress", {folderVersions: versionList})
+        })
+    }))
 }
 
 const getTimeDate = () => {
