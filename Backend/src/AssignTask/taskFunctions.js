@@ -399,7 +399,13 @@ export const PauseTask = (task, taskIndex, team, teamMemberIndex, targetApplicat
 
           readOnceFromDatabase("Teams/" + auth.currentUser.uid + "/" + team.teamCode + "/teamMemberList/" + teamMemberIndex + "/taskList/" + taskIndex + "/progress", (progress) => {
 
-            let totalDuration = parseInt(progress.taskLength)
+            let totalDuration;
+
+            if(progress.taskLength === "") {
+              totalDuration = 0
+            } else {
+              totalDuration = parseInt(progress.taskLength)
+            }
 
             let list = progress.applicationTimeList
 
