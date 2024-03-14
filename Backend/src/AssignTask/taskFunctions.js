@@ -390,7 +390,7 @@ export const PauseTask = (task, taskIndex, team, teamMemberIndex, targetApplicat
                   team.teamCode +
                   "/teamMemberList/" +
                   teamMemberIndex,
-                { status: "Worked on " + parseInt(taskIndex + 1) }
+                { status: "Worked on task" + parseInt(taskIndex + 1) }
               )
             });
           }).then(() => {
