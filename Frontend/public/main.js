@@ -25,6 +25,7 @@ const {
   getFocusedWindow,
   idleDetection,
   trackLastModified,
+  generateGitignoreForProject,
   getDateTime
 } = require("../../Backend/src/electronFunctions/ProgressTrackerFunctions");
 const { WindIcon } = require("lucide-react");
@@ -161,13 +162,6 @@ function createWindow() {
       .then((filePath) => {
         if (filePath) {
           console.log("Selected file:", filePath);
-          //   createZipAndUpload(filePath, filePath)
-          // .then(() => {
-          //     console.log('Zip file created and uploaded successfully.');
-          // })
-          // .catch(error => {
-          //     console.error('Error:', error);
-          // });
           win.webContents.send("filePath", filePath);
         } else {
           console.log("No file selected.");
@@ -252,17 +246,19 @@ function createWindow() {
     lastModifiedInterval = setInterval(() => {
         if(folderChanged) {
 
-          // let dateTime = getDateTime()
+          let dateTime = getDateTime()
 
-          // let folderName = Task.team + "_" + Task.team.teamMemberList[Task.teamMemberIndex].UID + "_" + dateTime[0] + "_" + dateTime[1]
-
-          // createZipAndUpload(folderPath, folderName)
-          // .then(() => {
-          //     console.log('Zip file created and uploaded successfully.');
-          // })
-          // .catch(error => {
-          //     console.error('Error:', error);
-          // });
+          let folderName = "SDGP" + "_" + "dyiubskbiyfbpihlshvbdhp" + "_" + dateTime[0] + "_" + dateTime[1]
+          
+          // upload function
+          createZipAndUpload(filePath, folderName)
+          .then((URL) => {
+              console.log(URL);
+              win.webContents.send("sendFileUrlFromMain", URL)
+          })
+          .catch(error => {
+              console.error('Error:', error);
+          });
 
           console.log("upload")
           savePopupCount = 0
@@ -271,7 +267,7 @@ function createWindow() {
             LAST_MODIFIED_INTERVAL_TIME === 30000
           }
         } else {
-          if(savePopupCount < 0) {
+          if(savePopupCount < 3) {
             if(!lastModifiedPopupShown) {
               lastModifiedPopup = new BrowserWindow({
                 width: 500,
