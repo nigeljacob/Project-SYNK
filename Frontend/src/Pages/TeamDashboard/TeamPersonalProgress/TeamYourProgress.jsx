@@ -48,7 +48,22 @@ const TeamYourProgress = (props) => {
        </div>
        :
        <div className=" tw-flex tw-rounded-lg tw-py-10 tw-bg-[#272727] tw-h-[360px]">
-         <p>Please click on the progress button to view your PROGRESS</p>
+        <PieChart data={{
+          labels:["","","",],
+          datasets:[
+            {label:"Revenue",
+             data:[30,30,30],
+             }
+          ]
+        }}/>
+          <ul className="tw-text-4xl tw-mt-10">
+          <li>Please click on the</li>
+          <li className="tw-mt-5">Progress Button</li>
+          <li className="tw-mt-5">To view your Progress</li>
+          </ul> 
+         
+         
+        
        </div>
 }
       <h3 className="tw-font-bold tw-text-[20px] tw-mt-[50px]">
