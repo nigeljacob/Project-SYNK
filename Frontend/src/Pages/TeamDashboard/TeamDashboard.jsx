@@ -18,6 +18,10 @@ import TeamYourProgress from "./TeamPersonalProgress/TeamYourProgress";
 import { read_OneValue_from_Database, read_from_Database_onChange } from "../../../../Backend/src/firebaseCRUD";
 import { auth } from "../../../../Backend/src/firebase";
 import UserComponent from "../../components/UserComponent/UserComponent";
+import PieData1 from "../../components/PieChartComponent/PieData/PieData1"
+import PieData2 from "../../components/PieChartComponent/PieData/PieData2"
+import PieData3 from "../../components/PieChartComponent/PieData/PieData3"
+import { all } from "axios";
 
 const MemberComponent = ({ info, currentTeam, buttonClass, setTeamMemberIndex, setAssignTaskOpen, setAssignTaskPopup, setSelectedUser, index, isAssignTaskOpen}) => {
   const [isHovering, setIsHovering] = useState(false);
@@ -195,6 +199,41 @@ const TeamDashboard = ({ user }) => {
     } catch (e) {}
   };
 
+  const data1 = {
+    labels: PieData1.map((data) => data.label),
+    datasets: [
+        {
+            label: "Total Miniutes Spent",
+            data:PieData1.map((data) => data.value),
+        },
+
+    ],
+  };
+  
+  const data2 = {
+    labels: PieData2.map((data) => data.label),
+    datasets: [
+        {
+            label: "Total Miniutes Spent",
+            data:PieData2.map((data) => data.value),
+        },
+
+    ],
+  };
+
+  const data3 = {
+    labels: PieData3.map((data) => data.label),
+    datasets: [
+        {
+            label: "Total Miniutes Spent",
+            data:PieData3.map((data) => data.value),
+        },
+
+    ],
+  };
+
+  const allData = [data1, data2, data3]
+
   const infoData = [
     {
       title: "Team Activity",
@@ -215,7 +254,7 @@ const TeamDashboard = ({ user }) => {
     },
     {
       title: "Your Progress",
-      element: <TeamYourProgress team={currentTeam} sideBarStatus={isOpen} />,
+      element: <TeamYourProgress team={currentTeam} sideBarStatus={isOpen} data={allData} />,
       className: "teamProgress",
     },
   ];
