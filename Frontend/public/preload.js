@@ -74,6 +74,17 @@ contextBridge.exposeInMainWorld('electronApi', {
     ipcRenderer.on("sendIntervalsPaused", (event, data) => {
       callback(data)
     })
+  },
+
+  receiveUrlFromMain: (callback) => {
+    ipcRenderer.on("sendFileUrlFromMain", (event, data) => {
+      console.log(data)
+      callback(data)
+    })
+  },
+
+  sendUploadVersion: (data) => {
+    ipcRenderer.send("versionUploaded", data)
   }
 });
 

@@ -109,7 +109,7 @@ const TeamProgressComponent = ({
                     </div>
                     <div className="tw-flex tw-gap-[8px]">
                     <img src={timeClock} alt="time clock" />
-                    <p className="tw-text-[14px]">Lastly worked on {tasks[parseInt(member.status.split(" ")[member.status.split(" ").length - 1])].progress.lastApplication}</p>
+                    <p className="tw-text-[14px]">Lastly worked on {tasks[parseInt(member.status.split(" ")[member.status.split(" ").length - 1] - 1)].progress.lastApplication}</p>
                   </div>
                 </>
               )}

@@ -30,6 +30,7 @@ import "./Pages/MainTeamsPage/Teams.css";
 import ProfileSettings from "./Pages/ProfileSettings/ProfileSettings";
 import { readOnceFromDatabase, read_OneValue_from_Database, updateDatabase } from "../../Backend/src/firebaseCRUD";
 import { Tooltip } from "@mui/material";
+import { uploadVersion } from "../../Backend/src/AssignTask/taskFunctions";
 const electronApi = window?.electronApi;
 
 let result = "";
@@ -223,6 +224,15 @@ function App() {
             )
           })
         }
+    })
+  }, [])
+
+  useEffect(() => {
+    electronApi.receiveUrlFromMain((data) => {
+        let URL = data.URL
+        uploadVersion(URL, data.task, data.taskIndex, data.team, data.teamMemberIndex).then(() => {
+          electronApi.sendUploadVersion(data)
+        })
     })
   }, [])
 
