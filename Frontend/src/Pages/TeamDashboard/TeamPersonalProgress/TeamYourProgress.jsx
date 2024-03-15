@@ -95,11 +95,9 @@ const TeamYourProgress = (props) => {
              }
           ]
         }}/>
-          <ul className="tw-text-4xl tw-mt-10">
-          <li>Please click on the</li>
-          <li className="tw-mt-5">Progress Button</li>
-          <li className="tw-mt-5">To view your Progress</li>
-          </ul> 
+          <div className="tw-w-full tw-h-full tw-flex tw-justify-center tw-items-center">
+            <h3>Click on a task to view Details</h3>
+          </div>
          
          
         
