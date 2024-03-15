@@ -438,22 +438,25 @@ export const PauseTask = (task, taskIndex, team, teamMemberIndex, targetApplicat
 
 export const uploadVersion = (filePath, task, taskIndex, team, teamMemberIndex) => {
     let dateTime = getTimeDate()
-    let version = Version(dateTime, filePath)
+    let version = Version(filePath, dateTime)
 
     readOnceFromDatabase("Teams/" + 
     auth.currentUser.uid + "/" + 
     team.teamCode + "/teamMemberList/" + 
     teamMemberIndex + "/taskList/" + 
-    taskIndex + 
-    "/progress/folderVersions" ((versionList) => {
+    parseInt(taskIndex - 1) + 
+    "/progress/folderVersions", ((versionList) => {
         if(versionList[0] === "") {
           versionList = []
         }
 
+        console.log(versionList);
+
         versionList.push(version)
 
-        updateDatabase("Teams/" + auth.currentUser.uid + "/" + team.teamCode + "/teamMemberList/" + teamMemberIndex + "/taskList/" + taskIndex + "/progress", {folderVersions: versionList}).then(() => {
-          updateDatabase("Teams/" + team.teamLeader.UID + "/" + team.teamCode + "/teamMemberList/" + teamMemberIndex + "/taskList/" + taskIndex + "/progress", {folderVersions: versionList})
+        updateDatabase("Teams/" + auth.currentUser.uid + "/" + team.teamCode + "/teamMemberList/" + teamMemberIndex + "/taskList/" + parseInt(taskIndex - 1) + "/progress", {folderVersions: versionList}).then(() => {
+          updateDatabase("Teams/" + team.teamLeader.UID + "/" + team.teamCode + "/teamMemberList/" + teamMemberIndex + "/taskList/" + parseInt(taskIndex - 1) + "/progress", {folderVersions: versionList})
+          console.log("uploaded");
         })
     }))
 }
