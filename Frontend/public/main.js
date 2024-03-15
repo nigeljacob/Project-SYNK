@@ -15,20 +15,13 @@ const {
 } = require("../../Backend/src/electronFunctions/viewTaskFunctions");
 const os = require("node:os");
 const {
-  checkActiveApplication,
-  getCurrentlyActiveApplication,
   openFileDialog,
-  sendSignalwithzip,
-  createZipFromFolder,
-  uploadFileToWordPress,
   createZipAndUpload,
   getFocusedWindow,
   idleDetection,
-  trackLastModified,
-  generateGitignoreForProject,
   getDateTime
 } = require("../../Backend/src/electronFunctions/ProgressTrackerFunctions");
-const { WindIcon } = require("lucide-react");
+const chokidar = require('chokidar');
 
 function createWindow() {
   let mainWindowState = windowStateKeeper({
@@ -209,11 +202,11 @@ function createWindow() {
 
   let savePopupCount = 0
 
-  let LAST_MODIFIED_INTERVAL_TIME = 30000
-
   let TaskDetails;
 
   let uploadTimes = 0
+
+  var directoryWatcher;
 
   ipcMain.on("sendStartTask", (event, Task) => {
     // start tracking the windows
@@ -233,25 +226,31 @@ function createWindow() {
 
     folderPath = Task.task.filePath
 
-    trackLastModified(folderPath , "start", (data) => {
-      if(data === "updated") {
-        folderChanged = true
-        uploadTimes++
-      } else {
+    directoryWatcher = chokidar.watch(folderPath).on('all', (event, path) => {
+      console.log(event, path);
+      if(event === "error") {
         dialog.showErrorBox("Ünable to find Task Folder", "The task folder was not found in the specified path: " + folderPath);
-        clearInterval(idleTrackingInterval)
-        clearInterval(appTrackingInterval)
-        clearInterval(lastModifiedInterval)
-        trackLastModified(folderPath, "stop", null)
+        try{
+          clearInterval(idleTrackingInterval)
+          clearInterval(appTrackingInterval)
+          clearInterval(lastModifiedInterval)
+        } catch(e) {
+
+        }
+
         win.webContents.send("sendIntervalsPaused", trackedApplications)
         trackedApplications = []
         currentlyTrackingApplication = {}
+        directoryWatcher.close().then(console.log("watcher closed"))
         return
+      } else {
+        folderChanged = true
+        uploadTimes++
       }
-    })
+    });
 
     lastModifiedInterval = setInterval(() => {
-        if(folderChanged && uploadTimes > 1) {
+        if(folderChanged && uploadTimes > 2) {
 
           let dateTime = getDateTime()
 
@@ -270,10 +269,9 @@ function createWindow() {
           console.log("upload")
           savePopupCount = 0
           folderChanged = false
-          if(LAST_MODIFIED_INTERVAL_TIME === 10000) {
-            LAST_MODIFIED_INTERVAL_TIME === 30000
-          }
+
         } else {
+
           if(savePopupCount < 3) {
             if(!lastModifiedPopupShown) {
               lastModifiedPopup = new BrowserWindow({
@@ -302,11 +300,15 @@ function createWindow() {
   
               lastModifiedPopupShown = true
   
-              LAST_MODIFIED_INTERVAL_TIME = 10000
-              savePopupCount++
             }
 
+            savePopupCount++
+
           } else {
+
+            lastModifiedPopupShown = false;
+            lastModifiedPopup.destroy()
+
             if(!lastModifiedPopupShown) {
               lastModifiedPopup = new BrowserWindow({
                 width: 500,
@@ -333,12 +335,11 @@ function createWindow() {
               lastModifiedPopup.show();
   
               lastModifiedPopupShown = true
-  
-              LAST_MODIFIED_INTERVAL_TIME = 10000
+
             }
           }
       }
-    }, LAST_MODIFIED_INTERVAL_TIME)
+    }, 30000)
 
     appTrackingInterval = setInterval(() => {
       let currentWindow = getFocusedWindow();
@@ -478,10 +479,8 @@ ipcMain.on("sendPauseTaskToMain", (event, message) => {
     clearInterval(idleTrackingInterval)
     clearInterval(appTrackingInterval)
     clearInterval(lastModifiedInterval)
-
-    trackLastModified(folderPath, "stop", (data) => {
-      // closed
-    })
+    
+    directoryWatcher.close().then(console.log("watcher closed"))
 
     if(isCurrentApp) {
       currentlyTrackingApplication.endTime = new Date();
@@ -498,7 +497,7 @@ ipcMain.on("sendPauseTaskToMain", (event, message) => {
       }
     }
 
-    if(folderChanged && uploadTimes > 1) {
+    if(folderChanged && uploadTimes > 2) {
       let dateTime = getDateTime()
 
       let folderName = TaskDetails.team.teamName + "_" + TaskDetails.team.teamMemberList[TaskDetails.teamMemberIndex].UID + "_" + dateTime[0] + "_" + dateTime[1]
@@ -518,6 +517,7 @@ ipcMain.on("sendPauseTaskToMain", (event, message) => {
     win.webContents.send("sendIntervalsPaused", trackedApplications)
     trackedApplications = []
     currentlyTrackingApplication = {}
+    lastModifiedPopupShown = false;
 })
 
 ipcMain.on("idleCloseClicked", (event, data) => {
