@@ -35,6 +35,7 @@ import { updateViewTask } from "../../../../Backend/src/AssignTask/taskFunctions
 import { sendNotification } from "../../../../Backend/src/teamFunctions";
 import { auth } from "../../../../Backend/src/firebase";
 import { readOnceFromDatabase, read_OneValue_from_Database } from "../../../../Backend/src/firebaseCRUD";
+import { IoReload } from "react-icons/io5";
 
 //component to display a task assigned to a team member. Shows a list of applications installed on the user's computer in order to select a few that the user will use for the task.
 export default function ViewTask(props) {
@@ -58,6 +59,12 @@ export default function ViewTask(props) {
   const handleClose = () => {
     props.setTrigger(false);
     // console.log("`props.trigger` is now false");
+  };
+
+  //function to handle reload when user clicks reload button. this is to show an updated list of applications including the currently active windows of the user. this is done to include the applications that are installed outside of the program files folder
+  const handleReload = () => {
+    
+    console.log("NOW IM HERE WHOO MAGICCCCCCC")
   };
 
   useEffect(() => {
@@ -105,10 +112,7 @@ export default function ViewTask(props) {
 
   //useEffect that retrieves the list of installed applications from the viewTaskFunctions.js file by using ipcRenderer. useEffect retrieves the data everytime the component is used
   useEffect(() => {
-    electronApi.receiveAppListFromMain((data) => {
 
-      setInstalledApps(data);
-    });
   }, []);
 
   useEffect(() => {
@@ -123,7 +127,7 @@ export default function ViewTask(props) {
 
   //trigger needs to be true in order for the popup to be open
   return props.trigger ? (
-    <div>
+    <div className="tw-relative tw-w-[470px] tw-shadow-[0_0_16px_0_#5bbfff] tw-border-2 tw-border-primary/80 tw-bg-zinc-900  ">
       <div className="tw-fixed tw-inset-0  tw-flex tw-justify-center tw-items-center">
         <Card className="tw-relative tw-w-[470px] tw-shadow-[0_0_16px_0_#5bbfff] tw-border-2 tw-border-primary/80 tw-bg-zinc-900  ">
           <CardHeader>
@@ -133,7 +137,6 @@ export default function ViewTask(props) {
           </CardHeader>
 
           <CardContent>
-            <form>
               <div className="tw-grid tw-w-full tw-items-center tw-gap-4">
                 <div className="tw-flex tw-flex-col tw-space-y-1.5">
                   <Label
@@ -161,9 +164,19 @@ export default function ViewTask(props) {
                   </div>
                   
                   <div className="tw-flex tw-flex-col tw-space-y-5 tw-text-left tw-text-gray-300 ">
-                    <Label htmlFor="currentApp">
+                    
+                    <Label htmlFor="currentApp" className="tw-flex tw-justify-between">
                       Applications required for this task:
+                                          
+                    {/* <button onclick={handleReload()}> */}
+                  <button onClick = {event => handleReload()}>
+
+                    {/* <CIcon icon={cisReload} /> */}
+                    <IoReload/>
+                    </button>
                     </Label>
+
+                    {/* <form> */}
 
                     <Popover open={open} onOpenChange={setOpen}>
                       <PopoverTrigger asChild>
@@ -200,7 +213,7 @@ export default function ViewTask(props) {
                                     // when a specific item is selected from the applications list, the selectedApps array
                                     //is checked to see if the selected app is already in it. 
                                     onSelect={() => {
-
+                                      
                                       //foundApp is a variable that stores information on whether the current app was found in the selectedApps array
                                       var foundApp = selectedApps.find(
                                         (item) => item.name == currentApp.name
@@ -241,7 +254,7 @@ export default function ViewTask(props) {
                                       />
                                     )}
 
-                                    <p className="tw-p-2">{currentApp.name}</p>
+                                    <p className="tw-p-2 tw-text-right">{currentApp.name}</p>
                                     <Check
                                       className={cn(
                                         "tw-mr-3 tw-h-4 tw-w-4 tw-absolute tw-right-0",
@@ -265,12 +278,15 @@ export default function ViewTask(props) {
 
                     
                   </div>
+
+                  
                   <Label
                     htmlFor="name"
                     className="tw-text-left tw-text-gray-300"
                   >
                     Applications selected:
                   </Label>
+
                   <Command>
                     
                     <div className="tw-justify-center tw-items-center tw-flex">
@@ -323,20 +339,33 @@ export default function ViewTask(props) {
                     htmlFor="name"
                     className="tw-text-left tw-text-gray-300"
                   >
-                    Select file to be used:
+                    Folder containing files needed for task:
                   </Label>
-                  <div className="tw-w-full tw-h-[100px] tw-flex tw-justify-center tw-items-center" onClick={event => handleFileOpenClick()}>
-                        {(file == "" || file == null) ? (
-                          <h3>Cick here to open file</h3>
-                        ): (
-                          <h3>{file}</h3>
-                        )}
-                  </div>
+                  
+
+                  {/* <div onClick={event => handleFileOpenClick()}>Cancel</div> */}
+
                 </div>
               </div>
-            </form>
+            {/* </form> */}
+            
+            <Button 
+                  className="tw-w-full tw-flex tw-justify-center tw-items-center tw-mt-5" 
+                  variant="outline"
+                  role="combobox"
+                  aria-expanded={open}
+                  onClick={event => handleFileOpenClick()}>
+                        {(file == "" || file == null) ? (
+                          <h3>Select Folder</h3>
+                        ): (
+                          <h3 className="tw-truncate">{file}</h3>
+                        )}
+                  </Button>
+
           </CardContent>
+          
           <CardFooter className="tw-flex tw-justify-between">
+            
             <Button onClick={handleClose}>Cancel</Button>
             <Button onClick = {event => handleSumibit()}>Confirm</Button>
           </CardFooter>
