@@ -234,6 +234,8 @@ const TeamDashboard = ({ user }) => {
 
   const allData = [data1, data2, data3]
 
+  const [element, setElement] = useState(null);
+
   const infoData = [
     {
       title: "Team Activity",
@@ -254,7 +256,7 @@ const TeamDashboard = ({ user }) => {
     },
     {
       title: "Your Progress",
-      element: <TeamYourProgress team={currentTeam} sideBarStatus={isOpen} data={allData} />,
+      element: <TeamYourProgress team={currentTeam} sideBarStatus={isOpen} elementTrigger = {setElement} UID = {auth.currentUser.uid}/>,
       className: "teamProgress",
     },
   ];
@@ -307,7 +309,9 @@ const TeamDashboard = ({ user }) => {
       "tw-w-7 tw-h-7 tw-mr-[10px] tw-cursor-pointer hover:tw-text-[#5bceff] hide_Button";
   }
 
-  const [element, setElement] = useState(dashboard);
+  useEffect(() => {
+    setElement(dashboard)
+  }, [])
 
   return (
     <>
