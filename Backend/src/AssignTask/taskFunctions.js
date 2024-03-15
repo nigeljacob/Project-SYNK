@@ -1,6 +1,6 @@
 import { Progress, Task, Version } from "../classes";
 import { auth } from "../firebase";
-import { readOnceFromDatabase, updateDatabase } from "../firebaseCRUD";
+import { readOnceFromDatabase, read_OneValue_from_Database, updateDatabase } from "../firebaseCRUD";
 import { sendNotification } from "../teamFunctions";
 const electronApi = window?.electronApi;
 
@@ -91,11 +91,11 @@ export const updateViewTask = (
           let applicationTimeList = [];
 
           for (let i = 0; i < applicationList.length; i++) {
-            let dict = { name: applicationList[i].name, timeLength: "" };
+            let dict = { name: applicationList[i].name, timeLength: 0 };
             applicationTimeList.push(dict);
           }
 
-          task.progress = Progress("", [""], applicationTimeList, "");
+          task.progress = Progress(0, [""], applicationTimeList, "");
         } else {
           let applicationTimeList = task.progress.applicationTimeList;
 
@@ -459,6 +459,10 @@ export const uploadVersion = (filePath, task, taskIndex, team, teamMemberIndex) 
           console.log("uploaded");
         })
     }))
+}
+
+export const getVersions = (taskIndex, team, teamMemberIndex, UID, onVersionsReceived) => {
+  read_OneValue_from_Database("Teams/" + UID + "/" + team.teamCode + "/teamMemberList/" + teamMemberIndex + "/taskList/" + taskIndex + "/progress/folderVersions", onVersionsReceived)
 }
 
 const getTimeDate = () => {
