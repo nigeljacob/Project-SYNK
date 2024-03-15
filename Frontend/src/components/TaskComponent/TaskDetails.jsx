@@ -18,6 +18,7 @@ const TaskDetails = ({
   viewTaskTrigger,
   taskTrigger,
   startButton,
+  onProgressClick,
 }) => {
   const [currentTask, setCurrentTask] = useState(task);
 
@@ -30,6 +31,10 @@ const TaskDetails = ({
   const combinedDateTimeString = `${year}-${month}-${day} ${timeString}`;
 
   const targetDate = new Date(combinedDateTimeString);
+
+  const handleProgressButtonClick = () => {
+    onProgressClick(index)
+  }
 
   let dued = false;
 
@@ -87,113 +92,123 @@ const TaskDetails = ({
       <p>{index + ". " + currentTask.taskName}</p>
 
       <div className="status-container">
-        {Status === "Start" ? (
-          <Tooltip title="Start Task to Change Status">
+        {startButton && (
+          Status === "Start" ? (
+            <Tooltip title="Start Task to Change Status">
+              <select
+                name="status"
+                disabled
+                className={
+                  Status === "Completed" ? "green-status" : "yellow-status"
+                }
+              >
+                <option value="start" selected>
+                  {" "}
+                  Not Started Yet
+                </option>
+                <option value="Continue" hidden>
+                  In Progress
+                </option>
+                <option value="Completed" hidden>
+                  Completed
+                </option>
+              </select>
+            </Tooltip>
+          ) : Status === "Continue" || Status === "In Progress" ? (
             <select
               name="status"
-              disabled
+              onChange={(event) => setStatus(event.target.value)}
               className={
                 Status === "Completed" ? "green-status" : "yellow-status"
               }
             >
-              <option value="start" selected>
-                {" "}
+              <option value="start" disabled>
                 Not Started Yet
               </option>
-              <option value="Continue" hidden>
+              <option value="Continue" selected>
                 In Progress
               </option>
-              <option value="Completed" hidden>
+              <option value="Completed">Completed</option>
+            </select>
+          ) : (
+            <select
+              name="status"
+              onChange={(event) => setStatus(event.target.value)}
+              className={
+                Status === "Completed" ? "green-status" : "yellow-status"
+              }
+            >
+              <option value="start" disabled>
+                Not Started Yet
+              </option>
+              <option value="Continue">In Progress</option>
+              <option value="Completed" selected>
                 Completed
               </option>
             </select>
-          </Tooltip>
-        ) : Status === "Continue" || Status === "In Progress" ? (
-          <select
-            name="status"
-            onChange={(event) => setStatus(event.target.value)}
-            className={
-              Status === "Completed" ? "green-status" : "yellow-status"
-            }
-          >
-            <option value="start" disabled>
-              Not Started Yet
-            </option>
-            <option value="Continue" selected>
-              In Progress
-            </option>
-            <option value="Completed">Completed</option>
-          </select>
-        ) : (
-          <select
-            name="status"
-            onChange={(event) => setStatus(event.target.value)}
-            className={
-              Status === "Completed" ? "green-status" : "yellow-status"
-            }
-          >
-            <option value="start" disabled>
-              Not Started Yet
-            </option>
-            <option value="Continue">In Progress</option>
-            <option value="Completed" selected>
-              Completed
-            </option>
-          </select>
+          )
         )}
         {Status === "Start" ? (
           <Tooltip
             title={startButton ? "Start Task" : "View Task details & Progress"}
           >
             <div>
-              {startButton ? (
-                <button
-                  className="status"
-                  onClick={(event) => {
-                    let popupLayout = document.getElementById("popupLayout2");
-                    if (viewTaskTrigger) {
-                      popupLayout.style.background = "rgba(0,0,0,0)";
-                    } else {
-                      popupLayout.style.visibility = "visible";
-                      setTimeout(() => {
-                        popupLayout.style.background = "rgba(0,0,0,0.7)";
-                      }, 90);
 
-                      setViewTaskTrigger(true);
-                      taskTrigger([currentTask, team, parseInt(index - 1)]);
-                      handleConfirm();
-                    }
-                  }}
-                >
-                  View
-                </button>
-              ) : (
-                <button className="tw-text-cyan-500 tw-bg-black tw-rounded-lg tw-p-1 tw-h-[35px] tw-w-[90px]">
-                  Progress
-                </button>
-              )}
+            <button
+              className="status"
+              onClick={(event) => {
+                let popupLayout = document.getElementById("popupLayout2");
+                if (viewTaskTrigger) {
+                  popupLayout.style.background = "rgba(0,0,0,0)";
+                } else {
+                  popupLayout.style.visibility = "visible";
+                  setTimeout(() => {
+                    popupLayout.style.background = "rgba(0,0,0,0.7)";
+                  }, 90);
+
+                  setViewTaskTrigger(true);
+                  taskTrigger([currentTask, team, parseInt(index - 1)]);
+                  handleConfirm();
+                }
+              }}
+            >
+              View
+            </button>
+              
             </div>
           </Tooltip>
         ) : Status === "Continue" || Status === "In Progress" ? (
           <div className="tw-flex tw-items-center">
-            {Status === "In Progress" ? (
-            (
-              <button className="status tw-text-white" onClick={event => {
-                electronApi.sendPauseTaskToMain("pauseSignal")
-              }}>Pause</button>
-            )
-            ) : (
-              <button className="status" onClick={event => {
 
-                startTask(task, parseInt(index - 1), team, teamMemberIndex, (data) => {
-                  if(data != null) {
-                    electronApi.sendTaskStarted({task: task, taskIndex: index, team: team, teamMemberIndex: teamMemberIndex});
-                  }
-                })
-
-                }}>{Status}</button>
-            )}
-            <MdEdit
+              {startButton ? (
+                Status === "In Progress" ? (
+                  (
+                    <button className="status tw-text-white" onClick={event => {
+                      electronApi.sendPauseTaskToMain("pauseSignal")
+                    }}>Pause</button>
+                  )
+                  ) : (
+                    <button className="status" onClick={event => {
+      
+                      startTask(task, parseInt(index - 1), team, teamMemberIndex, (data) => {
+                        if(data != null) {
+                          electronApi.sendTaskStarted({task: task, taskIndex: index, team: team, teamMemberIndex: teamMemberIndex});
+                        }
+                      })
+      
+                      }}>{Status}</button>
+                  )
+              ) : (
+                <button 
+                  className="tw-text-cyan-500 tw-bg-black tw-rounded-lg tw-p-1 tw-h-[35px] tw-w-[150px]" 
+                  onClick={() => handleProgressButtonClick(index)}
+                >
+                    View Progress
+                </button>
+              )}
+            
+            {startButton && (
+              <MdEdit
               className="tw-w-[20px] tw-h-[20px] tw-ml-[10px] tw-cursor-pointer"
               onClick={(event) => {
                 let popupLayout = document.getElementById("popupLayout2");
@@ -211,6 +226,7 @@ const TaskDetails = ({
                 }
               }}
             />
+            )}
           </div>
         ) : (
           Status === "In Progress" ? (

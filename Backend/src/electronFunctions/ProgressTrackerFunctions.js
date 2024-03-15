@@ -13,7 +13,6 @@ const { WritableStreamBuffer } = require('stream-buffers');
 // import { activeWindow, type } from '@miniben90/x-win';
 const { activeWindow } = require('@miniben90/x-win');
 const { uIOhook, UiohookKey } = require('uiohook-napi')
-const chokidar = require('chokidar');
 
 
 // to get currently active app on mac
@@ -142,27 +141,6 @@ function idleDetection(state, callback){
     }
       
 }
-
-function trackLastModified(filePath, type, callback) {
-
-      if(type === "stop") {
-        new Promise((resolve, reject) => {
-            chokidar.watch(filePath).close();
-            resolve();
-          }).then(() => {
-            console.log('Watcher closed.');
-          });
-      } else {
-        chokidar.watch(filePath).on('all', (event, path) => {
-            console.log(event, path);
-            if(event === "error") {
-                callback("error")
-            } else {
-                callback("updated")
-            }
-          });
-      }
-  }
   
 
 // Function to open a file dialog and return the selected file path
@@ -327,4 +305,4 @@ function getDateTime() {
 
 
 
-module.exports = { checkActiveApplication, getCurrentlyActiveApplication, openFileDialog, createZipAndUpload, getFocusedWindow, idleDetection, trackLastModified, getDateTime};
+module.exports = { checkActiveApplication, getCurrentlyActiveApplication, openFileDialog, createZipAndUpload, getFocusedWindow, idleDetection, getDateTime};
