@@ -230,6 +230,7 @@ function App() {
   useEffect(() => {
     electronApi.receiveUrlFromMain((data) => {
         let URL = data.URL
+        console.log(URL)
         uploadVersion(URL, data.task, data.index, data.team, data.teamMemberIndex).then(() => {
           electronApi.sendUploadVersion(data)
         })

@@ -78,6 +78,7 @@ contextBridge.exposeInMainWorld('electronApi', {
 
   receiveUrlFromMain: (callback) => {
     ipcRenderer.on("sendFileUrlFromMain", (event, data) => {
+      console.log(data)
       callback(data)
     })
   },

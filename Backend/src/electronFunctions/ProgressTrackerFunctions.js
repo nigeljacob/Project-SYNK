@@ -145,7 +145,7 @@ function idleDetection(state, callback){
 
 function trackLastModified(filePath, type, callback) {
 
-    const directoryWatcher = chokidar.watch(filePath).on('all', (event, path) => {
+    var directoryWatcher = chokidar.watch(filePath).on('all', (event, path) => {
         console.log(event, path);
         if(event === "error") {
             callback("error")
@@ -155,9 +155,7 @@ function trackLastModified(filePath, type, callback) {
       });
 
       if(type === "stop") {
-        directoryWatcher.close().then(() => {
-            console.log("watcher closed")
-        })
+        directoryWatcher.close().then(console.log("watcher closed"))
       }
   }
   

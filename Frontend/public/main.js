@@ -211,6 +211,10 @@ function createWindow() {
 
   let LAST_MODIFIED_INTERVAL_TIME = 30000
 
+  let TaskDetails;
+
+  let uploadTimes = 0
+
   ipcMain.on("sendStartTask", (event, Task) => {
     // start tracking the windows
     currentlyTrackingApplication = {};
@@ -225,11 +229,14 @@ function createWindow() {
 
     isCurrentApp = false;
 
+    TaskDetails = Task
+
     folderPath = Task.task.filePath
 
     trackLastModified(folderPath , "start", (data) => {
       if(data === "updated") {
         folderChanged = true
+        uploadTimes++
       } else {
         dialog.showErrorBox("Ünable to find Task Folder", "The task folder was not found in the specified path: " + folderPath);
         clearInterval(idleTrackingInterval)
@@ -244,14 +251,14 @@ function createWindow() {
     })
 
     lastModifiedInterval = setInterval(() => {
-        if(folderChanged) {
+        if(folderChanged && uploadTimes > 1) {
 
           let dateTime = getDateTime()
 
-          let folderName = Task.team.teamName + "_" + Task.team.teamMemberList[teamMemberIndex].UID + "_" + dateTime[0] + "_" + dateTime[1]
+          let folderName = Task.team.teamName + "_" + Task.team.teamMemberList[Task.teamMemberIndex].UID + "_" + dateTime[0] + "_" + dateTime[1]
           
           // upload function
-          createZipAndUpload(filePath, folderName)
+          createZipAndUpload(folderPath, folderName)
           .then((URL) => {
               console.log(URL);
               win.webContents.send("sendFileUrlFromMain", {...Task, URL: URL})
@@ -491,16 +498,16 @@ ipcMain.on("sendPauseTaskToMain", (event, message) => {
       }
     }
 
-    if(folderChanged) {
+    if(folderChanged && uploadTimes > 1) {
       let dateTime = getDateTime()
 
-      let folderName = Task.team.teamName + "_" + Task.team.teamMemberList[teamMemberIndex].UID + "_" + dateTime[0] + "_" + dateTime[1]
+      let folderName = TaskDetails.team.teamName + "_" + TaskDetails.team.teamMemberList[TaskDetails.teamMemberIndex].UID + "_" + dateTime[0] + "_" + dateTime[1]
       
       // upload function
-      createZipAndUpload(filePath, folderName)
+      createZipAndUpload(TaskDetails.task.filePath, folderName)
       .then((URL) => {
           console.log(URL);
-          win.webContents.send("sendFileUrlFromMain", {...Task, URL: URL})
+          win.webContents.send("sendFileUrlFromMain", {...TaskDetails, URL: URL})
       })
       .catch(error => {
           console.error('Error:', error);
