@@ -62,10 +62,74 @@ export default function ViewTask(props) {
   };
 
   //function to handle reload when user clicks reload button. this is to show an updated list of applications including the currently active windows of the user. this is done to include the applications that are installed outside of the program files folder
+  // const handleReload = () => {
+  //   console.log("harro")
+  //   electronApi.receiveAppListFromMain((data) => {
+  //     console.log("data")
+
+  //     // setInstalledApps(data);
+
+  //   })
+  // }
+
+
+
   const handleReload = () => {
+    console.log("reload pressed")
+    electronApi.receiveAppListFromMain((data) => {
+      setInstalledApps(data)
+      console.log("and again")
+    });  
+  }
+
+ 
+    // console.log("hellooooooooooo")
+
+
+    // electronApi.receiveAppListFromMain((data) => {
+    //   console.log("please work")
+    // })
+
+    // electronApi.receiveAppListFromMain((data) => {
+
+    //   // setInstalledApps(data);
+      
+    //   console.log("WHOOOOOOOOOOOOOOOOO DATAAAAAAAAAAAAAAA")
+    //   console.log(data)
+    // }
+
     
-    console.log("NOW IM HERE WHOO MAGICCCCCCC")
-  };
+    // );
+
+    // console.log("hellooooooooooo")
+    // console.log("Reloading...");
+
+    // const appListPromise = electronApi.receiveAppListFromMain();
+
+    // if (!appListPromise || typeof appListPromise.then !== 'function') {
+    //     console.error("Invalid promise returned from electronApi.receiveAppListFromMain()");
+    //     return;
+    // }
+
+    // appListPromise
+    //     .then(data => {
+    //         // Assuming setInstalledApps is a state setter function
+    //         // setInstalledApps(data);
+
+    //         console.log("Received data:", data);
+    //     })
+    //     .catch(error => {
+    //         console.error("Error fetching app list:", error);
+    //     });
+    // installedApps.push((
+    //   {name: "oh shit", 
+    //   icon: "whooo"
+    // })
+    // );
+
+    // console.log("installed apps: " + installedApps);
+    // console.log(installedApps);
+  // };
 
   useEffect(() => {
     readOnceFromDatabase("Teams/" + auth.currentUser.uid + "/" + props.task[1].teamCode + "/teamMemberList/", (data) => {
@@ -112,7 +176,10 @@ export default function ViewTask(props) {
 
   //useEffect that retrieves the list of installed applications from the viewTaskFunctions.js file by using ipcRenderer. useEffect retrieves the data everytime the component is used
   useEffect(() => {
+    electronApi.receiveAppListFromMain((data) => {
 
+      setInstalledApps(data);
+    });
   }, []);
 
   useEffect(() => {
@@ -213,7 +280,6 @@ export default function ViewTask(props) {
                                     // when a specific item is selected from the applications list, the selectedApps array
                                     //is checked to see if the selected app is already in it. 
                                     onSelect={() => {
-                                      
                                       //foundApp is a variable that stores information on whether the current app was found in the selectedApps array
                                       var foundApp = selectedApps.find(
                                         (item) => item.name == currentApp.name

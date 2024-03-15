@@ -148,10 +148,11 @@ function createWindow() {
   });
 
   ipcMain.on("viewTask", (event, message) => {
-    // console.log("Received message from renderer process:");
     getappsfunc()
       .then((appsList) => {
         // console.log(appsList);
+        console.log("Received message from renderer process:");
+
         win.webContents.send("texsssst", appsList);
       })
       .catch((error) => console.error("Error:", error));
