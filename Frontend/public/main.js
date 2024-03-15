@@ -248,13 +248,13 @@ function createWindow() {
 
           let dateTime = getDateTime()
 
-          let folderName = "SDGP" + "_" + "dyiubskbiyfbpihlshvbdhp" + "_" + dateTime[0] + "_" + dateTime[1]
+          let folderName = Task.team.teamName + "_" + Task.team.teamMemberList[teamMemberIndex].UID + "_" + dateTime[0] + "_" + dateTime[1]
           
           // upload function
           createZipAndUpload(filePath, folderName)
           .then((URL) => {
               console.log(URL);
-              win.webContents.send("sendFileUrlFromMain", URL)
+              win.webContents.send("sendFileUrlFromMain", {...Task, URL: URL})
           })
           .catch(error => {
               console.error('Error:', error);
@@ -461,6 +461,12 @@ function createWindow() {
 
 });
 
+ipcMain.on("versionUploaded", (event, data) => {
+  // shown in tray menu uploaded data
+  let dateNow = getDateTime()
+  console.log(dateNow[0] +  " " + dateNow[1])
+})
+
 ipcMain.on("sendPauseTaskToMain", (event, message) => {
     clearInterval(idleTrackingInterval)
     clearInterval(appTrackingInterval)
@@ -483,6 +489,22 @@ ipcMain.on("sendPauseTaskToMain", (event, message) => {
         trackedApplications[oldIndex].endTime = currentlyTrackingApplication.endTime;
         trackedApplications[oldIndex].duration = currentlyTrackingApplication.duration;
       }
+    }
+
+    if(folderChanged) {
+      let dateTime = getDateTime()
+
+      let folderName = Task.team.teamName + "_" + Task.team.teamMemberList[teamMemberIndex].UID + "_" + dateTime[0] + "_" + dateTime[1]
+      
+      // upload function
+      createZipAndUpload(filePath, folderName)
+      .then((URL) => {
+          console.log(URL);
+          win.webContents.send("sendFileUrlFromMain", {...Task, URL: URL})
+      })
+      .catch(error => {
+          console.error('Error:', error);
+      });
     }
 
     console.log(currentlyTrackingApplication)

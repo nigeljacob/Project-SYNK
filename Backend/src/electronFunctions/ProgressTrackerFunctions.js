@@ -145,22 +145,19 @@ function idleDetection(state, callback){
 
 function trackLastModified(filePath, type, callback) {
 
+    const directoryWatcher = chokidar.watch(filePath).on('all', (event, path) => {
+        console.log(event, path);
+        if(event === "error") {
+            callback("error")
+        } else {
+            callback("updated")
+        }
+      });
+
       if(type === "stop") {
-        new Promise((resolve, reject) => {
-            chokidar.watch(filePath).close();
-            resolve();
-          }).then(() => {
-            console.log('Watcher closed.');
-          });
-      } else {
-        chokidar.watch(filePath).on('all', (event, path) => {
-            console.log(event, path);
-            if(event === "error") {
-                callback("error")
-            } else {
-                callback("updated")
-            }
-          });
+        directoryWatcher.close().then(() => {
+            console.log("watcher closed")
+        })
       }
   }
   
