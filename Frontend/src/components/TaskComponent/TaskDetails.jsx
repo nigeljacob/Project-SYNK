@@ -18,6 +18,7 @@ const TaskDetails = ({
   viewTaskTrigger,
   taskTrigger,
   startButton,
+  onProgressClick,
 }) => {
   const [currentTask, setCurrentTask] = useState(task);
 
@@ -30,6 +31,10 @@ const TaskDetails = ({
   const combinedDateTimeString = `${year}-${month}-${day} ${timeString}`;
 
   const targetDate = new Date(combinedDateTimeString);
+
+  const handleProgressButtonClick = () => {
+    onProgressClick(index)
+  }
 
   let dued = false;
 
@@ -168,8 +173,11 @@ const TaskDetails = ({
                   View
                 </button>
               ) : (
-                <button className="tw-text-cyan-500 tw-bg-black tw-rounded-lg tw-p-1 tw-h-[35px] tw-w-[90px]">
-                  Progress
+                <button 
+                  className="tw-text-cyan-500 tw-bg-black tw-rounded-lg tw-p-1 tw-h-[35px] tw-w-[90px]" 
+                  onClick={() => handleProgressButtonClick(index)}
+                >
+                   Progress
                 </button>
               )}
             </div>
