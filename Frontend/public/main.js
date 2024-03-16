@@ -141,10 +141,11 @@ function createWindow() {
   });
 
   ipcMain.on("viewTask", (event, message) => {
-    // console.log("Received message from renderer process:");
     getappsfunc()
       .then((appsList) => {
         // console.log(appsList);
+        console.log("Received message from renderer process:");
+
         win.webContents.send("texsssst", appsList);
       })
       .catch((error) => console.error("Error:", error));
@@ -227,7 +228,7 @@ function createWindow() {
     folderPath = Task.task.filePath
 
     directoryWatcher = chokidar.watch(folderPath).on('all', (event, path) => {
-      console.log(event, path);
+      // console.log(event, path);
       if(event === "error") {
         dialog.showErrorBox("Ünable to find Task Folder", "The task folder was not found in the specified path: " + folderPath);
         try{
@@ -423,7 +424,7 @@ function createWindow() {
             isCurrentApp = false
             if(!idleDetected) {
               idleDetection("stop", (data) => {
-                console.log("Not App 2")
+                // console.log("Not App 2")
               })
             }
           }
