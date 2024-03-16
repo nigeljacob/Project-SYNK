@@ -156,7 +156,6 @@ async function openFileDialog() {
       return null;
   }
  const commonIgnorePatterns = [
-    '.git',
     'node_modules',
     'dist',
     '.vscode',
