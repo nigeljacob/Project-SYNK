@@ -176,65 +176,31 @@ const TeamDashboard = ({ user }) => {
 
   const handleItemClick = (element) => {
     setElement(element);
-    try {
-      if (
-        reactElementToJSXString(element).includes("<TeamMemberDashboard") ||
-        reactElementToJSXString(element).includes("<TeamLeaderDashboard")
-      ) {
-        document.getElementById("teamActivity").style.color = "#5bceff";
-        document
-          .getElementById("teamActivity")
-          .querySelector("#dot").style.visibility = "visible";
-      } else if (reactElementToJSXString(element).includes("<TeamChat")) {
-        document.getElementById("teamChat").style.color = "#5bceff";
-        document
-          .getElementById("teamChat")
-          .querySelector("#dot").style.visibility = "visible";
-      } else if (reactElementToJSXString(element).includes("<TeamYourProgress")) {
-        document.getElementById("teamProgress").style.color = "#5bceff";
-        document
-          .getElementById("teamProgress")
-          .querySelector("#dot").style.visibility = "visible";
-      }
-    } catch (e) {}
   };
-
-  const data1 = {
-    labels: PieData1.map((data) => data.label),
-    datasets: [
-        {
-            label: "Total Miniutes Spent",
-            data:PieData1.map((data) => data.value),
-        },
-
-    ],
-  };
-  
-  const data2 = {
-    labels: PieData2.map((data) => data.label),
-    datasets: [
-        {
-            label: "Total Miniutes Spent",
-            data:PieData2.map((data) => data.value),
-        },
-
-    ],
-  };
-
-  const data3 = {
-    labels: PieData3.map((data) => data.label),
-    datasets: [
-        {
-            label: "Total Miniutes Spent",
-            data:PieData3.map((data) => data.value),
-        },
-
-    ],
-  };
-
-  const allData = [data1, data2, data3]
 
   const [element, setElement] = useState(null);
+
+  try {
+    if (
+      reactElementToJSXString(element).includes("<TeamMemberDashboard") ||
+      reactElementToJSXString(element).includes("<TeamLeaderDashboard")
+    ) {
+      document.getElementById("teamActivity").style.color = "#5bceff";
+      document
+        .getElementById("teamActivity")
+        .querySelector("#dot").style.visibility = "visible";
+    } else if (reactElementToJSXString(element).includes("<TeamChat")) {
+      document.getElementById("teamChat").style.color = "#5bceff";
+      document
+        .getElementById("teamChat")
+        .querySelector("#dot").style.visibility = "visible";
+    } else if (reactElementToJSXString(element).includes("<TeamYourProgress")) {
+      document.getElementById("teamProgress").style.color = "#5bceff";
+      document
+        .getElementById("teamProgress")
+        .querySelector("#dot").style.visibility = "visible";
+    }
+  } catch (e) {}
 
   const infoData = [
     {
@@ -262,7 +228,7 @@ const TeamDashboard = ({ user }) => {
   ];
 
   let dashboard = (
-    <TeamLeaderDashboard team={currentTeam} sideBarStatus={isOpen} />
+    <TeamLeaderDashboard team={currentTeam} sideBarStatus={isOpen} elementTrigger = {setElement}/>
   );
 
   if (currentUser.uid === currentTeam["teamLeader"]["UID"]) {
@@ -274,6 +240,7 @@ const TeamDashboard = ({ user }) => {
         team={currentTeam}
         sideBarStatus={isOpen}
         className = "tw-z-[-1000]"
+        elementTrigger = {setElement}
       />
     );
     dashboard = (
@@ -284,6 +251,7 @@ const TeamDashboard = ({ user }) => {
         team={currentTeam}
         sideBarStatus={isOpen}
         className = "tw-z-[-1000]"
+        elementTrigger = {setElement}
       />
     );
     buttonClass =
