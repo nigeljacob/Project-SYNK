@@ -158,4 +158,28 @@ let [isProgressClicked, setIsProgressClicked] = useState(false);
   );
 };
 
+function formatMilliseconds(milliseconds) {
+    // Convert milliseconds to hours, minutes, and seconds
+    let hours = Math.floor(milliseconds / 3600000);
+    milliseconds = milliseconds % 3600000;
+    let minutes = Math.floor(milliseconds / 60000);
+  
+    // Build the formatted string
+    let formattedTime = "";
+    if (hours > 0) {
+      formattedTime += hours + " hour";
+      if (hours > 1) formattedTime += "s"; // pluralize 'hour' if necessary
+    }
+    if (minutes > 0) {
+      if (formattedTime !== "") formattedTime += " ";
+      formattedTime += minutes + " minute";
+      if (minutes > 1) formattedTime += "s"; // pluralize 'minute' if necessary
+    }
+  
+    // Handle the case where milliseconds are less than 1 minute
+    if (formattedTime === "") formattedTime = "less than a minute";
+  
+    return formattedTime;
+  }
+
 export default MemberProgress;
