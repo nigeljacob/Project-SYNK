@@ -47,7 +47,16 @@ const TeamYourProgress = (props) => {
   if (StartedTasks.length > 0) {
     const data = {
       labels: StartedTasks[progressIndex].progress.applicationTimeList.map(
-        (data) => data.name + " - " + formatMilliseconds(data.timeLength)
+        (data) => {
+          // Check if the name length is greater than 15 characters
+          if(data.name.length > 20) {
+            // If yes, format the name and time length
+            return data.name.substring(0,20) + "... - " + formatMilliseconds(data.timeLength);
+          } else {
+            // If not, simply format the time length
+            return data.name + " - " + formatMilliseconds(data.timeLength);
+          }
+        }
       ),
       datasets: [
         {
@@ -113,11 +122,11 @@ const TeamYourProgress = (props) => {
               <PieChart
                 data={{
                   labels: ["", "", ""],
-                  datasets: [{ label: "Revenue", data: [30, 30, 30] }],
+                  datasets: [{ label: "", data: [30, 30, 30] }],
                 }}
               />
-              <div className="tw-w-full tw-h-full tw-flex tw-justify-center tw-items-center">
-                <h3>Click on a task to view Details</h3>
+              <div className="tw-w-full tw-h-full tw-flex tw-justify-center tw-items-center tw-text-4xl tw-font-semibold">
+                <h3>Click on <span className="tw-text-cyan-500">View Progress</span> Button to View Details</h3>
               </div>
             </div>
           )}
