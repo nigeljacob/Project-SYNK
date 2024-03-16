@@ -52,6 +52,7 @@ export default function ViewTask(props) {
   const [open, setOpen] = React.useState(false); //state variable to set the state of the pop up (opened/closed)
   const [file, setFile] = React.useState("");
   var [selectedApps, setSelectedApps] = React.useState([]); //array of apps selected by user
+  const [reload, setReload] = useState(false); 
 
 
 
@@ -73,63 +74,11 @@ export default function ViewTask(props) {
   // }
 
 
-
   const handleReload = () => {
     console.log("reload pressed")
-    electronApi.receiveAppListFromMain((data) => {
-      setInstalledApps(data)
-      console.log("and again")
-    });  
+    electronApi.viewTask("hey there im testing");
   }
 
- 
-    // console.log("hellooooooooooo")
-
-
-    // electronApi.receiveAppListFromMain((data) => {
-    //   console.log("please work")
-    // })
-
-    // electronApi.receiveAppListFromMain((data) => {
-
-    //   // setInstalledApps(data);
-      
-    //   console.log("WHOOOOOOOOOOOOOOOOO DATAAAAAAAAAAAAAAA")
-    //   console.log(data)
-    // }
-
-    
-    // );
-
-    // console.log("hellooooooooooo")
-    // console.log("Reloading...");
-
-    // const appListPromise = electronApi.receiveAppListFromMain();
-
-    // if (!appListPromise || typeof appListPromise.then !== 'function') {
-    //     console.error("Invalid promise returned from electronApi.receiveAppListFromMain()");
-    //     return;
-    // }
-
-    // appListPromise
-    //     .then(data => {
-    //         // Assuming setInstalledApps is a state setter function
-    //         // setInstalledApps(data);
-
-    //         console.log("Received data:", data);
-    //     })
-    //     .catch(error => {
-    //         console.error("Error fetching app list:", error);
-    //     });
-    // installedApps.push((
-    //   {name: "oh shit", 
-    //   icon: "whooo"
-    // })
-    // );
-
-    // console.log("installed apps: " + installedApps);
-    // console.log(installedApps);
-  // };
 
   useEffect(() => {
     readOnceFromDatabase("Teams/" + auth.currentUser.uid + "/" + props.task[1].teamCode + "/teamMemberList/", (data) => {
@@ -177,10 +126,10 @@ export default function ViewTask(props) {
   //useEffect that retrieves the list of installed applications from the viewTaskFunctions.js file by using ipcRenderer. useEffect retrieves the data everytime the component is used
   useEffect(() => {
     electronApi.receiveAppListFromMain((data) => {
-
+      console.log("use effect ran")
       setInstalledApps(data);
     });
-  }, []);
+  }, [reload]);
 
   useEffect(() => {
     electronApi.receiveFileFromMain((filePath) => {
@@ -194,9 +143,9 @@ export default function ViewTask(props) {
 
   //trigger needs to be true in order for the popup to be open
   return props.trigger ? (
-    <div className="tw-relative tw-w-[470px] tw-shadow-[0_0_16px_0_#5bbfff] tw-border-2 tw-border-primary/80 tw-bg-zinc-900  ">
+    <div>
       <div className="tw-fixed tw-inset-0  tw-flex tw-justify-center tw-items-center">
-        <Card className="tw-relative tw-w-[470px] tw-shadow-[0_0_16px_0_#5bbfff] tw-border-2 tw-border-primary/80 tw-bg-zinc-900  ">
+        <Card className="tw-relative tw-w-[470px] tw-shadow-[0_0_16px_0_#5bcfff] tw-border-2 tw-border-primary/80 tw-bg-zinc-900  ">
           <CardHeader>
             <CardTitle className="tw-text-gray-300">
               Task Assigned: {taskName}
@@ -239,10 +188,12 @@ export default function ViewTask(props) {
                   <button onClick = {event => handleReload()}>
 
                     {/* <CIcon icon={cisReload} /> */}
-                    <IoReload/>
+                    <IoReload />
                     </button>
-                    </Label>
 
+                    
+                    </Label>
+                    {"(Hit the refresh button if the app you want isn't available)"}
                     {/* <form> */}
 
                     <Popover open={open} onOpenChange={setOpen}>
