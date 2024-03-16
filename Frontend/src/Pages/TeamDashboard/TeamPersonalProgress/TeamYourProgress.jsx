@@ -99,7 +99,7 @@ const TeamYourProgress = (props) => {
     <div>
       {StartedTasks.length > 0 ? (
         <div className="heightMain tw-h-full">
-          <h3 className="tw-font-bold tw-text-[30px] tw-mb-[100px]">
+          <h3 className="tw-font-bold tw-text-[30px] tw-mb-[50px]">
             Your Progress
           </h3>
 
@@ -127,7 +127,7 @@ const TeamYourProgress = (props) => {
                   datasets: [{ label: "", data: [30, 30, 30] }],
                 }}
               />
-              <div className="tw-w-full tw-h-full tw-flex tw-justify-center tw-items-center tw-text-4xl tw-font-semibold">
+              <div className="tw-w-full tw-h-full tw-flex tw-justify-center tw-items-center tw-text-2xl tw-font-semibold">
                 <h3>Click on <span className="tw-text-cyan-500">View Progress</span> Button to View Details</h3>
               </div>
             </div>
