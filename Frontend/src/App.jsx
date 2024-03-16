@@ -31,6 +31,7 @@ import ProfileSettings from "./Pages/ProfileSettings/ProfileSettings";
 import { readOnceFromDatabase, read_OneValue_from_Database, updateDatabase } from "../../Backend/src/firebaseCRUD";
 import { Tooltip } from "@mui/material";
 import { uploadVersion } from "../../Backend/src/AssignTask/taskFunctions";
+import { PauseTask } from "../../Backend/src/AssignTask/taskFunctions";
 const electronApi = window?.electronApi;
 
 let result = "";
@@ -233,6 +234,14 @@ function App() {
         uploadVersion(URL, data.task, data.taskIndex, data.team, data.teamMemberIndex).then(() => {
           electronApi.sendUploadVersion(data)
         })
+    })
+  }, [])
+
+  useEffect(() => {
+    electronApi.receivePauseStatusFromMain((data) => {
+      PauseTask(data.task, parseInt(data.taskIndex - 1), data.team, data.teamMemberIndex, data.trackedApplications, (boolean) => {
+        
+      })
     })
   }, [])
 
