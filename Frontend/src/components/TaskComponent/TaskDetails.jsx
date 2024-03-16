@@ -51,14 +51,6 @@ const TaskDetails = ({
   const [isLoading, setLoading] = useState(false)
 
 
-  useEffect(() => {
-    electronApi.receivePauseStatusFromMain((data) => {
-      PauseTask(task, parseInt(index - 1), team, teamMemberIndex, data, (data) => {
-        
-      })
-    })
-  }, [])
-
   const containerClass = dued
     ? "single-task-container_past"
     : "single-task-container";

@@ -21,12 +21,14 @@ const TeamProgressComponent = ({
 
   let tempStartedTasks = 0
   let tempCompletedTasks = 0
-  
-  for(let i = 0; i < tasks.length; i++) {
-    if(tasks[i].taskStatus === "Continue" || tasks[i].taskStatus === "In Progress") {
-      tempStartedTasks++
-    } else if(tasks[i].taskStatus === "Completed") {
-      tempCompletedTasks++
+
+  if(member.status != "Active") {
+    for(let i = 0; i < tasks.length; i++) {
+      if(tasks[i].taskStatus === "Continue" || tasks[i].taskStatus === "In Progress") {
+        tempStartedTasks++
+      } else if(tasks[i].taskStatus === "Completed") {
+        tempCompletedTasks++
+      }
     }
   }
 
@@ -62,7 +64,7 @@ const TeamProgressComponent = ({
           <div className="tw-pl-[6px]">
             <p className="tw-text-[18px]">{member["name"]}</p>
             <p className="tw-text-[12px] tw-text-[#9C9C9C]">
-              {status}
+            {member["status"]}
             </p>
             {status == "Busy" ? (
               <p className="tw-absolute tw-top-0 tw-right-0 tw-text-[11px] tw-text-[#5BCEFF] tw-bg-[#224a5b] tw-py-[4px] tw-px-[6px] tw-rounded-[5px]">
@@ -79,7 +81,7 @@ const TeamProgressComponent = ({
               </p>
               ) : (
                 <p className="tw-absolute tw-top-0 tw-right-0 tw-text-[11px] tw-text-[#00FF00] tw-bg-[#284829] tw-py-[4px] tw-px-[6px] tw-rounded-[5px]">
-              {member["status"]}
+               Active
               </p>
               )
             )}
@@ -98,7 +100,7 @@ const TeamProgressComponent = ({
                     </div>
                     <div className="tw-flex tw-gap-[8px]">
                     <img src={timeClock} alt="time clock" />
-                    <p className="tw-text-[14px]">Working on {tasks[parseInt(member.status.split(" ")[member.status.split(" ").length - 1] - 1)].progress.lastApplication}</p>
+                    <p className="tw-text-[14px]">Working on <span className="tw-text-[#5BCEFF]">{tasks[parseInt(member.status.split(" ")[member.status.split(" ").length - 1] - 1)].progress.lastApplication}</span></p>
                   </div>
                 </>
               ) : (
@@ -109,12 +111,12 @@ const TeamProgressComponent = ({
                     </div>
                     <div className="tw-flex tw-gap-[8px]">
                     <img src={timeClock} alt="time clock" />
-                    <p className="tw-text-[14px]">Lastly worked on {tasks[parseInt(member.status.split(" ")[member.status.split(" ").length - 1] - 1)].progress.lastApplication}</p>
+                    <p className="tw-text-[14px]">Lastly worked on <span className="tw-text-[#5BCEFF]">{tasks[parseInt(member.status.split(" ")[member.status.split(" ").length - 1] - 1)].progress.lastApplication}</span></p>
                   </div>
                 </>
               )}
               {tasks.length == 1 ? (
-                <p>No More Tasks assigned yet</p>
+                <p className="tw-text-[14px]">No More Tasks assigned yet</p>
               ): (
                 tasks.length < 2 ? (
                   <p className="tw-text-[14px]">{tasks.length} other task to complete</p>

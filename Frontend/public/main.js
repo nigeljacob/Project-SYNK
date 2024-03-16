@@ -514,7 +514,7 @@ ipcMain.on("sendPauseTaskToMain", (event, message) => {
     }
 
     console.log(currentlyTrackingApplication)
-    win.webContents.send("sendIntervalsPaused", trackedApplications)
+    win.webContents.send("sendIntervalsPaused", {...TaskDetails, trackedApplications: trackedApplications})
     trackedApplications = []
     currentlyTrackingApplication = {}
     lastModifiedPopupShown = false;
