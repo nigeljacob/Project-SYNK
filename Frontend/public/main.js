@@ -22,6 +22,7 @@ const {
   getDateTime
 } = require("../../Backend/src/electronFunctions/ProgressTrackerFunctions");
 const chokidar = require('chokidar');
+const { common } = require("@mui/material/colors");
 
 function createWindow() {
   let mainWindowState = windowStateKeeper({
@@ -209,6 +210,75 @@ function createWindow() {
 
   var directoryWatcher;
 
+  const commonIgnorePatterns = [
+    '.git',
+    'node_modules',
+    'dist',
+    '.vscode',
+    '.idea',
+    '.log',
+    'logs',
+    'temp',
+    '.DS_Store',
+    'Thumbs.db',
+    '.env', // Environment variables file
+    '.cache', // Cache directories
+    '.npmrc', // NPM configuration file
+    '.yarnrc', // Yarn configuration file
+    '.npm', // NPM cache directory
+    '.yarn', // Yarn cache directory
+    '.cache-loader', // Cache directory for webpack-loader
+    'coverage', // Test coverage reports
+    'build', // Build directories
+    'out', // Output directories
+    'bin', // Binary directories
+    'target', // Target directories (Maven, Gradle)
+    'venv', // Virtual environment directories (Python)
+    '.tox', // Tox directories (Python)
+    '__pycache__', // Python bytecode cache directories
+    '.pyc', // Python bytecode files
+    '.class', // Java class files
+    '.gradle', // Gradle directories
+    '.sass-cache', // Sass cache directories
+    '.pytest_cache', // Pytest cache directories
+    '.vs/', // Visual Studio directories
+    '.elasticbeanstalk', // Elastic Beanstalk directories
+    '.serverless', // Serverless directories
+    '.firebase', // Firebase directories
+    '.serverless', // Serverless directories
+    '.next', // Next.js build directories
+    '.storybook', // Storybook directories
+    '.idea', // JetBrains IDE directories
+    '.settings', // Eclipse IDE settings
+    'package-lock.json', // NPM package lock file
+    'yarn.lock', // Yarn lock file
+    'bower_components', // Bower components directory
+    'Gemfile.lock', // Ruby Gemfile lock file
+    'vendor', // Vendor directories (Ruby, PHP)
+    'composer.lock', // Composer lock file (PHP)
+    'log', // Log directories
+    'logs', // Logs directories
+    'tmp', // Temporary directories
+    'temp', // Temp directories
+    'cache', // Cache directories
+    '.history', // History directories
+    '.vscode', // Visual Studio Code directories
+    '.DS_Store', // macOS metadata files
+    'Thumbs.db', // Windows thumbnail cache files
+    '.gitignore', // Gitignore file itself
+    '.swp', // Vim swap files
+    '.editorconfig', // EditorConfig files
+    '.eslintrc', // ESLint configuration files
+    '.prettierrc', // Prettier configuration files
+    '.babelrc', // Babel configuration files
+    '.gitattributes', // Git attributes file
+    '.npmignore', // NPM ignore file
+    '.stylelintignore', // Stylelint ignore file
+    '.stylelintcache', // Stylelint cache directory
+    '.gitkeep' // Placeholder files in empty directories
+    // Add more patterns as needed
+];
+
   ipcMain.on("sendStartTask", (event, Task) => {
     // start tracking the windows
     currentlyTrackingApplication = {};
@@ -227,8 +297,15 @@ function createWindow() {
 
     folderPath = Task.task.filePath
 
-    directoryWatcher = chokidar.watch(folderPath).on('all', (event, path) => {
-      // console.log(event, path);
+    directoryWatcher = chokidar.watch(folderPath, {
+      ignored: (folderPath) => {
+        return commonIgnorePatterns.some(pattern => folderPath.includes(pattern));
+      }, 
+      persistent: true
+    })
+    
+    directoryWatcher.on('all', (event, path) => {
+      console.log(event, path);
       if(event === "error") {
         dialog.showErrorBox("Ünable to find Task Folder", "The task folder was not found in the specified path: " + folderPath);
         try{
@@ -236,7 +313,7 @@ function createWindow() {
           clearInterval(appTrackingInterval)
           clearInterval(lastModifiedInterval)
         } catch(e) {
-
+        
         }
 
         win.webContents.send("sendIntervalsPaused", trackedApplications)
@@ -249,6 +326,11 @@ function createWindow() {
         uploadTimes++
       }
     });
+
+    for(let i = 0; i < commonIgnorePatterns.length; i++) {
+      directoryWatcher.unwatch(commonIgnorePatterns[i])
+      // console.log("")
+    }
 
     lastModifiedInterval = setInterval(() => {
         if(folderChanged && uploadTimes > 2) {
