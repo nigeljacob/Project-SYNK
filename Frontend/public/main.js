@@ -92,32 +92,6 @@ function createWindow() {
     // }
   }, 7000);
 
-  win.on("close", (e) => {
-    // Line 49
-    e.preventDefault();
-    dialog
-      .showMessageBox({
-        type: "info",
-        buttons: ["No", "Yes"],
-        cancelId: 1,
-        defaultId: 0,
-        icon: path.join(__dirname, "icon.png"),
-        title: "Are you sure ?",
-        detail: "Are you sure you want to quit SYNK",
-      })
-      .then(({ response, checkboxChecked }) => {
-        console.log(`response: ${response}`);
-        if (response === 1) {
-          win.hide();
-          win.webContents.send("statusUpdate", "Offline");
-          ipcMain.on("statusUpdated", (event, data) => {
-            win.destroy();
-            app.quit();
-          });
-        }
-      });
-  });
-
   ipcMain.on("showAlertBox", (event, message) => {
     dialog.showErrorBox(message[0], message[1]);
   });
@@ -278,6 +252,63 @@ function createWindow() {
     '.gitkeep' // Placeholder files in empty directories
     // Add more patterns as needed
 ];
+
+win.on("close", (e) => {
+  // Line 49
+  e.preventDefault();
+  dialog
+    .showMessageBox({
+      type: "info",
+      buttons: ["No", "Yes"],
+      cancelId: 1,
+      defaultId: 0,
+      icon: path.join(__dirname, "icon.png"),
+      title: "Are you sure ?",
+      detail: "Are you sure you want to quit SYNK",
+    })
+    .then(({ response, checkboxChecked }) => {
+      console.log(`response: ${response}`);
+      if (response === 1) {
+        win.hide();
+        win.webContents.send("statusUpdate", "Offline");
+        if(isCurrentApp) {
+    currentlyTrackingApplication.endTime = new Date();
+    let difference = currentlyTrackingApplication.endTime - currentlyTrackingApplication.startTime;
+    console.log(difference);
+    console.log(currentlyTrackingApplication.duration);//this the problem
+    currentlyTrackingApplication.duration = currentlyTrackingApplication.duration + difference;
+    console.log(currentlyTrackingApplication.duration);
+    
+    let oldIndex = trackedApplications.findIndex((app) => app.appName === currentlyTrackingApplication.appName);
+    if(oldIndex != -1) {
+      trackedApplications[oldIndex].endTime = currentlyTrackingApplication.endTime;
+      trackedApplications[oldIndex].duration = currentlyTrackingApplication.duration;
+    }
+  }
+
+  if(folderChanged && uploadTimes > 2) {
+    let dateTime = getDateTime()
+
+    let folderName = TaskDetails.team.teamName + "_" + TaskDetails.team.teamMemberList[TaskDetails.teamMemberIndex].UID + "_" + dateTime[0] + "_" + dateTime[1]
+    
+    // upload function
+    createZipAndUpload(TaskDetails.task.filePath, folderName)
+    .then((URL) => {
+        console.log(URL);
+        win.webContents.send("sendFileUrlFromMain", {...TaskDetails, URL: URL})
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+  }
+        win.webContents.send("sendIntervalsPaused", {...TaskDetails, trackedApplications: trackedApplications})
+        ipcMain.on("statusUpdated", (event, data) => {
+          win.destroy();
+          app.quit();
+        });
+      }
+    });
+});
 
   ipcMain.on("sendStartTask", (event, Task) => {
     // start tracking the windows
