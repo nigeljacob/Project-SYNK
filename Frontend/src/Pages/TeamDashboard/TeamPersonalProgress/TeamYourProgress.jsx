@@ -27,9 +27,11 @@ const TeamYourProgress = (props) => {
   let StartedTasks = [];
 
   for (let i = 0; i < currentTeam.teamMemberList.length; i++) {
-    if (currentTeam.teamMemberList[i]["UID"] === auth.currentUser.uid) {
-      tasksList = currentTeam.teamMemberList[i]["taskList"];
-      teamMemberIndex = i;
+    if (currentTeam.teamMemberList[i]["UID"] === props.UID) {
+      if(currentTeam.teamMemberList[i]["taskList"][0] != "") {
+        tasksList = currentTeam.teamMemberList[i]["taskList"];
+        teamMemberIndex = i;
+      }
     }
   }
 

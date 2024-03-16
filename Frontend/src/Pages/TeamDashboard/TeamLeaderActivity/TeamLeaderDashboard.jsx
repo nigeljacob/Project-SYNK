@@ -129,6 +129,8 @@ const TeamLeaderDashboard = (props) => {
                 photo=""
                 tasks={member.taskList}
                 member={member}
+                currentTeam={currentTeam}
+                elementTrigger = {props.elementTrigger}
               />
             ))}
           </div>
