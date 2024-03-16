@@ -390,12 +390,10 @@ export const PauseTask = (task, taskIndex, team, teamMemberIndex, targetApplicat
                   team.teamCode +
                   "/teamMemberList/" +
                   teamMemberIndex,
-                { status: "Worked on task" + parseInt(taskIndex + 1) }
+                { status: "Worked on task " + parseInt(taskIndex + 1) }
               )
             });
-          }).then(() => {
-            onTaskPaused(false)
-          });
+          })
 
           readOnceFromDatabase("Teams/" + auth.currentUser.uid + "/" + team.teamCode + "/teamMemberList/" + teamMemberIndex + "/taskList/" + taskIndex + "/progress", (progress) => {
 
