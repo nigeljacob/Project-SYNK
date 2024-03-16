@@ -199,7 +199,7 @@ export const updateTaskStatus = (
       memberIndex +
       "/taskList/" +
       taskIndex,
-    { taskStatus: taskStatus }
+    { taskStatus: taskStatus, taskCompletedDate: getTimeDate() }
   ).then(() => {
     updateDatabase(
       "Teams/" +
@@ -211,7 +211,7 @@ export const updateTaskStatus = (
         memberIndex +
         "/taskList/" +
         taskIndex,
-      { taskStatus: taskStatus }
+      { taskStatus: taskStatus, taskCompletedDate: getTimeDate() }
     ).then(() => {
       if (taskStatus === "Completed") {
         sendNotification(
@@ -224,30 +224,6 @@ export const updateTaskStatus = (
           team.teamLeader["UID"],
           "feed -taskCompleted",
           team.teamLeader["UID"]
-        );
-        updateDatabase(
-          "Teams/" +
-            auth.currentUser.uid +
-            "/" +
-            team.teamCode +
-            "/" +
-            "teamMemberList/" +
-            memberIndex +
-            "/taskList/" +
-            taskIndex,
-          { taskCompletedDate: getTimeDate() }
-        );
-        updateDatabase(
-          "Teams/" +
-            team.teamLeader["UID"] +
-            "/" +
-            team.teamCode +
-            "/" +
-            "teamMemberList/" +
-            memberIndex +
-            "/taskList/" +
-            taskIndex,
-          { taskCompletedDate: getTimeDate() }
         );
       }
     });

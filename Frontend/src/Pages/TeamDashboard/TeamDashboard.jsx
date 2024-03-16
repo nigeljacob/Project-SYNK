@@ -184,7 +184,8 @@ const TeamDashboard = ({ user }) => {
     if (
       reactElementToJSXString(element).includes("<TeamMemberDashboard") ||
       reactElementToJSXString(element).includes("<TeamLeaderDashboard") || 
-      reactElementToJSXString(element).includes("<MemberProgress")
+      reactElementToJSXString(element).includes("<MemberProgress") || 
+      reactElementToJSXString(element).includes("<ProgressVersionHistory")
     ) {
       document.getElementById("teamActivity").style.color = "#5bceff";
       document
@@ -311,7 +312,8 @@ const TeamDashboard = ({ user }) => {
                     reactElementToJSXString(element).includes(
                       "<TeamLeaderDashboard"
                     ) ||
-                    reactElementToJSXString(element).includes("<MemberProgress")
+                    reactElementToJSXString(element).includes("<MemberProgress") 
+                    || reactElementToJSXString(element).includes("<ProgressVersionHistory")
                   ) {
                     document.getElementById("teamActivity").style.color =
                       "#ffffff";

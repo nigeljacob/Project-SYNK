@@ -7,6 +7,7 @@ import "../../Pages/TeamDashboard/TeamDashboard";
 import "./TaskDetails.css";
 import { startTask } from "../../../../Backend/src/AssignTask/taskFunctions";
 import { PauseTask } from "../../../../Backend/src/AssignTask/taskFunctions";
+import { updateTaskStatus } from "../../../../Backend/src/AssignTask/taskFunctions";
 const electronApi = window?.electronApi;
 
 const TaskDetails = ({
@@ -38,7 +39,7 @@ const TaskDetails = ({
 
   let dued = false;
 
-  if (targetDate < new Date()) {
+  if (targetDate < new Date() && task.taskStatus != "Completed") {
     dued = true;
   } else {
     dued = false;
@@ -55,12 +56,6 @@ const TaskDetails = ({
     ? "single-task-container_past"
     : "single-task-container";
 
-  // there are some errros in this function have to fix.. don't use it might ruin the firebase structure
-  // useEffect(() => {
-
-  //   updateTaskStatus(team, teamMemberIndex, index, Status, auth.currentUser.displayName)
-
-  // }, Status)
 
   useEffect(() => {
     read_OneValue_from_Database(
@@ -109,7 +104,10 @@ const TaskDetails = ({
           ) : Status === "Continue" || Status === "In Progress" ? (
             <select
               name="status"
-              onChange={(event) => setStatus(event.target.value)}
+              onChange={(event) => {
+                setStatus(event.target.value)
+                updateTaskStatus(team, teamMemberIndex, parseInt(index - 1), event.target.value, auth.currentUser.displayName)
+              }}
               className={
                 Status === "Completed" ? "green-status" : "yellow-status"
               }
@@ -125,7 +123,10 @@ const TaskDetails = ({
           ) : (
             <select
               name="status"
-              onChange={(event) => setStatus(event.target.value)}
+              onChange={(event) => {
+                setStatus(event.target.value)
+                updateTaskStatus(team, teamMemberIndex, parseInt(index - 1), event.target.value, auth.currentUser.displayName)
+              }}
               className={
                 Status === "Completed" ? "green-status" : "yellow-status"
               }

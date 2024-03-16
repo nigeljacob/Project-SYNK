@@ -95,7 +95,7 @@ const TeamMemberDashboard = (props) => {
 
   return (
     <div className="tw-overflow-y-scroll tw-h-screen tw-pb-[70px]">
-      {tasksList[0] != "" ? (
+      {tasksList[0] != "" && deadlines.length > 0 ? (
         <DeadlineComponent
         task={tasksList[closestDeadLine[1]]}
         closestDate= {closestDeadLine[0]}
@@ -103,7 +103,7 @@ const TeamMemberDashboard = (props) => {
       ) : (
         <div className="deadline-container tw-flex tw-items-center tw-justify-center tw-h-[140px] tw-mt-[20px]">
           <div className="clock-container tw-flex tw-items-center tw-justify-center tw-w-full">
-            <h3 className="tw-text-center tw-w-full">No Tasks assigned yet to show deadlines</h3>
+            <h3 className="tw-text-center tw-w-full">No Pending Tasks to show deadlines</h3>
           </div>
         </div>
       )}

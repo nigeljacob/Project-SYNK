@@ -152,7 +152,7 @@ function Home(props) {
                   <div className="tw-h-[40px] tw-mt-[15px] tw-mr-[10px] tw-ml-[20px] tw-mb-[10px] tw-w-[40px] tw-bg-[#0B0B0B] tw-flex tw-items-center tw-justify-center tw-flex-col tw-flex-shrink-0">
                     {team.teamLeader.UID === auth.currentUser.uid ? (
                       <h3 className="tw-text-[#5bceff]">
-                        {team.teamName.split(" ")[0][0].toUpperCase()}{" "}
+                        {team.teamName.split(" ")[0][0].toUpperCase()}
                         {team.teamName
                           .split(" ")
                           [
@@ -161,7 +161,7 @@ function Home(props) {
                       </h3>
                     ) : (
                       <h3>
-                        {team.teamName.split(" ")[0][0].toUpperCase()}{" "}
+                        {team.teamName.split(" ")[0][0].toUpperCase()}
                         {team.teamName
                           .split(" ")
                           [

@@ -111,7 +111,11 @@ const UserComponent = ({UID, type, setTriger}) => {
                     teams != null ? (
                         <div className='tw-mt-[5px] tw-ml-[5px]'>
                         <h5 className='tw-text-[12px] tw-font-bold'>Other Teams: </h5>
-                        <p className='tw-text-[10px] tw-text-[#A7A7A7]'>In {teams - 1} other teams on SYNK</p>
+                        {teams -1 === 0 ? (
+                            <p className='tw-text-[10px] tw-text-[#A7A7A7]'>Not in any other Teams on SYNK</p>
+                        ) : (
+                            <p className='tw-text-[10px] tw-text-[#A7A7A7]'>In {teams - 1} other teams on SYNK</p>
+                        )}
                     </div>
                     ) : null
                 )}
