@@ -21,7 +21,9 @@ const ProgressVersionHistory = (props) => {
     useEffect(() => {
       let teamMemberIndex = props.team.teamMemberList.findIndex((member) => member.UID === props.UID)
       getVersions(props.index, props.team, teamMemberIndex, props.UID, (versionList) => {
-        setVersions(versionList.reverse())
+        if(versionList[0] != "") {
+          setVersions(versionList.reverse())
+        }
       })
     }, [])
     
@@ -46,7 +48,7 @@ const ProgressVersionHistory = (props) => {
             {versions.length > 0 ? (
               <FolderViewer url={versions[selectedVersion].filePath} />
             ) : (
-              <h3>No Versions Loaded</h3>
+              <h3 className='widthMain tw-mt-[20px]'>No Versions Loaded</h3>
             )}
             </div>
   

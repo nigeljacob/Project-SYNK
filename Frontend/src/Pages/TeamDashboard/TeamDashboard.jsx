@@ -183,7 +183,8 @@ const TeamDashboard = ({ user }) => {
   try {
     if (
       reactElementToJSXString(element).includes("<TeamMemberDashboard") ||
-      reactElementToJSXString(element).includes("<TeamLeaderDashboard")
+      reactElementToJSXString(element).includes("<TeamLeaderDashboard") || 
+      reactElementToJSXString(element).includes("<MemberProgress")
     ) {
       document.getElementById("teamActivity").style.color = "#5bceff";
       document
@@ -194,7 +195,8 @@ const TeamDashboard = ({ user }) => {
       document
         .getElementById("teamChat")
         .querySelector("#dot").style.visibility = "visible";
-    } else if (reactElementToJSXString(element).includes("<TeamYourProgress")) {
+    } else if (reactElementToJSXString(element).includes("<TeamYourProgress")
+    || reactElementToJSXString(element).includes("<ProgressVersionHistory")) {
       document.getElementById("teamProgress").style.color = "#5bceff";
       document
         .getElementById("teamProgress")
@@ -308,7 +310,8 @@ const TeamDashboard = ({ user }) => {
                     ) ||
                     reactElementToJSXString(element).includes(
                       "<TeamLeaderDashboard"
-                    )
+                    ) ||
+                    reactElementToJSXString(element).includes("<MemberProgress")
                   ) {
                     document.getElementById("teamActivity").style.color =
                       "#ffffff";
@@ -323,7 +326,7 @@ const TeamDashboard = ({ user }) => {
                       .getElementById("teamChat")
                       .querySelector("#dot").style.visibility = "hidden";
                   } else if (
-                    reactElementToJSXString(element).includes("<TeamYourProgress")
+                    reactElementToJSXString(element).includes("<TeamYourProgress") || reactElementToJSXString(element).includes("<ProgressVersionHistory")
                   ) {
                     document.getElementById("teamProgress").style.color =
                       "#ffffff";

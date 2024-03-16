@@ -6,6 +6,7 @@ import {
 } from "../../../../Backend/src/UserAccount";
 import timeClock from "../../assets/images/timeClock.svg";
 import TeamYourProgress from "../../Pages/TeamDashboard/TeamPersonalProgress/TeamYourProgress";
+import MemberProgress from "../../Pages/TeamDashboard/MemberProgress/MemberProgress";
 
 const TeamProgressComponent = ({ photo, member, tasks, currentTeam, elementTrigger }) => {
   const [status, setStatus] = useState("Offline");
@@ -200,10 +201,16 @@ const TeamProgressComponent = ({ photo, member, tasks, currentTeam, elementTrigg
         className="tw-flex tw-justify-center tw-items-center tw-w-full tw-h-[25px] tw-bg-[#0B0B0B] tw-text-[#5BCEFF] tw-text-[13px] tw-rounded-[5px]"
         onClick={() => {
           elementTrigger(
-            <TeamYourProgress
+            // <TeamYourProgress
+            //   team={currentTeam}
+            //   elementTrigger={elementTrigger}
+            //   UID={member.UID}
+            // />
+            <MemberProgress 
               team={currentTeam}
               elementTrigger={elementTrigger}
               UID={member.UID}
+              name={member.name}
             />
           );
         }}
