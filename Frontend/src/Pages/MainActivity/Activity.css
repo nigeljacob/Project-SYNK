@@ -1,140 +1,140 @@
-
 .sideBar {
-    position: relative;
-    height: 100vh;
-    width: 200px;
-    background: #121212;
-    transition: 0.3s all ease-in-out;
-    flex-shrink: 0;
+  position: relative;
+  height: 100vh;
+  width: 200px;
+  background: #121212;
+  transition: 0.3s all ease-in-out;
+  flex-shrink: 0;
 }
 
 .closeButton {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    background: #272727;
-    height: 40px;
-    padding: 2px 1px 2px 1px;
-    border-radius: 5px;
-    justify-content: center;
-    align-items: center;
-    display: flex;
-    margin-bottom: 30px;
-    transform: translateX(10px);
-    cursor: pointer;
-    z-index: 6000;
-    transition: 0.3s all ease-in-out;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: #272727;
+  height: 40px;
+  padding: 2px 1px 2px 1px;
+  border-radius: 5px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  margin-bottom: 30px;
+  transform: translateX(10px);
+  cursor: pointer;
+  z-index: 6000;
+  transition: 0.3s all ease-in-out;
 }
 
-.closeButton:hover{
-    padding: 2px 3px 3px 2px;
+.closeButton:hover {
+  padding: 2px 3px 3px 2px;
 }
 
 .show_SideBar {
-    transform: translateX(0);
+  transform: translateX(0);
 }
 
 .rotateIcon180 {
-    rotate: 180deg;
+  rotate: 180deg;
 }
 
 .rotateIcon0 {
-    rotate: 0deg;
+  rotate: 0deg;
 }
 
 .hide_SideBar {
-    transform: translateX(-180px);
+  transform: translateX(-180px);
 }
 
-.extendMainContent{
-    transform: translateX(-180px);
-    margin-right: -160px;
-    z-index: -2000;
+.extendMainContent {
+  transform: translateX(-180px);
+  margin-right: -160px;
+  z-index: -2000;
 }
 
-.bringBackMainContent{
-    transform: translateX(0px);
-    margin-right: 20px;
-    z-index: -2000;
+.bringBackMainContent {
+  transform: translateX(0px);
+  margin-right: 20px;
+  z-index: -2000;
 }
 
 .activityContent {
-    margin-top: 50px;
-    margin-left: 20px;
-    transition: 0.3s all ease-in-out;
-    flex-grow: 2;
+  margin-top: 50px;
+  margin-left: 20px;
+  transition: 0.3s all ease-in-out;
+  flex-grow: 2;
 }
 
 .activityContent h1 {
-    font-size: 25px;
+  font-size: 25px;
 }
 
-.sideBar .allButton{
-    display: flex;
-    border: 1px solid #5bceff;
-    border-radius: 0px 10px 10px 0px;
-    align-items: center;
-    margin-top: 80px;
-    padding: 3px;
-    width: 90%;
+.sideBar .allButton {
+  display: flex;
+  border: 1px solid #5bceff;
+  border-radius: 0px 10px 10px 0px;
+  align-items: center;
+  margin-top: 80px;
+  padding: 3px;
+  width: 90%;
 }
 
 .sideBar .allButton .dot {
-    margin-left: 20px;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: #5bceff;
+  margin-left: 20px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #5bceff;
 }
 
 .sideBar .allButton h3 {
-    font-size: 15px;
-    margin-left: 20px;
-    color: #5bceff;
+  font-size: 15px;
+  margin-left: 20px;
+  color: #5bceff;
 }
 
 .sideBar #teamsHeading {
-    margin-left: 20px;
-    margin-top: 30px;
-    font-size: 16 px;
-    color: #d2d2d2;
+  margin-left: 20px;
+  margin-top: 30px;
+  font-size: 16 px;
+  color: #d2d2d2;
 }
 
 .teamNameCropping {
-    font-size: 13px;
-    -webkit-line-clamp: 1; /* number of lines to show */
-           line-clamp: 1;
-   -webkit-box-orient: vertical;
+  font-size: 13px;
+  -webkit-line-clamp: 1; /* number of lines to show */
+  line-clamp: 1;
+  -webkit-box-orient: vertical;
 }
 
 .lineSep {
-    height: 1px;
-    width: 100%;
-    background-color: #272727;
+  height: 1px;
+  width: 100%;
+  background-color: #272727;
+}
+
+.heightMain {
+  height: calc(100vh - 100px);
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+}
+
+.heightMain2 {
+  height: calc(100vh - 130px);
+  overflow-y: scroll;
+}
+
+.feedAnimation {
+  animation: anim 0.5s ease-in-out;
+}
+
+@keyframes anim {
+  0% {
+    opacity: 0%;
+    transform: translateX(-400px);
   }
 
-  .heightMain{
-    height: calc(100vh - 100px);
-    overflow-y: scroll;
+  100% {
+    opacity: 100%;
+    transform: translateX(0px);
   }
-
-  .heightMain2{
-    height: calc(100vh - 130px);
-    overflow-y: scroll;
-  }
-
-  .feedAnimation {
-    animation: anim 0.5s ease-in-out;
-  }
-
-  @keyframes anim {
-    0% {
-        opacity: 0%;
-        transform: translateX(-400px);
-    }
-
-    100% {
-        opacity: 100%;
-        transform: translateX(0px);
-    }
-  }
+}
