@@ -339,7 +339,7 @@ function createWindow() {
             }
           }
       }
-    }, 30000)
+    }, 900000)
 
     appTrackingInterval = setInterval(() => {
       let currentWindow = getFocusedWindow();
@@ -465,7 +465,7 @@ function createWindow() {
         }
 
         idleDetected = false;
-    }, 60000)
+    }, 1200000)
 
 });
 
