@@ -146,15 +146,18 @@ export default function ViewTask(props) {
   return props.trigger ? (
     <div>
       <div className="tw-fixed tw-inset-0  tw-flex tw-justify-center tw-items-center">
-        <Card className="tw-relative tw-w-[470px] tw-shadow-[0_0_16px_0_#5bcfff] tw-border-2 tw-border-primary/80 tw-bg-zinc-900  ">
+        {/* <Card className="tw-relative tw-w-[470px] tw-shadow-[0_0_16px_0_#5bcfff] tw-border-2 tw-border-primary/80 tw-bg-zinc-900  "> */}
+        <Card className="tw-relative tw-w-[470px] tw-border-2 tw-border-primary/80 tw-bg-zinc-900"
+        style={{ boxShadow: '0 0 16px #5bbfff' }}>
+
           <CardHeader>
-            <CardTitle className="tw-text-gray-300">
+            <CardTitle className="tw-text-gray-300 tw-text-center">
               Task Assigned: {taskName}
             </CardTitle>
           </CardHeader>
 
           <CardContent>
-              <div className="tw-grid tw-w-full tw-items-center tw-gap-4">
+              <div className="tw-grid tw-w-full tw-items-center tw-justify-center tw-gap-4">
                 <div className="tw-flex tw-flex-col tw-space-y-1.5">
                   <Label
                     htmlFor="taskDesc"
@@ -323,7 +326,7 @@ export default function ViewTask(props) {
                   <Command>
                     
                     <div className="tw-justify-center tw-items-center tw-flex">
-                      <ScrollArea className="tw-h-[120px] tw-w-[300px] tw-rounded-md tw-border">
+                      <ScrollArea className="tw-h-[122px] tw-w-[300px] tw-rounded-md tw-border">
                         <CommandGroup>
                           
                           {/* if no applications were selected, display a message */}

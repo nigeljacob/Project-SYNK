@@ -48,7 +48,7 @@ export default function AssignTask(props) {
 <Card
           className="tw-w-[400px] tw-border-2 tw-border-primary/80  tw-bg-zinc-900">
           <CardHeader>
-            <CardTitle className="tw-text-gray-300 tw-items-center">
+            <CardTitle className="tw-text-gray-300 tw-text-center">
               Assign a task to {props.currentUser["name"]}
             </CardTitle>
           </CardHeader>
@@ -85,7 +85,7 @@ export default function AssignTask(props) {
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button
-                        variant={"secondary"}
+                        variant={"outline"}
                         className={cn(
                           "tw-w-auto tw-justify-start tw-text-left tw-font-normal tw-text-gray-300 tw-border tw-border-input tw-hover:bg-secondary/10 tw-bg-background tw-important",
                           !date && "tw-text-muted-foreground"
