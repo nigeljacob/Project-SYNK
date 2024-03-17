@@ -194,7 +194,7 @@ export default function ViewTask(props) {
                   <button onClick = {event => handleReload()}>
 
                     {/* <CIcon icon={cisReload} /> */}
-                    <RxReload className="hover:tw-text-cyan-400 tw-size-4" />
+                    <RxReload className="hover:tw-text-cyan-400 tw-size-4 tw-text-white" />
 
                     </button>
                     </Label>
@@ -287,7 +287,7 @@ export default function ViewTask(props) {
                                       />
                                     )}
 
-                                    <p className="tw-p-2 tw-text-right">{currentApp.name}</p>
+                                    <p className="tw-p-2 tw-text-left">{currentApp.name}</p>
                                     <Check
                                       className={cn(
                                         "tw-mr-3 tw-h-4 tw-w-4 tw-absolute tw-right-0",
@@ -337,11 +337,12 @@ export default function ViewTask(props) {
                           {selectedApps.map((application) => (
                             <div>
                               <CommandItem
-                                className="tw-aria-selected:bg-background tw-aria-selected:text-foreground tw-h-[56px]"
-                              
-                                onSelect={() => {
+                                // className="tw-aria-selected:bg-red-900 tw-aria-selected:text-green-900 tw-h-[56px] tw-bg-red-600 hover:tw-bg-blue-900"
+                                className="tw-h-[56px] aria-selected:tw-bg-background aria-selected:tw-text-foreground"       
+                                // tw-outline-none aria-selected:tw-bg-accent aria-selected:tw-text-accent-foreground data-[disabled]:tw-pointer-events-none data-[disabled]:tw-opacity-50                       
+                                // onSelect={() => {
                                   
-                                }}
+                                // }}
                               >
                                 {application.iconData ===
                                 "../../assets/images/defaultIconMac.png" ? (
