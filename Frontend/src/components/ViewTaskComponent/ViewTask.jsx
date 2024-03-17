@@ -179,21 +179,36 @@ export default function ViewTask(props) {
                     </Label>
                   </div>
                   
-                  <div className="tw-flex tw-flex-col tw-space-y-5 tw-text-left tw-text-gray-300 ">
+                  <div className="tw-flex tw-flex-col tw-space-y-5 tw-text-left tw-text-gray-300">
                     
-                    <Label htmlFor="currentApp" className="tw-flex tw-justify-between">
+                    
+
+
+                  <div className="tw-flex tw-flex-col tw-space-y-1.5">
+                  <Label htmlFor="currentApp" className="tw-flex tw-justify-between">
+                      <div className="tw-mb-1">
                       Applications required for this task:
-                                          
+                      </div>               
                     {/* <button onclick={handleReload()}> */}
                   <button onClick = {event => handleReload()}>
 
                     {/* <CIcon icon={cisReload} /> */}
-                    <IoReload />
+                    <IoReload className="hover:bg-blue-700" />
                     </button>
-
                     
                     </Label>
-                    {"(Hit the refresh button if the app you want isn't available)"}
+                    <Label
+                      className="tw-text-left tw-text-gray-400"
+                    >
+                    (If you can't find the application you need, try opening it and then hitting the refresh button.)
+                    </Label>
+                  </div>
+
+
+
+
+
+                   
                     {/* <form> */}
 
                     <Popover open={open} onOpenChange={setOpen}>
