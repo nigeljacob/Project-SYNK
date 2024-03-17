@@ -35,7 +35,8 @@ import { updateViewTask } from "../../../../Backend/src/AssignTask/taskFunctions
 import { sendNotification } from "../../../../Backend/src/teamFunctions";
 import { auth } from "../../../../Backend/src/firebase";
 import { readOnceFromDatabase, read_OneValue_from_Database } from "../../../../Backend/src/firebaseCRUD";
-import { IoReload } from "react-icons/io5";
+import { IoReload, IoReloadCircleOutline } from "react-icons/io5";
+import { RxReload } from "react-icons/rx";
 
 //component to display a task assigned to a team member. Shows a list of applications installed on the user's computer in order to select a few that the user will use for the task.
 export default function ViewTask(props) {
@@ -193,9 +194,9 @@ export default function ViewTask(props) {
                   <button onClick = {event => handleReload()}>
 
                     {/* <CIcon icon={cisReload} /> */}
-                    <IoReload className="hover:bg-blue-700" />
+                    <RxReload className="hover:tw-text-cyan-400 tw-size-4" />
+
                     </button>
-                    
                     </Label>
                     <Label
                       className="tw-text-left tw-text-gray-400"
