@@ -189,6 +189,14 @@ function App() {
 
 
   useEffect(() => {
+    electronApi.receiveTaskInformation((data) => {
+      localStorage.setItem("taskDetails", JSON.stringify(data))
+      console.log(data);
+    })
+  }, [])
+
+
+  useEffect(() => {
     electronApi.receiveConfirmBoxResponseFromMain((data) => {
       handleItemClick(data)
     })
@@ -200,7 +208,6 @@ function App() {
     electronApi.receiveStartTaskFromMain((data) => {
         if(data.currentlyTrackingApplication.appName != currentlyWorkingApplication) {
           setCurrentlyWorkingApplication(data.currentlyTrackingApplication.appName)
-          console.log(data.currentlyTrackingApplication.appName)
           updateDatabase(
             "Teams/" +
               auth.currentUser.uid +
