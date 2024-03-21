@@ -9,6 +9,7 @@ const {
   screen,
   nativeImage
 } = require("electron");
+const isDev = false
 const windowStateKeeper = require("electron-window-state");
 const path = require("path");
 const {
@@ -86,7 +87,11 @@ function createWindow() {
 
   setTimeout(function () {
     splashScreen.close();
-    win.loadURL("http://localhost:3000");
+    win.loadURL(
+    isDev
+      ? 'http://localhost:3000'
+      : `file://${path.join(__dirname, '../build/index.html')}`
+    )
     win.setIcon(path.join(__dirname, "logo.png"));
     win.show();
     // if(os.platform() != "darwin") {
