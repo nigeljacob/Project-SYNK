@@ -22,7 +22,7 @@ const {
   getDateTime
 } = require("../../Backend/src/electronFunctions/ProgressTrackerFunctions");
 const chokidar = require('chokidar');
-const { common } = require("@mui/material/colors");
+const trayWindow = require("electron-tray-window");
 
 function createWindow() {
   let mainWindowState = windowStateKeeper({
@@ -42,12 +42,12 @@ function createWindow() {
     minWidth: 1300,
     title: "SYNK",
     minHeight: 600,
-    // titleBarStyle: "hidden",
+    titleBarStyle: "hidden",
     titleBarOverlay: {
       color: "rgba(0,0,0,0)",
       symbolColor: "#ffffff",
     },
-    // frame: false,
+    frame: false,
     show: false,
     icon: path.join(__dirname, "icon.png"),
     webPreferences: {
@@ -151,6 +151,47 @@ function createWindow() {
       icon: path.join(__dirname, "icon.png"),
     }).show();
   });
+
+  let trayMenu = null;
+
+  function showTrayMenu() {
+    if(trayMenu === null) {
+      trayMenu = new BrowserWindow({
+        width: 300,
+        height: 300,
+        frame: false,
+        margin_x : 10,
+        margin_y : 10,
+        alwaysOnTop: true,
+        resizable: false,
+        fullscreen: false,
+    
+        webPreferences: {
+          webSecurity: false,
+          enableRemoteModule: true,
+          contextIsolation: true,
+          nodeIntegration: false,
+          preload: path.join(__dirname, "preload.js"),
+        }
+      })
+
+      trayMenu.loadFile("./public/Popups/tray.html");
+      trayMenu.setSkipTaskbar(true);
+
+      trayWindow.setOptions({
+        trayIconPath: path.join(__dirname, "icon.png"),
+        window: trayMenu
+      });
+    } else {
+      trayMenu.loadFile("./public/Popups/tray.html");
+    }
+
+  }
+
+  function hideTrayMenu() {
+    trayMenu.loadFile("./public/Popups/trayNoTask.html");
+    
+  }
 
   let idlePopupShown = false;
 
@@ -296,6 +337,7 @@ win.on("close", (e) => {
     .then((URL) => {
         console.log(URL);
         win.webContents.send("sendFileUrlFromMain", {...TaskDetails, URL: URL})
+        win.webContents.send("lastUpdated", getDateTime());
     })
     .catch(error => {
         console.error('Error:', error);
@@ -327,6 +369,10 @@ win.on("close", (e) => {
     TaskDetails = Task
 
     folderPath = Task.task.filePath
+
+    showTrayMenu()
+
+    win.webContents.send("sendTaskDetails", "heloooo")
 
     directoryWatcher = chokidar.watch(folderPath, {
       ignored: (folderPath) => {
@@ -375,6 +421,7 @@ win.on("close", (e) => {
           .then((URL) => {
               console.log(URL);
               win.webContents.send("sendFileUrlFromMain", {...Task, URL: URL})
+              win.webContents.send("lastUpdated", getDateTime());
           })
           .catch(error => {
               console.error('Error:', error);
@@ -593,6 +640,8 @@ ipcMain.on("sendPauseTaskToMain", (event, message) => {
     clearInterval(idleTrackingInterval)
     clearInterval(appTrackingInterval)
     clearInterval(lastModifiedInterval)
+
+    hideTrayMenu()
     
     directoryWatcher.close().then(console.log("watcher closed"))
 

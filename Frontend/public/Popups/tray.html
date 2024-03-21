@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+
+    <title>Task Started</title>
+
+    <style>
+
+        body {
+            height: 300px;
+            width: 300px;
+            font-family: 'Poppins', sans-serif;
+            margin: 0px;
+            padding: 0px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            align-items: center;
+            text-align: center;
+            background: #272727;
+            color: white;
+            position: relative;
+        }
+
+        #task, #team {
+            color: #5BCEFF;
+            font-style: bold;
+        }
+
+        #title {
+            font-size: 25px;
+            color: white;
+        }
+
+        #onText {
+            color: #0f0;
+            font-weight: 700;
+        }
+
+        #desc {
+            color: white;
+        }
+
+        .wrapper{
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+            margin-bottom: 20px;
+        }
+
+        .wrapper button {
+            background: #5BCEFF;
+            width: 80%;
+            border-radius: 10px;
+            color: black;
+            padding: 5px 0px 5px 0px;
+        }
+
+        #updated {
+            font-size: 20px;
+        }
+
+    </style>
+</head>
+<body>
+    <h2 id="title">Task is <span id="onText"><b>ON</b></span> on SYNK</h2>
+    <br>
+    <p id="desc">A task is running on synk.. you can pause the task from this menu</p>
+    <br>
+
+    <div class="wrapper">
+        <button id="button"><b>Pause Task</b></button>
+    </div>
+
+    <script>
+        // let task = document.getElementById('task');
+        // let team = document.getElementById('team');
+        // let lastUpdated = document.getElementById('updated');
+        let button = document.getElementById('button')
+        
+    
+        // setInterval(() => {
+        //     // electronApi.receiveTaskInformation((data) => {
+        //     //     let taskName = data.task.index
+        //     //     let TeamName = data.team.TeamName
+
+        //     //     task.textContent = Task + " " + taskName
+        //     //     team.textContent = TeamName
+
+        //     //     console.log(data)
+        //     // })
+
+        //     const taskDetails = JSON.parse(localStorage.getItem('taskDetails'));
+        //     console.log(taskDetails);
+        // }, 1000)
+
+        // electronApi.onReveiceLastUpdatedTime((event, data) => {
+        //     lastUpdated.textContent = data[0] + "at" + data[1]
+            
+        // })   
+
+        button.addEventListener('click', () => {
+            electronApi.sendPauseTaskToMain('pauseTask');
+        });
+
+    </script>
+    
+</body>
+</html>

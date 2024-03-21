@@ -85,6 +85,18 @@ contextBridge.exposeInMainWorld('electronApi', {
 
   sendUploadVersion: (data) => {
     ipcRenderer.send("versionUploaded", data)
+  },
+
+  onReveiceLastUpdatedTime: (callback) => {
+    ipcRenderer.on("lastUpdated", (event, data) => {
+      callback(data)
+    })
+  },
+
+  receiveTaskInformation: (callback) => {
+    ipcRenderer.on("sendTaskDetails", (event, data) => {
+      callback(data)
+    })
   }
 });
 
