@@ -6,7 +6,8 @@ const {
   ipcMain,
   Notification,
   dialog,
-  screen
+  screen,
+  nativeImage
 } = require("electron");
 const windowStateKeeper = require("electron-window-state");
 const path = require("path");
@@ -68,6 +69,7 @@ function createWindow() {
     alwaysOnTop: true,
     resizable: false,
     fullscreen: false,
+    fullscreenable: false,
 
     webPreferences: {
       webSecurity: false,
@@ -178,8 +180,12 @@ function createWindow() {
       trayMenu.loadFile("./public/Popups/tray.html");
       trayMenu.setSkipTaskbar(true);
 
+      const image = nativeImage.createFromPath(path.join(__dirname, "icon.png"));
+
+      let tray = new Tray(image.resize({width: 16, height: 16}));
+
       trayWindow.setOptions({
-        trayIconPath: path.join(__dirname, "icon.png"),
+        tray: tray,
         window: trayMenu
       });
     } else {
