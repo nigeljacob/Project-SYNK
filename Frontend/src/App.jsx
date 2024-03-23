@@ -291,24 +291,21 @@ function App() {
 
   useEffect(() => {
     if (user != null) {
-
-      try{
+      try {
         let taskDetails =
           JSON.parse(localStorage.getItem("previousTask")) || null;
         console.log(taskDetails);
-      if (taskDetails != "") {
-        PauseTask(
-          taskDetails.task,
-          parseInt(taskDetails.taskIndex - 1),
-          taskDetails.team,
-          taskDetails.teamMemberIndex,
-          {},
-          (boolean) => {}
-        );
-      }
-      } catch(e) {
-
-      }
+        if (taskDetails != "") {
+          PauseTask(
+            taskDetails.task,
+            parseInt(taskDetails.taskIndex - 1),
+            taskDetails.team,
+            taskDetails.teamMemberIndex,
+            {},
+            (boolean) => {}
+          );
+        }
+      } catch (e) {}
 
       fetchNotification((notification) => {
         for (let i = 0; i < notification.length; i++) {

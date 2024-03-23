@@ -27,7 +27,8 @@ const {
 } = require("../Backend/src/ProgressTrackerFunctions");
 const chokidar = require('chokidar');
 const trayWindow = require("electron-tray-window");
-const notifier = require('node-notifier');
+const { systemPreferences } = require('electron')
+const { exec } = require('child_process');
 
 function createWindow() {
   let mainWindowState = windowStateKeeper({
@@ -156,29 +157,39 @@ function createWindow() {
       });
   });
 
-  setTimeout(() => {
-    const permission = Notification.permission
+
+  if(os.platform() == "darwin") {
+    setTimeout(() => {
+    const permission = ""
 
     session.defaultSession.setPermissionRequestHandler((webContents, permission, callback) => {
-      console.log(permission)
       return callback(false);
     })
 
-    if(permission !== "granted") {
+    systemPreferences.isTrustedAccessibilityClient(true)
+
+    win.webContents
+    .executeJavaScript('localStorage.getItem("notificationPermission");', true)
+    .then(result => {
+      if(result == null) {
       dialog.showMessageBox(win, {
         type: 'warning',
         icon: path.join(__dirname, 'icon.png'),
         message: 'Notification permissions denied',
         detail: 'To enable notifications, please go to your system settings. Click "Notifications" and enable notifications for SYNK.',
-        buttons: ['Open Settings', 'Dismiss'],
+        buttons: ['Open Settings', 'Deny'],
         defaultId: 0
       }).then(({ response }) => {
         if (response === 0) {
          shell.openExternal('x-apple.systempreferences:com.apple.preference.notifications')
+         win.webContents
+          .executeJavaScript('localStorage.setItem("notificationPermission", true);', true)
         }
       });
     }
+    });
   }, 10000)
+  }
 
   ipcMain.on("notification", (event, notification) => {
     const NOTIFICATION_TITLE = notification[0];
