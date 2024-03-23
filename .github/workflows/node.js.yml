@@ -27,7 +27,7 @@ jobs:
         cache: 'yarn'
     - run: yarn
     - run: cd Frontend && yarn
-    - run: cd ../Backend && yarn
-    - run: cd .. && yarn upgrade
+    - run: cd Backend && yarn
+    - run: yarn upgrade
     - run: yarn electron:build
     - run: npm test
