@@ -11,7 +11,7 @@ const {
   shell,
   session
 } = require("electron");
-const isDev = true
+const isDev = false
 const windowStateKeeper = require("electron-window-state");
 const path = require("path");
 const {

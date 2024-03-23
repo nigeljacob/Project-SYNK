@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import * as IOIcons from "react-icons/io";
 import './Notifications.css'
+import { auth } from '../../utils/firebase';
 const electronApi = window?.electronApi;
 
 const Notifications = (props) => {
@@ -18,7 +19,9 @@ const Notifications = (props) => {
   let newNotifications = [];
 
   try{
-    notifications = JSON.parse(localStorage.getItem("notifications") || "[]");
+    notifications = JSON.parse(
+      localStorage.getItem(auth.currentUser.uid + "notifications") || "[]"
+    );
   } catch (e) {
 
   }
@@ -29,7 +32,10 @@ const Notifications = (props) => {
         notifications[i]["seen"] = true
       }
     }
-    localStorage.setItem("notifications", JSON.stringify(notifications));
+    localStorage.setItem(
+      auth.currentUser.uid + "notifications",
+      JSON.stringify(notifications)
+    );
   }
 
   const handleDelete = (type) => {
@@ -40,7 +46,10 @@ const Notifications = (props) => {
           notifications.splice(i)
         }
       }
-      localStorage.setItem("notifications", JSON.stringify(notifications));
+      localStorage.setItem(
+        auth.currentUser.uid + "notifications",
+        JSON.stringify(notifications)
+      );
       electronApi.sendShowAlertSignamToMain(["Done!!", "All Old Notifications Cleared"])
       setOldClearLoading(false)
     }

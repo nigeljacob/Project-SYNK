@@ -293,7 +293,9 @@ function App() {
     if (user != null) {
       try {
         let taskDetails =
-          JSON.parse(localStorage.getItem("previousTask")) || null;
+          JSON.parse(
+            localStorage.getItem(auth.currentUser.uid + "previousTask")
+          ) || null;
         console.log(taskDetails);
         if (taskDetails != "") {
           PauseTask(
@@ -363,7 +365,7 @@ function App() {
         setNotifications(Notifications);
         try {
           let notificationsList = JSON.parse(
-            localStorage.getItem("notifications") || "[]"
+            localStorage.getItem(auth.currentUser.uid + "notifications") || "[]"
           );
           let newNotificationsList = [
             ...new Set([...notificationsList, ...Notifications]),
@@ -374,28 +376,30 @@ function App() {
               self.findIndex((t) => JSON.stringify(t) === JSON.stringify(value))
           );
 
-          localStorage.setItem("notifications", JSON.stringify(uniqueArray));
+          localStorage.setItem(
+            auth.currentUser.uid + "notifications", JSON.stringify(uniqueArray
+          ));
         } catch (e) {
           let uniqueArray = Notifications.filter(
             (value, index, self) =>
               index ===
               self.findIndex((t) => JSON.stringify(t) === JSON.stringify(value))
           );
-          localStorage.setItem("notifications", JSON.stringify(uniqueArray));
+          localStorage.setItem(auth.currentUser.uid + "notifications", JSON.stringify(uniqueArray));
         }
 
         try {
           let AllFeedList = Notifications.filter((notification) =>
             notification.notificationType.includes("feed")
           );
-          let feedList = JSON.parse(localStorage.getItem("feedList") || "[]");
+          let feedList = JSON.parse(localStorage.getItem(auth.currentUser.uid + "feedList") || "[]");
           let newFeedList = [...new Set([...feedList, ...AllFeedList])];
           let uniqueFeedList = newFeedList.filter(
             (value, index, self) =>
               index ===
               self.findIndex((t) => JSON.stringify(t) === JSON.stringify(value))
           );
-          localStorage.setItem("feedList", JSON.stringify(uniqueFeedList));
+          localStorage.setItem(auth.currentUser.uid + "feedList", JSON.stringify(uniqueFeedList));
         } catch (e) {
           let AllFeedList = Notifications.filter((notification) =>
             notification.notificationType.includes("feed")
@@ -405,7 +409,7 @@ function App() {
               index ===
               self.findIndex((t) => JSON.stringify(t) === JSON.stringify(value))
           );
-          localStorage.setItem("feedList", JSON.stringify(uniqueFeedList));
+          localStorage.setItem(auth.currentUser.uid + "feedList", JSON.stringify(uniqueFeedList));
         }
       });
     }

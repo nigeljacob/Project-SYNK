@@ -198,7 +198,7 @@ const TaskDetails = ({
                   className="status"
                   onClick={(event) => {
                     localStorage.setItem(
-                      "previousTask",
+                      auth.currentUser.uid + "previousTask",
                       JSON.stringify({
                         task: task,
                         taskIndex: index,
@@ -206,10 +206,6 @@ const TaskDetails = ({
                         teamMemberIndex: teamMemberIndex,
                       })
                     );
-
-                    let taskDetails =
-                      JSON.parse(localStorage.getItem("previousTask")) || null;
-                    console.log(taskDetails);
 
                     setLoading(true);
 

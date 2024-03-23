@@ -18,10 +18,7 @@ import {
 } from "../../utils/firebaseCRUD";
 import { auth } from "../../utils/firebase";
 import UserComponent from "../../components/UserComponent/UserComponent";
-import PieData1 from "../../components/PieChartComponent/PieData/PieData1";
-import PieData2 from "../../components/PieChartComponent/PieData/PieData2";
-import PieData3 from "../../components/PieChartComponent/PieData/PieData3";
-import { all } from "axios";
+import ReactDOMServer from 'react-dom/server';
 
 const MemberComponent = ({
   info,
@@ -362,6 +359,7 @@ const TeamDashboard = ({ user }) => {
                 id={info.className}
                 onClick={(event) => {
                   console.log(reactElementToJSXString(element));
+                  console.log(ReactDOMServer.renderToString(element));
                   if (
                     reactElementToJSXString(element).includes(
                       "<TeamMemberDashboard"
