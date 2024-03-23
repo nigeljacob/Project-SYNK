@@ -1,10 +1,6 @@
 const { app } = require('electron');
 const { exec } = require('child_process');
-const activeWin = require('active-win');
-const { run } = require('node:test');
 const fs = require('fs');
-const fetch = require('node-fetch');
-const path = require('path');
 const archiver = require('archiver');
 const { dialog } = require('electron');
 const axios = require('axios');

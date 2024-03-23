@@ -1,10 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import {
-  createUser,
-  getCurrentUser,
-} from "../../../../Backend/src/UserAccount";
-import { auth } from "../../../../Backend/src/firebase";
+import { createUser, getCurrentUser } from "../../utils/UserAccount";
+import { auth } from "../../utils/firebase";
 import "./CreateAccount.css";
 
 import React, { useEffect } from "react";
@@ -19,16 +16,21 @@ const CreateAccount = (props) => {
     e.preventDefault(); // Prevent form submission
 
     if (!email.includes("@")) {
-      electronApi.sendShowAlertSignamToMain(["Ooops!!", "Entered Email is Invalid"])
-      return
+      electronApi.sendShowAlertSignamToMain([
+        "Ooops!!",
+        "Entered Email is Invalid",
+      ]);
+      return;
     }
 
     await createUser(email, password, firstName).catch((e) => {
       const errorMessage = e.message;
-      const errorCode = errorMessage.match(/\(auth\/([^)]+)\)/)[1]; 
-      const formattedErrorCode = errorCode.replace(/-/g, ' ');
-      const message = formattedErrorCode.charAt(0).toUpperCase() + formattedErrorCode.slice(1);
-      electronApi.sendShowAlertSignamToMain(["Ooops!!", message])
+      const errorCode = errorMessage.match(/\(auth\/([^)]+)\)/)[1];
+      const formattedErrorCode = errorCode.replace(/-/g, " ");
+      const message =
+        formattedErrorCode.charAt(0).toUpperCase() +
+        formattedErrorCode.slice(1);
+      electronApi.sendShowAlertSignamToMain(["Ooops!!", message]);
       return;
     });
 

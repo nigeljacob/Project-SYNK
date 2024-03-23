@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import * as IOIcons from "react-icons/io";
 import "./Activity.css";
-import { read_from_Database_onChange } from "../../../../Backend/src/firebaseCRUD";
-import { auth } from "../../../../Backend/src/firebase";
+import { read_from_Database_onChange } from "../../utils/firebaseCRUD";
+import { auth } from "../../utils/firebase";
 import { CircularProgress, Tooltip } from "@mui/material";
 import DeadlineComponent from "../../components/ActivityDeadlineComponent/DeadlineComponent";
 import ActivityFeedComponent from "../../components/ActivityFeed/ActivityFeedComponent";
@@ -15,7 +15,7 @@ const {
   isTomorrow,
 } = require("date-fns");
 import { FaClock } from "react-icons/fa6";
-import { Team } from "../../../../Backend/src/classes";
+import { Team } from "../../utils/classes";
 import FolderViewer from "../../components/FolderViewer/FolderViewer";
 
 function Home(props) {

@@ -14,7 +14,7 @@ const windowStateKeeper = require("electron-window-state");
 const path = require("path");
 const {
   getappsfunc,
-} = require("../../Backend/src/electronFunctions/viewTaskFunctions");
+} = require("../Backend/src/viewTaskFunctions");
 const os = require("node:os");
 const {
   openFileDialog,
@@ -22,7 +22,7 @@ const {
   getFocusedWindow,
   idleDetection,
   getDateTime
-} = require("../../Backend/src/electronFunctions/ProgressTrackerFunctions");
+} = require("../Backend/src/ProgressTrackerFunctions");
 const chokidar = require('chokidar');
 const trayWindow = require("electron-tray-window");
 
@@ -77,7 +77,11 @@ function createWindow() {
     },
   });
 
-  splashScreen.loadFile("./public/preload.html");
+  splashScreen.loadFile(
+    isDev
+      ? './Frontend/public/preload.html'
+      : './Frontend/build/preload.html'
+    )
   splashScreen.setIcon(path.join(__dirname, "icon.png"));
   splashScreen.center();
   splashScreen.show();
@@ -90,8 +94,9 @@ function createWindow() {
     win.loadURL(
     isDev
       ? 'http://localhost:3000'
-      : `file://${path.join(__dirname, '../build/index.html')}`
+      : `file://${path.join(__dirname, '../Frontend/build/index.html')}`
     )
+    console.log(`file://${path.join(__dirname, '../Frontend/build/index.html')} `)
     win.setIcon(path.join(__dirname, "logo.png"));
     win.show();
     // if(os.platform() != "darwin") {
@@ -182,7 +187,11 @@ function createWindow() {
         }
       })
 
-      trayMenu.loadFile("./public/Popups/tray.html");
+      trayMenu.loadFile(
+      isDev
+        ? './Frontend/public/Popups/tray.html'
+        : './Frontend/build/Popups/tray.html'
+      )
       trayMenu.setSkipTaskbar(true);
 
       const image = nativeImage.createFromPath(path.join(__dirname, "icon.png"));
@@ -194,13 +203,21 @@ function createWindow() {
         window: trayMenu
       });
     } else {
-      trayMenu.loadFile("./public/Popups/tray.html");
+      trayMenu.loadFile(
+      isDev
+        ? './Frontend/public/Popups/tray.html'
+        : './Frontend/build/Popups/tray.html'
+      )
     }
 
   }
 
   function hideTrayMenu() {
-    trayMenu.loadFile("./public/Popups/trayNoTask.html");
+    trayMenu.loadFile(
+      isDev
+        ? './Frontend/public/Popups/trayNoTask.html'
+        : './Frontend/build/Popups/trayNoTask.html'
+      )
     
   }
 
@@ -393,7 +410,7 @@ win.on("close", (e) => {
     })
     
     directoryWatcher.on('all', (event, path) => {
-      console.log(event, path);
+      // console.log(event, path);
       if(event === "error") {
         dialog.showErrorBox("Ünable to find Task Folder", "The task folder was not found in the specified path: " + folderPath);
         try{
@@ -465,7 +482,11 @@ win.on("close", (e) => {
                 },
               });
     
-              lastModifiedPopup.loadFile("./public/Popups/lastModifiedPopup.html");
+              lastModifiedPopup.loadFile(
+                isDev
+                  ? './Frontend/public/Popups/lastModifiedPopup.html'
+                  : './Frontend/build/Popups/lastModifiedPopup.html'
+                )
               lastModifiedPopup.setIcon(path.join(__dirname, "icon.png"));
               lastModifiedPopup.center();
               lastModifiedPopup.show();
@@ -501,7 +522,11 @@ win.on("close", (e) => {
                 },
               });
     
-              lastModifiedPopup.loadFile("./public/Popups/noWorkPopup.html");
+              lastModifiedPopup.loadFile(
+                isDev
+                  ? './Frontend/public/Popups/noWorkPopup.html'
+                  : './Frontend/build/Popups/noWorkPopup.html'
+                )
               lastModifiedPopup.setIcon(path.join(__dirname, "icon.png"));
               lastModifiedPopup.center();
               lastModifiedPopup.show();
@@ -517,7 +542,7 @@ win.on("close", (e) => {
       let currentWindow = getFocusedWindow();
         if(!idleDetected) {
           idleDetection("start", (data) => {
-            // console.log("detected");
+            console.log("detected");
             idleDetected = true
             if(idlePopupShown) {
               idlePopup.destroy()
@@ -627,7 +652,11 @@ win.on("close", (e) => {
             },
           });
 
-          idlePopup.loadFile("./public/Popups/idlePopup.html");
+          idlePopup.loadFile(
+                isDev
+                  ? './Frontend/public/Popups/idlePopup.html'
+                  : './Frontend/build/Popups/idlePopup.html'
+                )
           idlePopup.setIcon(path.join(__dirname, "icon.png"));
           idlePopup.center();
           idlePopup.show();
