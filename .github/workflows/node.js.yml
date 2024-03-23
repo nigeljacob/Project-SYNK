@@ -26,7 +26,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: yarn
-    - run: yarn electron:build --if-present
+    - run: npm i
+    - run: npm run electron:build --if-present
       working-directory: ./Frontend
     - run: npm test
