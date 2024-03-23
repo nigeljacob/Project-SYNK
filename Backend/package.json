@@ -4,12 +4,9 @@
   "description": "backend of Project SYNK",
   "dependencies": {
     "@miniben90/x-win": "^1.7.1",
-    "active-win": "^8.2.1",
     "archiver": "^7.0.0",
     "electron-tray-window": "^1.2.7",
-    "firebase": "^10.8.0",
     "get-app-icon": "^1.0.1",
-    "get-installed-apps": "^1.1.0",
     "jszip": "^3.10.1",
     "ps-list": "^7.1.0",
     "react-moment": "^1.1.3",
