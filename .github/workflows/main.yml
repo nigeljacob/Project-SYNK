@@ -2,7 +2,7 @@ name: CI/CD Pipeline for Project SYNK
 
 on:
   push:
-    branches: [ Sevinda ]
+    branches: [ main ]
 
 jobs:
   build:
