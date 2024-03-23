@@ -27,5 +27,5 @@ jobs:
         cache: 'yarn'
     - run: yarn
     - run: yarn upgrade
-    - run: yarn electron:build
+    - run: yarn build
     - run: npm test
