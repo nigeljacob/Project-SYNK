@@ -27,7 +27,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
         cache-dependency-path: "./Frontend/yarn.lock"
-    - run: npm i
-    - run: npm run electron:build --if-present
+    - run: yarn install
+    - run: yarn electron:build
       working-directory: ./Frontend
     - run: npm test
