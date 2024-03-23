@@ -28,4 +28,5 @@ jobs:
         cache: 'npm'
     - run: yarn
     - run: yarn electron:build --if-present
-   # - run: npm test
+      working-directory: ./Frontend
+    - run: npm test
