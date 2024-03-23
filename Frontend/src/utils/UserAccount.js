@@ -38,7 +38,11 @@ export const signOut = () => {
 };
 
 export const getCurrentUser = () => {
-  return auth.currentUser;
+  try{
+    return auth.currentUser;
+  } catch(e) {
+    return null
+  }
 };
 
 export const updateStatus = (status) => {

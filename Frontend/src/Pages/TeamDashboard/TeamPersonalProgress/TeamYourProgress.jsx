@@ -89,7 +89,7 @@ const TeamYourProgress = (props) => {
         setElement={props.elementTrigger}
         team={props.team}
         sideBarStatus={props.sideBarStatus}
-        previous={"TEAM_PERSONAL_PROGRESS"}
+        previous={"TEAM_PERSONAL_VERSION"}
         elementStringTrigger={props.elementStringTrigger}
         index={progressIndex}
         UID={props.UID}

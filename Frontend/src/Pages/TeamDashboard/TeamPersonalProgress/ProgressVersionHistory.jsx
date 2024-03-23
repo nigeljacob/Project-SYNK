@@ -96,7 +96,7 @@ const ProgressVersionHistory = (props) => {
   return (
     <div className="">
       <div className="">
-        <div className="tw-ml-[30px] tw-flex tw-items-center">
+        <div className="tw-ml-[20px] tw-flex tw-items-center">
           <IOIcons.IoIosArrowBack
             className="tw-w-[30px] tw-h-[30px] tw-cursor-pointer"
             onClick={(event) => {

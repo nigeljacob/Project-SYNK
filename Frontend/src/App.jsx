@@ -5,6 +5,8 @@ import {
   BrowserRouter as Router,
   Routes,
   HashRouter,
+  useNavigate,
+  Navigate,
 } from "react-router-dom";
 import { getCurrentUser, getStatus, updateStatus } from "./utils/UserAccount";
 import { auth } from "./utils/firebase";
@@ -99,6 +101,7 @@ function App() {
       }).then(() => {
         setUser(null);
         auth.signOut();
+        handleSetLoading();
         localStorage.setItem("loggedIN", "false");
         setIsLoggedIn(false);
         handleItemClick(false);
@@ -377,29 +380,38 @@ function App() {
           );
 
           localStorage.setItem(
-            auth.currentUser.uid + "notifications", JSON.stringify(uniqueArray
-          ));
+            auth.currentUser.uid + "notifications",
+            JSON.stringify(uniqueArray)
+          );
         } catch (e) {
           let uniqueArray = Notifications.filter(
             (value, index, self) =>
               index ===
               self.findIndex((t) => JSON.stringify(t) === JSON.stringify(value))
           );
-          localStorage.setItem(auth.currentUser.uid + "notifications", JSON.stringify(uniqueArray));
+          localStorage.setItem(
+            auth.currentUser.uid + "notifications",
+            JSON.stringify(uniqueArray)
+          );
         }
 
         try {
           let AllFeedList = Notifications.filter((notification) =>
             notification.notificationType.includes("feed")
           );
-          let feedList = JSON.parse(localStorage.getItem(auth.currentUser.uid + "feedList") || "[]");
+          let feedList = JSON.parse(
+            localStorage.getItem(auth.currentUser.uid + "feedList") || "[]"
+          );
           let newFeedList = [...new Set([...feedList, ...AllFeedList])];
           let uniqueFeedList = newFeedList.filter(
             (value, index, self) =>
               index ===
               self.findIndex((t) => JSON.stringify(t) === JSON.stringify(value))
           );
-          localStorage.setItem(auth.currentUser.uid + "feedList", JSON.stringify(uniqueFeedList));
+          localStorage.setItem(
+            auth.currentUser.uid + "feedList",
+            JSON.stringify(uniqueFeedList)
+          );
         } catch (e) {
           let AllFeedList = Notifications.filter((notification) =>
             notification.notificationType.includes("feed")
@@ -409,7 +421,10 @@ function App() {
               index ===
               self.findIndex((t) => JSON.stringify(t) === JSON.stringify(value))
           );
-          localStorage.setItem(auth.currentUser.uid + "feedList", JSON.stringify(uniqueFeedList));
+          localStorage.setItem(
+            auth.currentUser.uid + "feedList",
+            JSON.stringify(uniqueFeedList)
+          );
         }
       });
     }
@@ -463,7 +478,21 @@ function App() {
     }
   };
 
+  let interval = setTimeout(() => {
+    if (user == null && loggedIn) {
+      localStorage.setItem("loggedIN", "false");
+      setIsLoggedIn(false);
+    }
+  }, 7000);
+
+  const handleSetLoading = () => {
+    setLoading(false);
+  };
+
+  const [isLoading, setLoading] = useState(false);
+
   if (user == null && loggedIn) {
+    clearTimeout(interval);
     return (
       <>
         <Loading message="Loading contents" background={true} />
@@ -473,29 +502,39 @@ function App() {
     return (
       <>
         <div className="titleBar"></div>
-        <HashRouter>
-          <Routes>
-            <Route
-              path="/"
-              exact
-              element={
-                <Login setUser={setUser} setIsLoggedIn={setIsLoggedIn} />
-              }
-            />
-            <Route
-              path="/createAccount"
-              element={
-                <CreateAccount
-                  setUser={setUser}
-                  setIsLoggedIn={setIsLoggedIn}
-                />
-              }
-            />
-          </Routes>
-        </HashRouter>
+        {isLoading ? (
+          <Loading message="Signing In" background={true} />
+        ) : (
+          <HashRouter>
+            <Routes>
+              <Route
+                path="/"
+                exact
+                element={
+                  <Login
+                    setUser={setUser}
+                    setIsLoggedIn={setIsLoggedIn}
+                    loadingTrigger={setLoading}
+                  />
+                }
+              />
+              <Route
+                path="/createAccount"
+                element={
+                  <CreateAccount
+                    setUser={setUser}
+                    setIsLoggedIn={setIsLoggedIn}
+                    loadingTrigger={setLoading}
+                  />
+                }
+              />
+            </Routes>
+          </HashRouter>
+        )}
       </>
     );
   } else if (user != null && isLoggedIn) {
+    clearTimeout(interval);
     return (
       <>
         {isLogoutClicked ? (
@@ -530,6 +569,10 @@ function App() {
                         userData={userData}
                       />
                     }
+                  />
+                  <Route
+                    path="*"
+                    element={<Navigate to="/" replace={true} />}
                   />
                 </Routes>
               </HashRouter>
