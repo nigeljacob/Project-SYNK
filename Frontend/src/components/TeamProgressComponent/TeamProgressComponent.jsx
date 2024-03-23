@@ -11,6 +11,7 @@ const TeamProgressComponent = ({
   tasks,
   currentTeam,
   elementTrigger,
+  elementStringTrigger
 }) => {
   const [status, setStatus] = useState("Offline");
   const [profilePic, setProfilePic] = useState("");
@@ -145,6 +146,13 @@ const TeamProgressComponent = ({
                   </div>
                   <div className="tw-flex tw-gap-[8px]">
                     <img src={timeClock} alt="time clock" />
+                    {tasks[
+                        parseInt(
+                          member.status.split(" ")[
+                            member.status.split(" ").length - 1
+                          ] - 1
+                        )]
+                      .progress.lastApplication != "" && (
                     <p className="tw-text-[14px]">
                       Lastly worked on{" "}
                       <span className="tw-text-[#5BCEFF]">
@@ -159,6 +167,7 @@ const TeamProgressComponent = ({
                         }{" "}
                       </span>
                     </p>
+                     )}
                   </div>
                 </>
               )}
@@ -212,10 +221,12 @@ const TeamProgressComponent = ({
             <MemberProgress
               team={currentTeam}
               elementTrigger={elementTrigger}
+              elementStringTrigger={elementStringTrigger}
               UID={member.UID}
               name={member.name}
             />
           );
+          elementStringTrigger("TEAM_MEMBER_PROGRESS");
         }}
       >
         View Progress

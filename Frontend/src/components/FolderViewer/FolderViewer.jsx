@@ -15,29 +15,11 @@ import { FaDownload } from "react-icons/fa6";
 import { sendNotification } from "../../utils/teamFunctions";
 import { auth } from "../../utils/firebase";
 
-function FolderViewer({ url }) {
+function FolderViewer({ url, filePath, title }) {
   const [folderStructure, setFolderStructure] = useState([]);
   const [selectedFileContent, setSelectedFileContent] = useState("");
   const [selectedFileName, setSelectedFileName] = useState("");
   const [downloaded, setDownloaded] = useState(false);
-
-  const downloadZipFile = async (url, folderName) => {
-    try {
-      // Fetch the zip file from the URL
-      const response = await axios.get(url, { responseType: "blob" });
-
-      // Determine the filename from the URL or use a default name
-      const filename = url.substring(url.lastIndexOf("/") + 1) || "file.zip";
-
-      // Create a Blob object from the response data
-      const blob = new Blob([response.data]);
-
-      // Use the downloadjs library to save the Blob as a file
-      download(blob, `${folderName}/${filename}`);
-    } catch (error) {
-      console.error("Error downloading zip file:", error);
-    }
-  };
 
   useEffect(() => {
     if (downloaded) {
@@ -51,55 +33,6 @@ function FolderViewer({ url }) {
     }
   }, []);
 
-  // useEffect(() => {
-  //   const fetchFolderData = async () => {
-  //     try {
-  //       // Fetch the zip file from the URL
-  //       const response = await axios.get(url, { responseType: 'arraybuffer' });
-  //       const zip = await JSZip.loadAsync(response.data);
-
-  //       const zipFileName = url.substring(url.lastIndexOf('/') + 1).replace('.zip', '');
-  //       const folderStructure = { id: 'root', name: zipFileName, children: [] };
-
-  //       // Iterate over each file in the zip
-  //       Object.keys(zip.files).forEach(async (filename) => {
-  //         const parts = filename.split('/');
-  //         let currentFolder = folderStructure;
-
-  //         // Iterate over each part to build the folder structure
-  //         parts.forEach((part) => {
-  //           if (part === '') {
-  //             return; // Skip empty parts
-  //           }
-
-  //           // Check if the current part already exists as a child
-  //           let childFolder = currentFolder.children.find((folder) => folder.name === part);
-  //           if (!childFolder) {
-  //             // Create a new child folder if it doesn't exist
-  //             childFolder = { id: `${currentFolder.id}-${part}`, name: part, children: [] };
-  //             currentFolder.children.push(childFolder);
-  //           }
-
-  //           // Update current folder to the child folder for the next iteration
-  //           currentFolder = childFolder;
-  //         });
-
-  //         // If it's the last part (i.e., the file), read its contents and add to the folder structure
-  //         if (!zip.files[filename].dir) {
-  //           const content = await zip.file(filename).async('string');
-  //           currentFolder.content = content;
-  //         }
-  //       });
-
-  //       setFolderStructure(folderStructure);
-  //     } catch (error) {
-  //       console.error('Error fetching or extracting zip file:', error);
-  //     }
-  //   };
-
-  //   fetchFolderData();
-  // }, [url]);
-
   useEffect(() => {
     const fetchFolderData = async () => {
       try {
@@ -107,9 +40,8 @@ function FolderViewer({ url }) {
         const response = await axios.get(url, { responseType: "arraybuffer" });
         const zip = await JSZip.loadAsync(response.data);
 
-        const zipFileName = url
-          .substring(url.lastIndexOf("/") + 1)
-          .replace(".zip", "");
+        const zipFileName =
+          filePath.split("/")[filePath.split("/").length - 1] + " - " + title;
         const folderStructure = { id: "root", name: zipFileName, children: [] };
 
         // Iterate over each file in the zip
@@ -174,7 +106,7 @@ function FolderViewer({ url }) {
       key={nodes.id}
       nodeId={nodes.id}
       label={nodes.name}
-      onClick={() => handleFileClick(nodes.content, nodes.name)}
+      // onClick={() => handleFileClick(nodes.content, nodes.name)}
     >
       {Array.isArray(nodes.children)
         ? nodes.children.map((node) => renderTree(node))
@@ -195,18 +127,6 @@ function FolderViewer({ url }) {
                 }}
               />
               <h3 className="tw-text-[14px]">{selectedFileName}</h3>
-              <div className="tw-flex tw-items-center t-flex-1">
-                <h3 className="tw-ml-[100px] tw-text-[#e9e949] tw-text-[12px] tw-mr-[10px]">
-                  ⚠️ This is a preview. Download the file to view it properly.
-                </h3>
-                <FaDownload
-                  className="tw-cursor-pointer tw-mr-[10px] tw-w-[20px] tw-h-[20px]"
-                  onClick={(event) => {
-                    downloadZipFile(url, "documents/SYNK_Files");
-                    setDownloaded(true);
-                  }}
-                />
-              </div>
             </div>
             <div className="tw-bg-black tw-p-[10px] tw-text-white tw-rounded-[5px] tw-text-[12px] tw-select-text tw-font-mono heightMain4">
               {selectedFileName.endsWith(".jpg") ||

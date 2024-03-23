@@ -137,6 +137,7 @@ const TeamLeaderDashboard = (props) => {
                   member={member}
                   currentTeam={currentTeam}
                   elementTrigger={props.elementTrigger}
+                  elementStringTrigger={props.elementStringTrigger}
                 />
               ))}
             </div>
