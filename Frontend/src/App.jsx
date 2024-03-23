@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import * as MDIcons from "react-icons/md";
-import { Route, BrowserRouter as Router, Routes, HashRouter } from "react-router-dom";
 import {
-  getCurrentUser,
-  getStatus,
-  updateStatus,
-} from "./utils/UserAccount";
+  Route,
+  BrowserRouter as Router,
+  Routes,
+  HashRouter,
+} from "react-router-dom";
+import { getCurrentUser, getStatus, updateStatus } from "./utils/UserAccount";
 import { auth } from "./utils/firebase";
 import "./App.css";
 import CreateAccount from "./Pages/CreateAccount/CreateAccount";
@@ -290,6 +291,25 @@ function App() {
 
   useEffect(() => {
     if (user != null) {
+
+      try{
+        let taskDetails =
+          JSON.parse(localStorage.getItem("previousTask")) || null;
+        console.log(taskDetails);
+      if (taskDetails != "") {
+        PauseTask(
+          taskDetails.task,
+          parseInt(taskDetails.taskIndex - 1),
+          taskDetails.team,
+          taskDetails.teamMemberIndex,
+          {},
+          (boolean) => {}
+        );
+      }
+      } catch(e) {
+
+      }
+
       fetchNotification((notification) => {
         for (let i = 0; i < notification.length; i++) {
           if (

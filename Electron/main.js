@@ -4,12 +4,14 @@ const {
   BrowserWindow,
   Menu,
   ipcMain,
-  Notification,
   dialog,
   screen,
-  nativeImage
+  Notification,
+  nativeImage,
+  shell,
+  session
 } = require("electron");
-const isDev = false
+const isDev = true
 const windowStateKeeper = require("electron-window-state");
 const path = require("path");
 const {
@@ -25,6 +27,7 @@ const {
 } = require("../Backend/src/ProgressTrackerFunctions");
 const chokidar = require('chokidar');
 const trayWindow = require("electron-tray-window");
+const notifier = require('node-notifier');
 
 function createWindow() {
   let mainWindowState = windowStateKeeper({
@@ -152,6 +155,30 @@ function createWindow() {
         console.error("Error:", error);
       });
   });
+
+  setTimeout(() => {
+    const permission = Notification.permission
+
+    session.defaultSession.setPermissionRequestHandler((webContents, permission, callback) => {
+      console.log(permission)
+      return callback(false);
+    })
+
+    if(permission !== "granted") {
+      dialog.showMessageBox(win, {
+        type: 'warning',
+        icon: path.join(__dirname, 'icon.png'),
+        message: 'Notification permissions denied',
+        detail: 'To enable notifications, please go to your system settings. Click "Notifications" and enable notifications for SYNK.',
+        buttons: ['Open Settings', 'Dismiss'],
+        defaultId: 0
+      }).then(({ response }) => {
+        if (response === 0) {
+         shell.openExternal('x-apple.systempreferences:com.apple.preference.notifications')
+        }
+      });
+    }
+  }, 10000)
 
   ipcMain.on("notification", (event, notification) => {
     const NOTIFICATION_TITLE = notification[0];
@@ -539,9 +566,29 @@ win.on("close", (e) => {
     }, 900000)
 
     appTrackingInterval = setInterval(() => {
-      let currentWindow = getFocusedWindow();
+
+      let currentWindow;
+
+      try{
+        currentWindow = getFocusedWindow();
+      } catch(e) {
+            dialog.showMessageBox(win, {
+              type: 'error',
+              icon: path.join(__dirname, 'icon.png'),
+              message: 'Tracking Permission denied',
+              detail: 'Accept the permission to allow SYNK to track your task activity. Start the task again after successfull permission.',
+              buttons: ['Ok'],
+              defaultId: 0
+            })
+            clearInterval(idleTrackingInterval)
+            clearInterval(appTrackingInterval)
+            clearInterval(lastModifiedInterval)
+
+            win.webContents.send("sendIntervalsPaused", {...TaskDetails, trackedApplications: trackedApplications})
+      }
         if(!idleDetected) {
-          idleDetection("start", (data) => {
+          try{
+            idleDetection("start", (data) => {
             console.log("detected");
             idleDetected = true
             if(idlePopupShown) {
@@ -549,6 +596,21 @@ win.on("close", (e) => {
               idlePopupShown = false
             }
           })
+          } catch(e) {
+            dialog.showMessageBox(win, {
+              type: 'error',
+              icon: path.join(__dirname, 'icon.png'),
+              message: 'Tracking Permission denied',
+              detail: 'Accept the permission to allow SYNK to track your task activity. Start the task again after successfull permission.',
+              buttons: ['Ok'],
+              defaultId: 0
+            })
+            clearInterval(idleTrackingInterval)
+            clearInterval(appTrackingInterval)
+            clearInterval(lastModifiedInterval)
+
+            win.webContents.send("sendIntervalsPaused", {...TaskDetails, trackedApplications: trackedApplications})
+          }
         } else {
           idleDetection("stop", (data) => {
             // console.log("stopped")
@@ -732,6 +794,8 @@ ipcMain.on("idleCloseClicked", (event, data) => {
     lastModifiedPopupShown = false;
   }
 });
+
+app.setAccessibilitySupportEnabled(true)
 
 }
 
