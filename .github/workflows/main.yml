@@ -1,0 +1,24 @@
+name: CI/CD Pipeline for Project SYNK
+
+on:
+  push:
+    branches: [ Sevinda ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js 18.18.2
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.18.2  # Replace with your desired Node.js version
+
+      - name: Install dependencies
+        run: yarn install  # Or yarn install, if you use Yarn
+
+      - name: Build Electron app
+        run: yarn build  # Replace with your build command (e.g., electron-builder)
+
+      # Add a testing step here if you have tests (optional)
