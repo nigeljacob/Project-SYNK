@@ -5,13 +5,13 @@ import React, { useEffect, useRef, useState } from "react";
 import * as AIIcons from "react-icons/ai";
 import * as IOIcons from "react-icons/io";
 import * as IOSIcons from "react-icons/io5";
-import { auth } from "../../../../Backend/src/firebase";
+import { auth } from "../../utils/firebase";
 import {
   createTeam,
   fetchTeams,
   joinTeam,
   sendNotification,
-} from "../../../../Backend/src/teamFunctions";
+} from "../../utils/teamFunctions";
 import loader from "../../assets/images/loader.gif";
 import TeamComponent from "../../components/TeamComponent/TeamComponent.jsx";
 import { cn } from "../../shadCN-UI/lib/utils";
@@ -24,7 +24,7 @@ import {
   PopoverTrigger,
 } from "../../shadCN-UI/ui/popover";
 import "./Teams.css";
-import { readOnceFromDatabase, read_OneValue_from_Database } from "../../../../Backend/src/firebaseCRUD";
+import { readOnceFromDatabase, read_OneValue_from_Database } from "../../utils/firebaseCRUD";
 import Loading from "../LoadingPage/LoadingPage";
 const electronApi = window?.electronApi;
 

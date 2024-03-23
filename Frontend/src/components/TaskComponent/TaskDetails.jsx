@@ -1,13 +1,13 @@
 import Tooltip from "@mui/material/Tooltip";
 import React, { useEffect, useState } from "react";
 import { MdEdit } from "react-icons/md";
-import { auth } from "../../../../Backend/src/firebase";
-import { read_OneValue_from_Database } from "../../../../Backend/src/firebaseCRUD";
+import { auth } from "../../utils/firebase";
+import { read_OneValue_from_Database } from "../../utils/firebaseCRUD";
 import "../../Pages/TeamDashboard/TeamDashboard";
 import "./TaskDetails.css";
-import { startTask } from "../../../../Backend/src/AssignTask/taskFunctions";
-import { PauseTask } from "../../../../Backend/src/AssignTask/taskFunctions";
-import { updateTaskStatus } from "../../../../Backend/src/AssignTask/taskFunctions";
+import { startTask } from "../../utils/AssignTask/taskFunctions";
+import { PauseTask } from "../../utils/AssignTask/taskFunctions";
+import { updateTaskStatus } from "../../utils/AssignTask/taskFunctions";
 const electronApi = window?.electronApi;
 
 const TaskDetails = ({
@@ -34,8 +34,8 @@ const TaskDetails = ({
   const targetDate = new Date(combinedDateTimeString);
 
   const handleProgressButtonClick = () => {
-    onProgressClick(index)
-  }
+    onProgressClick(index);
+  };
 
   let dued = false;
 
@@ -49,13 +49,11 @@ const TaskDetails = ({
     electronApi.viewTask("hey there im testing");
   };
 
-  const [isLoading, setLoading] = useState(false)
-
+  const [isLoading, setLoading] = useState(false);
 
   const containerClass = dued
     ? "single-task-container_past"
     : "single-task-container";
-
 
   useEffect(() => {
     read_OneValue_from_Database(
@@ -79,8 +77,8 @@ const TaskDetails = ({
       <p>{index + ". " + currentTask.taskName}</p>
 
       <div className="status-container">
-        {startButton && (
-          Status === "Start" ? (
+        {startButton &&
+          (Status === "Start" ? (
             <Tooltip title="Start Task to Change Status">
               <select
                 name="status"
@@ -105,8 +103,14 @@ const TaskDetails = ({
             <select
               name="status"
               onChange={(event) => {
-                setStatus(event.target.value)
-                updateTaskStatus(team, teamMemberIndex, parseInt(index - 1), event.target.value, auth.currentUser.displayName)
+                setStatus(event.target.value);
+                updateTaskStatus(
+                  team,
+                  teamMemberIndex,
+                  parseInt(index - 1),
+                  event.target.value,
+                  auth.currentUser.displayName
+                );
               }}
               className={
                 Status === "Completed" ? "green-status" : "yellow-status"
@@ -124,8 +128,14 @@ const TaskDetails = ({
             <select
               name="status"
               onChange={(event) => {
-                setStatus(event.target.value)
-                updateTaskStatus(team, teamMemberIndex, parseInt(index - 1), event.target.value, auth.currentUser.displayName)
+                setStatus(event.target.value);
+                updateTaskStatus(
+                  team,
+                  teamMemberIndex,
+                  parseInt(index - 1),
+                  event.target.value,
+                  auth.currentUser.displayName
+                );
               }}
               className={
                 Status === "Completed" ? "green-status" : "yellow-status"
@@ -139,104 +149,116 @@ const TaskDetails = ({
                 Completed
               </option>
             </select>
-          )
-        )}
+          ))}
         {Status === "Start" ? (
           <Tooltip
             title={startButton ? "Start Task" : "View Task details & Progress"}
           >
             <div>
+              <button
+                className="status"
+                onClick={(event) => {
+                  let popupLayout = document.getElementById("popupLayout2");
+                  if (viewTaskTrigger) {
+                    popupLayout.style.background = "rgba(0,0,0,0)";
+                  } else {
+                    popupLayout.style.visibility = "visible";
+                    setTimeout(() => {
+                      popupLayout.style.background = "rgba(0,0,0,0.7)";
+                    }, 90);
 
-            <button
-              className="status"
-              onClick={(event) => {
-                let popupLayout = document.getElementById("popupLayout2");
-                if (viewTaskTrigger) {
-                  popupLayout.style.background = "rgba(0,0,0,0)";
-                } else {
-                  popupLayout.style.visibility = "visible";
-                  setTimeout(() => {
-                    popupLayout.style.background = "rgba(0,0,0,0.7)";
-                  }, 90);
-
-                  setViewTaskTrigger(true);
-                  taskTrigger([currentTask, team, parseInt(index - 1)]);
-                  handleConfirm();
-                }
-              }}
-            >
-              View
-            </button>
-              
+                    setViewTaskTrigger(true);
+                    taskTrigger([currentTask, team, parseInt(index - 1)]);
+                    handleConfirm();
+                  }
+                }}
+              >
+                View
+              </button>
             </div>
           </Tooltip>
         ) : Status === "Continue" || Status === "In Progress" ? (
           <div className="tw-flex tw-items-center">
-
-              {startButton ? (
-                Status === "In Progress" ? (
-                  (
-                    <button className="status tw-text-white" onClick={event => {
-                      electronApi.sendPauseTaskToMain("pauseSignal")
-                    }}>Pause</button>
-                  )
-                  ) : (
-                    <button className="status" onClick={event => {
-      
-                      startTask(task, parseInt(index - 1), team, teamMemberIndex, (data) => {
-                        if(data != null) {
-                          electronApi.sendTaskStarted({task: task, taskIndex: index, team: team, teamMemberIndex: teamMemberIndex});
-                        }
-                      })
-      
-                      }}>{Status}</button>
-                  )
-              ) : (
-                <button 
-                  className="tw-text-cyan-500 tw-bg-black tw-rounded-lg tw-p-1 tw-h-[35px] tw-w-[150px]" 
-                  onClick={() => handleProgressButtonClick(index)}
+            {startButton ? (
+              Status === "In Progress" ? (
+                <button
+                  className="status tw-text-white"
+                  onClick={(event) => {
+                    electronApi.sendPauseTaskToMain("pauseSignal");
+                  }}
                 >
-                    View Progress
+                  Pause
                 </button>
-              )}
-            
+              ) : (
+                <button
+                  className="status"
+                  onClick={(event) => {
+                    startTask(
+                      task,
+                      parseInt(index - 1),
+                      team,
+                      teamMemberIndex,
+                      (data) => {
+                        if (data != null) {
+                          electronApi.sendTaskStarted({
+                            task: task,
+                            taskIndex: index,
+                            team: team,
+                            teamMemberIndex: teamMemberIndex,
+                          });
+                        }
+                      }
+                    );
+                  }}
+                >
+                  {Status}
+                </button>
+              )
+            ) : (
+              <button
+                className="tw-text-cyan-500 tw-bg-black tw-rounded-lg tw-p-1 tw-h-[35px] tw-w-[150px]"
+                onClick={() => handleProgressButtonClick(index)}
+              >
+                View Progress
+              </button>
+            )}
+
             {startButton && (
               <MdEdit
-              className="tw-w-[20px] tw-h-[20px] tw-ml-[10px] tw-cursor-pointer"
-              onClick={(event) => {
-                let popupLayout = document.getElementById("popupLayout2");
-                if (viewTaskTrigger) {
-                  popupLayout.style.background = "rgba(0,0,0,0)";
-                } else {
-                  popupLayout.style.visibility = "visible";
-                  setTimeout(() => {
-                    popupLayout.style.background = "rgba(0,0,0,0.7)";
-                  }, 90);
+                className="tw-w-[20px] tw-h-[20px] tw-ml-[10px] tw-cursor-pointer"
+                onClick={(event) => {
+                  let popupLayout = document.getElementById("popupLayout2");
+                  if (viewTaskTrigger) {
+                    popupLayout.style.background = "rgba(0,0,0,0)";
+                  } else {
+                    popupLayout.style.visibility = "visible";
+                    setTimeout(() => {
+                      popupLayout.style.background = "rgba(0,0,0,0.7)";
+                    }, 90);
 
-                  setViewTaskTrigger(true);
-                  taskTrigger([currentTask, team, parseInt(index - 1)]);
-                  handleConfirm(); // display installed apps for view task component
-                }
-              }}
-            />
+                    setViewTaskTrigger(true);
+                    taskTrigger([currentTask, team, parseInt(index - 1)]);
+                    handleConfirm(); // display installed apps for view task component
+                  }
+                }}
+              />
             )}
           </div>
+        ) : Status === "In Progress" ? (
+          <div>
+            <button
+              className="status tw-text-white"
+              onClick={(event) => {
+                electronApi.sendPauseTaskToMain("pauseSignal");
+              }}
+            >
+              Pause
+            </button>
+          </div>
         ) : (
-          Status === "In Progress" ? (
-            (
-              <div>
-                <button className="status tw-text-white" onClick={event => {
-                    electronApi.sendPauseTaskToMain("pauseSignal")
-                }}>Pause</button>
-              </div>
-            )
-          ) : (
-            (
-              <div>
-                <button className="status tw-text-green">Completed</button>
-              </div>
-            )
-          )
+          <div>
+            <button className="status tw-text-green">Completed</button>
+          </div>
         )}
       </div>
     </div>

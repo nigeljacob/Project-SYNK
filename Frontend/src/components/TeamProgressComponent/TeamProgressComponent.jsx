@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
 import reactElementToJSXString from "react-element-to-jsx-string";
-import {
-  getProfilePicture,
-  getStatus,
-} from "../../../../Backend/src/UserAccount";
+import { getProfilePicture, getStatus } from "../../utils/UserAccount";
 import timeClock from "../../assets/images/timeClock.svg";
 import TeamYourProgress from "../../Pages/TeamDashboard/TeamPersonalProgress/TeamYourProgress";
 import MemberProgress from "../../Pages/TeamDashboard/MemberProgress/MemberProgress";
 
-const TeamProgressComponent = ({ photo, member, tasks, currentTeam, elementTrigger }) => {
+const TeamProgressComponent = ({
+  photo,
+  member,
+  tasks,
+  currentTeam,
+  elementTrigger,
+}) => {
   const [status, setStatus] = useState("Offline");
   const [profilePic, setProfilePic] = useState("");
 
@@ -206,7 +209,7 @@ const TeamProgressComponent = ({ photo, member, tasks, currentTeam, elementTrigg
             //   elementTrigger={elementTrigger}
             //   UID={member.UID}
             // />
-            <MemberProgress 
+            <MemberProgress
               team={currentTeam}
               elementTrigger={elementTrigger}
               UID={member.UID}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { auth } from "../../../../../Backend/src/firebase.js";
-import { read_OneValue_from_Database } from "../../../../../Backend/src/firebaseCRUD.js";
+import { auth } from "../../../utils/firebase.js";
+import { read_OneValue_from_Database } from "../../../utils/firebaseCRUD.js";
 import PieChart from "../../../components/PieChartComponent/PieChart.jsx";
 import PieDetails from "../../../components/PieChartComponent/PieDeatils.jsx";
 import TaskDetails from "../../../components/TaskComponent/TaskDetails.jsx";
@@ -28,7 +28,7 @@ const TeamYourProgress = (props) => {
 
   for (let i = 0; i < currentTeam.teamMemberList.length; i++) {
     if (currentTeam.teamMemberList[i]["UID"] === props.UID) {
-      if(currentTeam.teamMemberList[i]["taskList"][0] != "") {
+      if (currentTeam.teamMemberList[i]["taskList"][0] != "") {
         tasksList = currentTeam.teamMemberList[i]["taskList"];
         teamMemberIndex = i;
       }
@@ -51,9 +51,13 @@ const TeamYourProgress = (props) => {
       labels: StartedTasks[progressIndex].progress.applicationTimeList.map(
         (data) => {
           // Check if the name length is greater than 15 characters
-          if(data.name.length > 20) {
+          if (data.name.length > 20) {
             // If yes, format the name and time length
-            return data.name.substring(0,20) + "... - " + formatMilliseconds(data.timeLength);
+            return (
+              data.name.substring(0, 20) +
+              "... - " +
+              formatMilliseconds(data.timeLength)
+            );
           } else {
             // If not, simply format the time length
             return data.name + " - " + formatMilliseconds(data.timeLength);
@@ -128,7 +132,11 @@ const TeamYourProgress = (props) => {
                 }}
               />
               <div className="tw-w-full tw-h-full tw-flex tw-justify-center tw-items-center tw-text-2xl tw-font-semibold">
-                <h3>Click on <span className="tw-text-cyan-500">View Progress</span> Button to View Details</h3>
+                <h3>
+                  Click on{" "}
+                  <span className="tw-text-cyan-500">View Progress</span> Button
+                  to View Details
+                </h3>
               </div>
             </div>
           )}
