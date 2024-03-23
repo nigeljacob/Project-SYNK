@@ -13,6 +13,7 @@ body {
   z-index: -1000;
   display: flex;
   flex-direction: column;
+  scroll-behavior: smooth;
 }
 
 .background {
@@ -27,6 +28,7 @@ body {
 
 *::-webkit-scrollbar {
   display: none;
+  scroll-behavior: smooth;
 }
 
 .titleBar {

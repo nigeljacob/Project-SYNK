@@ -55,5 +55,6 @@
   }
   body {
     @apply tw-bg-background tw-text-foreground;
+    scroll-behavior: smooth;
   }
 }
