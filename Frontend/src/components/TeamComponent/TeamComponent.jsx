@@ -144,9 +144,17 @@ function TeamComponent({ team, teamsList }) {
         <p id="teamDesc">{team["teamDescription"]}</p>
       </div>
       <div className="projectLength">
-        <FaIcons.FaClock />
-        <h3>{calculateProjectLength()}</h3>
-        <h3 id="remaining">{calculateProjectRemaining()}</h3>
+        {team.projectLength === "" ? (
+          <>
+            <h4 className="tw-text-[#ded85b] tw-text-[12px]">Recurring Team</h4>
+          </>
+        ) : (
+          <>
+            <FaIcons.FaClock />
+            <h3>{calculateProjectLength()}</h3>
+            <h3 id="remaining">{calculateProjectRemaining()}</h3>
+          </>
+        )}
       </div>
       <div className="memberProfiles">
         {team["teamMemberList"].map((item, index) => {

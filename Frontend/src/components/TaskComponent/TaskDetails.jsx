@@ -8,6 +8,7 @@ import "./TaskDetails.css";
 import { startTask } from "../../utils/AssignTask/taskFunctions";
 import { PauseTask } from "../../utils/AssignTask/taskFunctions";
 import { updateTaskStatus } from "../../utils/AssignTask/taskFunctions";
+import { CircularProgress } from "@mui/material";
 const electronApi = window?.electronApi;
 
 const TaskDetails = ({
@@ -180,7 +181,10 @@ const TaskDetails = ({
         ) : Status === "Continue" || Status === "In Progress" ? (
           <div className="tw-flex tw-items-center">
             {startButton ? (
-              Status === "In Progress" ? (
+              isLoading ? (
+                <CircularProgress />
+              ) : (
+                Status === "In Progress" ? (
                 <button
                   className="status tw-text-white"
                   onClick={(event) => {
@@ -193,26 +197,42 @@ const TaskDetails = ({
                 <button
                   className="status"
                   onClick={(event) => {
-                    startTask(
-                      task,
-                      parseInt(index - 1),
-                      team,
-                      teamMemberIndex,
-                      (data) => {
-                        if (data != null) {
-                          electronApi.sendTaskStarted({
-                            task: task,
-                            taskIndex: index,
-                            team: team,
-                            teamMemberIndex: teamMemberIndex,
-                          });
-                        }
-                      }
+                    localStorage.setItem(
+                      auth.currentUser.uid + "previousTask",
+                      JSON.stringify({
+                        task: task,
+                        taskIndex: index,
+                        team: team,
+                        teamMemberIndex: teamMemberIndex,
+                      })
                     );
+
+                    setLoading(true);
+
+                    setTimeout(() => {
+                      startTask(
+                        task,
+                        parseInt(index - 1),
+                        team,
+                        teamMemberIndex,
+                        (data) => {
+                          if (data != null) {
+                            electronApi.sendTaskStarted({
+                              task: task,
+                              taskIndex: index,
+                              team: team,
+                              teamMemberIndex: teamMemberIndex,
+                            });
+                          }
+                        }
+                      );
+                      setLoading(false);
+                    }, 1000);
                   }}
                 >
                   {Status}
                 </button>
+              )
               )
             ) : (
               <button

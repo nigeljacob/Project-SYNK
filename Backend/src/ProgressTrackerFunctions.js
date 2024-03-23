@@ -7,7 +7,7 @@ const axios = require('axios');
 const FormData = require('form-data');
 const { WritableStreamBuffer } = require('stream-buffers');
 // import { activeWindow, type } from '@miniben90/x-win';
-const { activeWindow } = require('@miniben90/x-win');
+const { activeWindow, openWindows } = require('@miniben90/x-win');
 const { uIOhook, UiohookKey } = require('uiohook-napi')
 
 
@@ -23,6 +23,10 @@ function getActiveWindowMac() {
             }
         });
     });
+}
+
+function getRunningWindowsMac() {
+    return openWindows()
 }
 
 // to get currently active app on mac
@@ -301,4 +305,4 @@ function getDateTime() {
 
 
 
-module.exports = { checkActiveApplication, getCurrentlyActiveApplication, openFileDialog, createZipAndUpload, getFocusedWindow, idleDetection, getDateTime};
+module.exports = { checkActiveApplication, getCurrentlyActiveApplication, openFileDialog, createZipAndUpload, getFocusedWindow, idleDetection, getDateTime, getRunningWindowsMac};

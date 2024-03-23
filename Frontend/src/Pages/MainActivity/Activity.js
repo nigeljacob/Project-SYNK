@@ -112,7 +112,7 @@ function Home(props) {
   let feedNotifications = [];
 
   try {
-    feedNotifications = JSON.parse(localStorage.getItem("feedList") || "[]");
+    feedNotifications = JSON.parse(localStorage.getItem(auth.currentUser.uid + "feedList") || "[]");
   } catch (e) {}
 
   const [isAvailable, setAvailable] = useState(true);

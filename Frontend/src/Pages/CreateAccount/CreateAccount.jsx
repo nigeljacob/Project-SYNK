@@ -1,16 +1,19 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { createUser, getCurrentUser } from "../../utils/UserAccount";
 import { auth } from "../../utils/firebase";
 import "./CreateAccount.css";
 
 import React, { useEffect } from "react";
 
+
 const CreateAccount = (props) => {
   const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent form submission
@@ -35,6 +38,7 @@ const CreateAccount = (props) => {
     });
 
     if (auth.currentUser != null) {
+      props.loadingTrigger(true)
       props.setIsLoggedIn(true);
       localStorage.setItem("loggedIN", "true");
       localStorage.setItem("currentUser", getCurrentUser);

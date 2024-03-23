@@ -23,6 +23,7 @@ body {
     rgba(30, 30, 30, 1) 100%
   );
   background-repeat: none;
+  scroll-behavior: smooth;
 }
 
 *::-webkit-scrollbar {

@@ -83,11 +83,14 @@ const TeamYourProgress = (props) => {
   }
 
   const handleVersionHistoryClick = () => {
+    props.elementStringTrigger("TEAM_PERSONAL_PROGRESS")
     props.elementTrigger(
       <ProgressVersionHistory
         setElement={props.elementTrigger}
         team={props.team}
         sideBarStatus={props.sideBarStatus}
+        previous={"TEAM_PERSONAL_VERSION"}
+        elementStringTrigger={props.elementStringTrigger}
         index={progressIndex}
         UID={props.UID}
       />

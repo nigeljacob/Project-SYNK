@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import reactElementToJSXString from "react-element-to-jsx-string";
 import * as IOIcons from "react-icons/io";
 import { useLocation } from "react-router";
 import { acceptMembers, fetchPendingInvites } from "../../utils/teamFunctions";
@@ -18,10 +17,6 @@ import {
 } from "../../utils/firebaseCRUD";
 import { auth } from "../../utils/firebase";
 import UserComponent from "../../components/UserComponent/UserComponent";
-import PieData1 from "../../components/PieChartComponent/PieData/PieData1";
-import PieData2 from "../../components/PieChartComponent/PieData/PieData2";
-import PieData3 from "../../components/PieChartComponent/PieData/PieData3";
-import { all } from "axios";
 
 const MemberComponent = ({
   info,
@@ -204,7 +199,7 @@ const TeamDashboard = ({ user }) => {
     sideBarStatus = true;
   }
 
-  const [isOpen, setIsOpen] = useState(sideBarStatus);
+  const [isOpen, setIsOpen] = useState(true);
   const SideBarResult = isOpen
     ? "sideBar show_SideBar"
     : "sideBar hide_SideBar";
@@ -219,25 +214,27 @@ const TeamDashboard = ({ user }) => {
 
   const [element, setElement] = useState(null);
 
+  const [elementString, setElementString] = useState(null);
+
   try {
     if (
-      reactElementToJSXString(element).includes("<TeamMemberDashboard") ||
-      reactElementToJSXString(element).includes("<TeamLeaderDashboard") ||
-      reactElementToJSXString(element).includes("<MemberProgress") ||
-      reactElementToJSXString(element).includes("<ProgressVersionHistory")
+      elementString === "TEAM_MEMBER_DASHBOARD" ||
+      elementString === "TEAM_LEADER_DASHBOARD" ||
+      elementString === "TEAM_MEMBER_PROGRESS" ||
+      elementString === "TEAM_MEMBER_VERSION" || elementString === null
     ) {
       document.getElementById("teamActivity").style.color = "#5bceff";
       document
         .getElementById("teamActivity")
         .querySelector("#dot").style.visibility = "visible";
-    } else if (reactElementToJSXString(element).includes("<TeamChat")) {
+    } else if (elementString === "TEAM_CHAT") {
       document.getElementById("teamChat").style.color = "#5bceff";
       document
         .getElementById("teamChat")
         .querySelector("#dot").style.visibility = "visible";
     } else if (
-      reactElementToJSXString(element).includes("<TeamYourProgress") ||
-      reactElementToJSXString(element).includes("<ProgressVersionHistory")
+      elementString === "TEAM_PERSONAL_PROGRESS" ||
+      elementString === "TEAM_PERSONAL_VERSION"
     ) {
       document.getElementById("teamProgress").style.color = "#5bceff";
       document
@@ -257,11 +254,13 @@ const TeamDashboard = ({ user }) => {
           className="tw-z-[-1000]"
         />
       ),
+      elementString: "TEAM_MEMBER_DASHBOARD",
       className: "teamActivity",
     },
     {
       title: "Chat",
       element: <Chat user={user} team={currentTeam} className="tw-z-[-2000]" />,
+      elementString: "TEAM_CHAT",
       className: "teamChat",
     },
     {
@@ -271,9 +270,11 @@ const TeamDashboard = ({ user }) => {
           team={currentTeam}
           sideBarStatus={isOpen}
           elementTrigger={setElement}
+          elementStringTrigger={setElementString}
           UID={auth.currentUser.uid}
         />
       ),
+      elementString: "TEAM_PERSONAL_PROGRESS",
       className: "teamProgress",
     },
   ];
@@ -283,6 +284,7 @@ const TeamDashboard = ({ user }) => {
       team={currentTeam}
       sideBarStatus={isOpen}
       elementTrigger={setElement}
+      elementStringTrigger={setElementString}
     />
   );
 
@@ -296,8 +298,10 @@ const TeamDashboard = ({ user }) => {
         sideBarStatus={isOpen}
         className="tw-z-[-1000]"
         elementTrigger={setElement}
+        elementStringTrigger={setElementString}
       />
     );
+    infoData[0].elementString = "TEAM_LEADER_DASHBOARD";
     dashboard = (
       <TeamLeaderDashboard
         viewTaskTrigger={viewTaskPopup}
@@ -307,6 +311,7 @@ const TeamDashboard = ({ user }) => {
         sideBarStatus={isOpen}
         className="tw-z-[-1000]"
         elementTrigger={setElement}
+        elementStringTrigger={setElementString}
       />
     );
     buttonClass =
@@ -320,6 +325,7 @@ const TeamDashboard = ({ user }) => {
         className="tw-z-[-1000]"
       />
     );
+    infoData[0].elementString = "TEAM_MEMBER_DASHBOARD";
     dashboard = (
       <TeamMemberDashboard
         viewTaskTrigger={viewTaskPopup}
@@ -361,40 +367,27 @@ const TeamDashboard = ({ user }) => {
                 className={info.className}
                 id={info.className}
                 onClick={(event) => {
-                  console.log(reactElementToJSXString(element));
+                  console.log(elementString);
                   if (
-                    reactElementToJSXString(element).includes(
-                      "<TeamMemberDashboard"
-                    ) ||
-                    reactElementToJSXString(element).includes(
-                      "<TeamLeaderDashboard"
-                    ) ||
-                    reactElementToJSXString(element).includes(
-                      "<MemberProgress"
-                    ) ||
-                    reactElementToJSXString(element).includes(
-                      "<ProgressVersionHistory"
-                    )
+                    elementString === "TEAM_MEMBER_DASHBOARD" ||
+                    elementString === "TEAM_LEADER_DASHBOARD" ||
+                    elementString === "TEAM_MEMBER_PROGRESS" ||
+                    elementString === "TEAM_MEMBER_PROGRESS" ||
+                    elementString === null
                   ) {
                     document.getElementById("teamActivity").style.color =
                       "#ffffff";
                     document
                       .getElementById("teamActivity")
                       .querySelector("#dot").style.visibility = "hidden";
-                  } else if (
-                    reactElementToJSXString(element).includes("<TeamChat")
-                  ) {
+                  } else if (elementString === "TEAM_CHAT") {
                     document.getElementById("teamChat").style.color = "#ffffff";
                     document
                       .getElementById("teamChat")
                       .querySelector("#dot").style.visibility = "hidden";
                   } else if (
-                    reactElementToJSXString(element).includes(
-                      "<TeamYourProgress"
-                    ) ||
-                    reactElementToJSXString(element).includes(
-                      "<ProgressVersionHistory"
-                    )
+                    elementString === "TEAM_PERSONAL_PROGRESS" ||
+                    elementString === "TEAM_PERSONAL_VERSION"
                   ) {
                     document.getElementById("teamProgress").style.color =
                       "#ffffff";
@@ -404,6 +397,7 @@ const TeamDashboard = ({ user }) => {
                   }
 
                   handleItemClick(info.element);
+                  setElementString(info.elementString);
                 }}
               >
                 <div className="barContent">
@@ -471,7 +465,7 @@ const TeamDashboard = ({ user }) => {
                 sidebarToggler(!isOpen);
               }}
             >
-              <IOIcons.IoMdArrowDropleft className={IconResult} />
+              {/* <IOIcons.IoMdArrowDropleft className={IconResult} /> */}
             </div>
           </div>
 

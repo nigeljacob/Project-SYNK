@@ -18,7 +18,7 @@ const SideBar = (props) => {
   const [newNotifications, setNewNotifications] = useState([]);
 
   try {
-    notifications = JSON.parse(localStorage.getItem("notifications") || "[]");
+    notifications = JSON.parse(localStorage.getItem(auth.currentUser.uid  + "notifications") || "[]");
   } catch (e) {
     console.error("Error parsing localStorage:", e);
   }
