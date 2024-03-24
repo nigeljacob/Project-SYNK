@@ -25,6 +25,8 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'yarn'
+        mac_certs: ${{ secrets.mac_certs }}
+        mac_certs_password: ${{ secrets.mac_certs_password }}
     - run: yarn
     - run: cd Frontend && yarn
     - run: cd Backend && yarn
