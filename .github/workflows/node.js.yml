@@ -26,6 +26,7 @@ jobs:
 
       - name: Install dependencies on Backend
         run: cd Backend && yarn
+        run: cd Backend && yarn upgrade
 
       - name: Upgrade dependencies on Main
         run: yarn upgrade
