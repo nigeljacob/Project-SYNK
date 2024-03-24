@@ -38,32 +38,12 @@ jobs:
           mac_certs: ${{ secrets.mac_certs }}
           mac_certs_password: ${{ secrets.mac_certs_password }}
 
-      - name: Archive built artifacts
-        uses: actions/upload-artifact@v2
+      - name: Release
+        uses: "marvinpinto/action-automatic-releases@latest"
         with:
-          name: SYNK-1.0.0.dmg
-          path: ./dist
-
-      - name: Create GitHub Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-        with:
-          tag_name: v1.0.0  # Replace with your tag name
-          release_name: Release v1.0.0  # Replace with your release name
-          body: Release description goes here  # Replace with your release description
-          draft: false
-          prerelease: false
-
-      - name: Upload release assets
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist  # Replace with the path to your artifacts
-          asset_name: SYNK-1.0.0.dmg  # Replace with the name of your artifact
-          asset_content_type: application/dmg
+          repo_token: "${{ secrets.GH_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: true
+          title: "Development Build"
+          files: |
+            ./dist/SYNK-1.0.0.dmg
