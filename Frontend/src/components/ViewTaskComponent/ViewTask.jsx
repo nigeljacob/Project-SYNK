@@ -38,7 +38,8 @@ import {
   readOnceFromDatabase,
   read_OneValue_from_Database,
 } from "../../utils/firebaseCRUD";
-import { IoReload } from "react-icons/io5";
+import { IoReload, IoReloadCircleOutline } from "react-icons/io5";
+import { RxReload } from "react-icons/rx";
 
 //component to display a task assigned to a team member. Shows a list of applications installed on the user's computer in order to select a few that the user will use for the task.
 export default function ViewTask(props) {
@@ -171,60 +172,84 @@ export default function ViewTask(props) {
 
   // console.log(installedApps);
 
+  //default image string
+  let winIcon = "data:image/png;base64,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"
+
+
+
+
   //trigger needs to be true in order for the popup to be open
   return props.trigger ? (
     <div>
       <div className="tw-fixed tw-inset-0  tw-flex tw-justify-center tw-items-center">
-        <Card className="tw-relative tw-w-[470px] tw-shadow-[0_0_16px_0_#5bcfff] tw-border-2 tw-border-primary/80 tw-bg-zinc-900  ">
+        {/* <Card className="tw-relative tw-w-[470px] tw-shadow-[0_0_16px_0_#5bcfff] tw-border-2 tw-border-primary/80 tw-bg-zinc-900  "> */}
+        <Card className="tw-relative tw-w-[470px] tw-border-2 tw-border-primary/80 tw-bg-zinc-900"
+        style={{ boxShadow: '0 0 16px #5bbfff' }}>
+
           <CardHeader>
-            <CardTitle className="tw-text-gray-300">
+            <CardTitle className="tw-text-gray-300 tw-text-center">
               Task Assigned: {taskName}
             </CardTitle>
           </CardHeader>
 
           <CardContent>
-            <div className="tw-grid tw-w-full tw-items-center tw-gap-4">
-              <div className="tw-flex tw-flex-col tw-space-y-1.5">
-                <Label
-                  htmlFor="taskDesc"
-                  className="tw-text-left tw-text-gray-300"
-                >
-                  Task Description: {taskDesc}
-                </Label>
-              </div>
-
-              <div className="tw-flex tw-flex-col tw-space-y-4">
+              <div className="tw-grid tw-w-full tw-items-center tw-justify-center tw-gap-4">
                 <div className="tw-flex tw-flex-col tw-space-y-1.5">
                   <Label
-                    htmlFor="assignedDate"
-                    className="tw-text-left tw-text-gray-400"
+                    htmlFor="taskDesc"
+                    className="tw-text-left tw-text-gray-300"
                   >
-                    {assignedDate}
-                  </Label>
-                  <Label
-                    htmlFor="deadline"
-                    className="tw-text-left tw-text-gray-400"
-                  >
-                    {deadline}
+                    Task Description: {taskDesc}
                   </Label>
                 </div>
 
-                <div className="tw-flex tw-flex-col tw-space-y-5 tw-text-left tw-text-gray-300 ">
-                  <Label
-                    htmlFor="currentApp"
-                    className="tw-flex tw-justify-between"
-                  >
-                    Applications required for this task:
+                <div className="tw-flex tw-flex-col tw-space-y-4">
+                  <div className="tw-flex tw-flex-col tw-space-y-1.5">
+                    <Label
+                      htmlFor="assignedDate"
+                      className="tw-text-left tw-text-gray-400"
+                    >
+                      {assignedDate}
+                    </Label>
+                    <Label
+                      htmlFor="deadline"
+                      className="tw-text-left tw-text-gray-400"
+                    >
+                      {deadline}
+                    </Label>
+                  </div>
+                  
+                  <div className="tw-flex tw-flex-col tw-space-y-5 tw-text-left tw-text-gray-300">
+                    
+                    
+
+
+                  <div className="tw-flex tw-flex-col tw-space-y-1.5">
+                  <Label htmlFor="currentApp" className="tw-flex tw-justify-between">
+                      <div className="tw-mb-1">
+                      Applications required for this task:
+                      </div>               
                     {/* <button onclick={handleReload()}> */}
-                    <button onClick={(event) => handleReload()}>
-                      {/* <CIcon icon={cisReload} /> */}
-                      <IoReload />
+                  <button onClick = {event => handleReload()}>
+
+                    {/* <CIcon icon={cisReload} /> */}
+                    <RxReload className="hover:tw-text-cyan-400 tw-size-4 tw-text-white" />
+
                     </button>
-                  </Label>
-                  {
-                    "(Hit the refresh button if the app you want isn't available)"
-                  }
-                  {/* <form> */}
+                    </Label>
+                    <Label
+                      className="tw-text-left tw-text-gray-400"
+                    >
+                    (If you can't find the application you need, try opening it and then hitting the refresh button.)
+                    </Label>
+                  </div>
+
+
+
+
+
+                   
+                    {/* <form> */}
 
                   <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild>
@@ -288,18 +313,20 @@ export default function ViewTask(props) {
                                       className="tw-w-[38px] tw-h-[38px] tw-m-1 tw-p-0 tw-rounded-md tw-border-2 tw-border-gray-300"
                                     />
                                   ) : (
-                                    <img
-                                      src={currentApp.iconData}
+                                    // <img
+                                    //   src={currentApp.iconData}
+                                    //   className="tw-w-[38px] tw-h-[38px] tw-m-1 tw-p-0 tw-rounded-md tw-border-2 tw-border-gray-300"
+                                    // />
+                                      <img
+                                      src={winIcon}
                                       className="tw-w-[38px] tw-h-[38px] tw-m-1 tw-p-0 tw-rounded-md tw-border-2 tw-border-gray-300"
                                     />
                                   )}
 
-                                  <p className="tw-p-2 tw-text-right">
-                                    {currentApp.name}
-                                  </p>
-                                  <Check
-                                    className={cn(
-                                      "tw-mr-3 tw-h-4 tw-w-4 tw-absolute tw-right-0",
+                                    <p className="tw-p-2 tw-text-left">{currentApp.name}</p>
+                                    <Check
+                                      className={cn(
+                                        "tw-mr-3 tw-h-4 tw-w-4 tw-absolute tw-right-0",
 
                                       // add a checkmark next to the apps that were selected and remove the checkmark from apps that were deselected
                                       selectedApps.find(
@@ -323,36 +350,42 @@ export default function ViewTask(props) {
                   Applications selected:
                 </Label>
 
-                <Command>
-                  <div className="tw-justify-center tw-items-center tw-flex">
-                    <ScrollArea className="tw-h-[120px] tw-w-[300px] tw-rounded-md tw-border">
-                      <CommandGroup>
-                        {/* if no applications were selected, display a message */}
-                        {selectedApps.length === 0 && (
-                          <div className="tw-text-[19px] tw-m-[40px] tw-text-foreground/90">
-                            No applications selected
-                          </div>
-                        )}
+                  <Command>
+                    
+                    <div className="tw-justify-center tw-items-center tw-flex">
+                      <ScrollArea className="tw-h-[122px] tw-w-[300px] tw-rounded-md tw-border">
+                        <CommandGroup>
+                          
+                          {/* if no applications were selected, display a message */}
+                          {selectedApps.length === 0 && (
+                            <div className="tw-text-[19px] tw-m-[40px] tw-text-foreground/90">
+                              No applications selected
+                            </div>
+                          )}
 
-                        {/* display the list of selected applications */}
-                        {selectedApps.map((application) => (
-                          <div>
-                            <CommandItem
-                              className="tw-aria-selected:bg-background tw-aria-selected:text-foreground tw-h-[56px]"
-                              onSelect={() => {}}
-                            >
-                              {application.iconData ===
-                              "../../assets/images/defaultIconMac.png" ? (
-                                <img
-                                  src={icon}
-                                  className="tw-w-[38px] tw-h-[38px] tw-m-1 tw-p-0 tw-rounded-md tw-border-2 tw-border-gray-300"
-                                />
-                              ) : (
-                                <img
-                                  src={application.iconData}
-                                  className="tw-w-[38px] tw-h-[38px] tw-m-1 tw-p-0 tw-rounded-md tw-border-2 tw-border-gray-300"
-                                />
-                              )}
+                          {/* display the list of selected applications */}
+                          {selectedApps.map((application) => (
+                            <div>
+                              <CommandItem
+                                // className="tw-aria-selected:bg-red-900 tw-aria-selected:text-green-900 tw-h-[56px] tw-bg-red-600 hover:tw-bg-blue-900"
+                                className="tw-h-[56px] aria-selected:tw-bg-background aria-selected:tw-text-foreground"       
+                                // tw-outline-none aria-selected:tw-bg-accent aria-selected:tw-text-accent-foreground data-[disabled]:tw-pointer-events-none data-[disabled]:tw-opacity-50                       
+                                // onSelect={() => {
+                                  
+                                // }}
+                              >
+                                {application.iconData ===
+                                "../../assets/images/defaultIconMac.png" ? (
+                                  <img
+                                    src={icon}
+                                    className="tw-w-[38px] tw-h-[38px] tw-m-1 tw-p-0 tw-rounded-md tw-border-2 tw-border-gray-300"
+                                  />
+                                ) : (
+                                  <img
+                                    src={application.iconData}
+                                    className="tw-w-[38px] tw-h-[38px] tw-m-1 tw-p-0 tw-rounded-md tw-border-2 tw-border-gray-300"
+                                  />
+                                )}
 
                               <p className="tw-p-2 tw-text-[14px]">
                                 {application.name}

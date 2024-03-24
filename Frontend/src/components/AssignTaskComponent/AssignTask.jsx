@@ -60,37 +60,25 @@ export default function AssignTask(props) {
 
   return props.trigger ? (
     <div className="tw-justify-center tw-items-center tw-shadow-[0_0_16px_#5bbfff]">
-      <Card className="tw-w-[400px] tw-border-2 tw-border-primary/80  tw-bg-zinc-900">
-        <CardHeader>
-          <CardTitle className="tw-text-gray-300 tw-items-center">
-            Assign a task to {props.currentUser["name"]}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form>
-            <div className="tw-grid tw-w-full tw-items-center tw-gap-4">
-              <div className="tw-flex tw-flex-col tw-space-y-1.5">
-                <Label htmlFor="name" className="tw-text-left tw-text-gray-300">
-                  Task name:
-                </Label>
-                <Input
-                  id="name"
-                  value={taskName}
-                  onChange={(event) => {
-                    setTaskName(event.target.value);
-                  }}
-                  className="tw-bg-transparent tw-text-gray-300"
-                />
-              </div>
-              <div className="tw-flex tw-flex-col tw-space-y-1.5 tw-text-left tw-text-gray-300 ">
-                <Label htmlFor="framework">Task description:</Label>
-                <Textarea
-                  value={taskDesc}
-                  onChange={(event) => {
-                    setTaskDesc(event.target.value);
-                  }}
-                  className="tw-bg-transparent tw-text-gray-300"
-                ></Textarea>
+<Card
+          className="tw-w-[400px] tw-border-2 tw-border-primary/80  tw-bg-zinc-900">
+          <CardHeader>
+            <CardTitle className="tw-text-gray-300 tw-text-center">
+              Assign a task to {props.currentUser["name"]}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form>
+              <div className="tw-grid tw-w-full tw-items-center tw-gap-4">
+                <div className="tw-flex tw-flex-col tw-space-y-1.5">
+                  <Label htmlFor="name" className="tw-text-left tw-text-gray-300">
+                    Task name:
+                  </Label>
+                  <Input id="name" value={taskName} onChange={event=>{setTaskName(event.target.value)}} className="tw-bg-transparent tw-text-gray-300" />
+                </div>
+                <div className="tw-flex tw-flex-col tw-space-y-1.5 tw-text-left tw-text-gray-300 ">
+                  <Label htmlFor="framework">Task description:</Label>
+                  <Textarea value={taskDesc} onChange={event=>{setTaskDesc(event.target.value)}} className="tw-bg-transparent tw-text-gray-300"></Textarea>
 
                 {/* <Select>
                     <SelectTrigger id="framework">
@@ -103,49 +91,45 @@ export default function AssignTask(props) {
                       <SelectItem value="nuxt">Nuxt.js</SelectItem>
                     </SelectContent>
                   </Select> */}
+                </div>
+                <div className="tw-flex tw-flex-col tw-space-y-1.5">
+                  <Label htmlFor="name" className="tw-text-left tw-text-gray-300">
+                    Deadline:
+                  </Label>
+                  {/* <br></br> */}
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "tw-w-auto tw-justify-start tw-text-left tw-font-normal tw-text-gray-300 tw-border tw-border-input tw-hover:bg-secondary/10 tw-bg-background tw-important",
+                          !date && "tw-text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="tw-mr-2 tw-h-4 tw-w-4" />
+                        {date ? format(date, "PPP") : <div>Pick a date</div>}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="tw-w-auto tw-p-0 tw-bg-background">
+                      <Calendar
+                        mode="single"
+                        selected={date}
+                        onSelect={setDate}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
               </div>
-              <div className="tw-flex tw-flex-col tw-space-y-1.5">
-                <Label htmlFor="name" className="tw-text-left tw-text-gray-300">
-                  Deadline:
-                </Label>
-                {/* <br></br> */}
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant={"secondary"}
-                      className={cn(
-                        "tw-w-auto tw-justify-start tw-text-left tw-font-normal tw-text-gray-300 tw-border tw-border-input tw-hover:bg-secondary/10 tw-bg-background tw-important",
-                        !date && "tw-text-muted-foreground"
-                      )}
-                    >
-                      <CalendarIcon className="tw-mr-2 tw-h-4 tw-w-4" />
-                      {date ? format(date, "PPP") : <div>Pick a date</div>}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="tw-w-auto tw-p-0 tw-bg-background">
-                    <Calendar
-                      mode="single"
-                      selected={date}
-                      onSelect={setDate}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-              </div>
-            </div>
-          </form>
-        </CardContent>
-        <CardFooter className="tw-flex tw-justify-between">
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button
-            onClick={(event) => {
-              handleSubmit();
-            }}
-          >
-            Confirm
-          </Button>
-        </CardFooter>
-      </Card>
+            </form>
+          </CardContent>
+          <CardFooter className="tw-flex tw-justify-between">
+            <Button onClick={handleClose}>Cancel</Button>
+            <Button onClick={event => {
+              handleSubmit()
+              }}>Confirm</Button>
+          </CardFooter>
+        </Card>
     </div>
   ) : null;
 }
