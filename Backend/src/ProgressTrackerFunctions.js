@@ -121,14 +121,16 @@ function idleDetection(state, callback){
 
     //if the parameter state is "start", then idle detection will start
     if(state === "start"){
-        uIOhook.on('keydown', (e) => {
-            if (e.keycode === UiohookKey.Q) {
-              callback(true) 
-            }
+        uIOhook.on('input', (e) => {
+            // if (e.keycode === UiohookKey.Q) {
+            //   callback(true) 
+            // }
           
-            if (e.keycode === UiohookKey.Escape) {
-                callback(true)
-            }
+            // if (e.keycode === UiohookKey.Escape) {
+            //     callback(true)
+            // }
+            callback(true)
+
           })
     
           uIOhook.start()
