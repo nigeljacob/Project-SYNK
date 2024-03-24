@@ -10,13 +10,37 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
-
+  build-on-mac:
     runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
         os: [macos-latest]
+        node-version: [18.x]
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'yarn'
+    - run: yarn
+    - run: cd Frontend && yarn
+    - run: cd Backend && yarn
+    - run: yarn upgrade
+    - run: |
+        npm run electron:build
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
+
+  build-on-windows:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [windows-latest]
         node-version: [18.x]
 
     steps:
