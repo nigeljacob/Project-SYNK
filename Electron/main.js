@@ -11,7 +11,6 @@ const {
   shell,
   session
 } = require("electron");
-const isDev = false;
 const windowStateKeeper = require("electron-window-state");
 const path = require("path");
 const {
@@ -39,6 +38,8 @@ function createWindow() {
   const displays = screen.getAllDisplays();
   const primaryDisplay = screen.getPrimaryDisplay();
   const primaryDisplayBounds = primaryDisplay.bounds;
+
+  const isDev = app.isPackaged ? false : true;
 
   const win = new BrowserWindow({
     x: mainWindowState.x,
@@ -80,6 +81,61 @@ function createWindow() {
       webSecurity: false,
     },
   });
+
+  const template = [
+    {
+      label: 'SYNK',
+      submenu: [
+        {
+          label: 'About SYNK',
+          click() {
+            dialog.showMessageBox(win, {
+              type: 'info',
+              icon: path.join(__dirname, 'icon.png'),
+              message: 'SYNK',
+              detail: 'v0.1.0 \n\n©2024 Clueless Jellybeans',
+              buttons: ['Ok'],
+              defaultId: 0
+            })
+          }
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: 'Hide SYNK',
+          click() {
+            win.hide()
+          },
+        },
+        {
+          type: 'separator'
+        },
+
+        {
+          label: 'Show SYNK',
+          click() {
+            win.show()
+          },
+        },
+        {
+          type: 'separator'
+        },
+
+        {
+          label: 'Quit SYNK',
+          click() {
+            win.close()
+          }
+        },
+      ]
+    }
+  ];
+
+if(!isDev) {
+    const menu = Menu.buildFromTemplate(template);
+    Menu.setApplicationMenu(menu);
+}
 
   splashScreen.loadFile(
     isDev
