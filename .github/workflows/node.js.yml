@@ -13,8 +13,10 @@ jobs:
   build:
 
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 10 
 
     strategy:
+      fail-fast: false
       matrix:
         os: [macos-latest, windows-latest]
         node-version: [18.x]
