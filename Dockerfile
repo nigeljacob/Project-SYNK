@@ -13,14 +13,26 @@ RUN npm install
 # Copy package.json and package-lock.json for the frontend
 COPY Frontend/package*.json ./Frontend/
 
+# Set the working directory to the frontend directory
+WORKDIR /app/Frontend
+
 # Install dependencies for the frontend
-RUN (cd Frontend && npm install)
+RUN npm install
+
+# Set the working directory back to the root
+WORKDIR /app
 
 # Copy package.json and package-lock.json for the backend
 COPY Backend/package*.json ./Backend/
 
+# Set the working directory to the backend directory
+WORKDIR /app/Backend
+
 # Install dependencies for the backend
-RUN (cd Backend && npm install)
+RUN npm install
+
+# Set the working directory back to the root
+WORKDIR /app
 
 # Copy the Electron application source code into the container
 COPY . .
