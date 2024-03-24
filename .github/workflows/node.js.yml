@@ -27,6 +27,9 @@ jobs:
       - name: Install dependencies on Main
         run: cd Backend && yarn
 
+      - name: Upgrade dependencies on Main
+        run: yarn upgrade
+
       - run: |
           npm run electron:build
         env:
