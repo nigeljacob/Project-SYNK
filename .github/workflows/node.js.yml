@@ -24,26 +24,25 @@ jobs:
       - name: Install dependencies on frontEnd
         run: cd Frontend && yarn
 
-      - name: Install dependencies on Main
+      - name: Install dependencies on Backend
         run: cd Backend && yarn
 
       - name: Upgrade dependencies on Main
         run: yarn upgrade
 
+      - name: Run Tests on Main
+        run: cd Backend && jest
+
       - run: |
-          npm run electron:build
+          npm run electron:build-mac
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           mac_certs: ${{ secrets.mac_certs }}
           mac_certs_password: ${{ secrets.mac_certs_password }}
 
-      - name: Release
-        uses: "marvinpinto/action-automatic-releases@latest"
-        with:
-          repo_token: "${{ secrets.GH_TOKEN }}"
-          automatic_release_tag: "latest"
-          prerelease: true
-          title: "Development Build"
-          files: |
-            *.dmg
+      - run: |
+          npm run electron:build-windows
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}

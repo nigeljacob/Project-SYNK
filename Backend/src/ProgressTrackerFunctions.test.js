@@ -51,7 +51,7 @@ describe("progress tracker functions",  () => {
             //promise that holds a boolean value of true if the folder uploads and false if it doesn't
             const fileUploaded = new Promise(resolve => {
 
-                let folderPath = "C:/Users/INUKA PERERA/Desktop/testdeploy4"
+                let folderPath = "/Users/nigeljacob/Visual Code/Electron Pojects/Project-SYNK"
                 let folderName = "Test Deploy 4.1"
 
                 //function to create and upload a zip using the folder path
