@@ -8,7 +8,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies for the main application
-RUN npm install
+RUN yarn
 
 # Copy package.json and package-lock.json for the frontend
 COPY Frontend/package*.json ./Frontend/
@@ -17,7 +17,7 @@ COPY Frontend/package*.json ./Frontend/
 WORKDIR /app/Frontend
 
 # Install dependencies for the frontend
-RUN npm install
+RUN yarn
 
 # Set the working directory back to the root
 WORKDIR /app
@@ -29,7 +29,7 @@ COPY Backend/package*.json ./Backend/
 WORKDIR /app/Backend
 
 # Install dependencies for the backend
-RUN npm install
+RUN yarn
 
 # Set the working directory back to the root
 WORKDIR /app
@@ -38,4 +38,4 @@ WORKDIR /app
 COPY . .
 
 # Build the Electron app
-RUN npm run electron:build
+RUN yarn electron:build
