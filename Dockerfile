@@ -4,27 +4,26 @@ FROM node:18
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy package.json and package-lock.json to the working directory
+# Copy package.json and package-lock.json for installing dependencies
 COPY package*.json ./
 
-# Install dependencies
-RUN yarn
+# Install dependencies for the main application
+RUN npm install
 
-COPY Frontend/package*.json ./
+# Copy package.json and package-lock.json for the frontend
+COPY Frontend/package*.json ./Frontend/
 
-RUN cd Frontend && yarn
+# Install dependencies for the frontend
+RUN cd Frontend && npm install
 
-COPY Backend/package*.json ./
+# Copy package.json and package-lock.json for the backend
+COPY Backend/package*.json ./Backend/
 
-RUN cd Backend && yarn
-
-RUN yarn upgrade
-
-RUN yarn electron:build
+# Install dependencies for the backend
+RUN cd Backend && npm install
 
 # Copy the Electron application source code into the container
 COPY . .
 
-EXPOSE 8080
-
-CMD ["npm", "electron:serve"]
+# Build the Electron app
+RUN npm run electron:build
