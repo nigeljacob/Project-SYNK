@@ -1,8 +1,15 @@
 import { useEffect, useState } from "react";
 import * as MDIcons from "react-icons/md";
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import { getCurrentUser, getStatus, runOnDisconnect, updateStatus } from "../../Backend/src/UserAccount";
-import { auth } from "../../Backend/src/firebase";
+import {
+  Route,
+  BrowserRouter as Router,
+  Routes,
+  HashRouter,
+  useNavigate,
+  Navigate,
+} from "react-router-dom";
+import { getCurrentUser, getStatus, updateStatus } from "./utils/UserAccount";
+import { auth } from "./utils/firebase";
 import "./App.css";
 import CreateAccount from "./Pages/CreateAccount/CreateAccount";
 import Loading from "./Pages/LoadingPage/LoadingPage";
@@ -12,26 +19,28 @@ import Chat from "./Pages/MainChat/Chats";
 import Teams from "./Pages/MainTeamsPage/Teams";
 import TeamDashboard from "./Pages/TeamDashboard/TeamDashboard";
 import NotificationsCenter from "./Pages/Notifications/Notifications";
-import UpdatProfileCenter from "./Pages/ProfileSettings/ProfileSettings";
 import noWifi from "./assets/images/noWifi.png";
 import SideBar from "./layout/SideNavBar/SideBar";
-import { ReactNotifications } from 'react-notifications-component'
-import 'react-notifications-component/dist/theme.css'
-import { Store } from 'react-notifications-component';
-import useSound from 'use-sound'
-import notificationSound from './assets/Audio/notification.mp3'
-import errorSound from './assets/Audio/error.mp3'
-import successSound from './assets/Audio/success.mp3'
+import { ReactNotifications } from "react-notifications-component";
+import "react-notifications-component/dist/theme.css";
+import { Store } from "react-notifications-component";
+import useSound from "use-sound";
+import notificationSound from "./assets/Audio/notification.mp3";
+import errorSound from "./assets/Audio/error.mp3";
+import successSound from "./assets/Audio/success.mp3";
 import React from "react";
-import { deleteNotification, fetchNotification } from "../../Backend/src/teamFunctions";
-import { Card } from "./shadCN-UI/ui/card";
+import { deleteNotification, fetchNotification } from "./utils/teamFunctions";
 import * as IOSIcons from "react-icons/io5";
 import "./Pages/MainTeamsPage/Teams.css";
 import ProfileSettings from "./Pages/ProfileSettings/ProfileSettings";
-import { readOnceFromDatabase, read_OneValue_from_Database, updateDatabase } from "../../Backend/src/firebaseCRUD";
+import {
+  readOnceFromDatabase,
+  read_OneValue_from_Database,
+  updateDatabase,
+} from "./utils/firebaseCRUD";
 import { Tooltip } from "@mui/material";
-import { uploadVersion } from "../../Backend/src/AssignTask/taskFunctions";
-import { PauseTask } from "../../Backend/src/AssignTask/taskFunctions";
+import { uploadVersion } from "./utils/AssignTask/taskFunctions";
+import { PauseTask } from "./utils/AssignTask/taskFunctions";
 const electronApi = window?.electronApi;
 
 let result = "";
@@ -53,7 +62,7 @@ function App() {
     }, 500);
   }, []);
 
-  let Notifications = []
+  let Notifications = [];
 
   const [isLoggedIn, setIsLoggedIn] = useState(loggedIn);
 
@@ -87,13 +96,16 @@ function App() {
 
   useEffect(() => {
     if (isLogoutClicked) {
-      updateDatabase("Users/" + auth.currentUser.uid, {"userStatus" : "Offline"}).then(() => {
-        setUser(null)
+      updateDatabase("Users/" + auth.currentUser.uid, {
+        userStatus: "Offline",
+      }).then(() => {
+        setUser(null);
         auth.signOut();
-        localStorage.setItem("loggedIN", "false")
-        setIsLoggedIn(false)
+        handleSetLoading();
+        localStorage.setItem("loggedIN", "false");
+        setIsLoggedIn(false);
         handleItemClick(false);
-      })
+      });
     }
   }, [isLogoutClicked]);
 
@@ -109,15 +121,15 @@ function App() {
 
   detectOS();
 
-  const [Status, setStatus] = useState("Offline")
+  const [Status, setStatus] = useState("Offline");
 
   useEffect(() => {
-    if(user != null) {
+    if (user != null) {
       getStatus(auth.currentUser.uid, (status) => {
-        setStatus(status)
-      })
+        setStatus(status);
+      });
     }
-  }, [])
+  }, []);
 
   const [isMinimized, setIsMinimized] = useState(false);
 
@@ -136,217 +148,310 @@ function App() {
     };
 
     const handleBeforeUnload = () => {
-      updateStatus("Offline")
+      updateStatus("Offline");
     };
 
-    window.addEventListener('focus', handleFocus);
-    window.addEventListener('blur', handleBlur);
-    window.addEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener("focus", handleFocus);
+    window.addEventListener("blur", handleBlur);
+    window.addEventListener("beforeunload", handleBeforeUnload);
 
     return () => {
-      window.removeEventListener('focus', handleFocus);
-      window.removeEventListener('blur', handleBlur);
-      window.removeEventListener('beforeunload', handleBeforeUnload); 
+      window.removeEventListener("focus", handleFocus);
+      window.removeEventListener("blur", handleBlur);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, []);
 
-  const [isAppClosing, setAppClosing] = useState(false)
+  const [isAppClosing, setAppClosing] = useState(false);
 
-  if(!isAppClosing) {
-    if(!isLogoutClicked) {
-      if(user != null) {
-        if(isMinimized) {
-          readOnceFromDatabase("Users/" + auth.currentUser.uid + "/userStatus", (status) => {
-            if(status != "Busy" && status != "Offline") {
-              updateStatus("Away")
+  if (!isAppClosing) {
+    if (!isLogoutClicked) {
+      if (user != null) {
+        if (isMinimized) {
+          readOnceFromDatabase(
+            "Users/" + auth.currentUser.uid + "/userStatus",
+            (status) => {
+              if (status != "Busy" && status != "Offline") {
+                updateStatus("Away");
+              }
             }
-          })
-        } else if(Status != "Busy") {
-          readOnceFromDatabase("Users/" + auth.currentUser.uid + "/userStatus", (status) => {
-            if(status != "Busy") {
-              updateStatus("Active")
+          );
+        } else if (Status != "Busy") {
+          readOnceFromDatabase(
+            "Users/" + auth.currentUser.uid + "/userStatus",
+            (status) => {
+              if (status != "Busy") {
+                updateStatus("Active");
+              }
             }
-          })
+          );
         }
       }
     }
   }
 
   useEffect(() => {
-    try{
+    try {
       electronApi.receiveStatusUpdateSignalFromMain((data) => {
-        setAppClosing(true)
+        setAppClosing(true);
         setTimeout(() => {
-          updateDatabase("Users/" + auth.currentUser.uid, {"userStatus" : "Offline"}).then(() => {
-            electronApi.sendStatusUpdatedToMain("statusUpdated")
-          })
-        }, 1000)
-      })
-    } catch(e) {
+          updateDatabase("Users/" + auth.currentUser.uid, {
+            userStatus: "Offline",
+          }).then(() => {
+            electronApi.sendStatusUpdatedToMain("statusUpdated");
+          });
+        }, 1000);
+      });
+    } catch (e) {}
+  }, []);
 
-    }
-  }, [])
-
+  useEffect(() => {
+    electronApi.receiveTaskInformation((data) => {
+      localStorage.setItem("taskDetails", JSON.stringify(data));
+      console.log(data);
+    });
+  }, []);
 
   useEffect(() => {
     electronApi.receiveConfirmBoxResponseFromMain((data) => {
-      handleItemClick(data)
-    })
-  }, [])
+      handleItemClick(data);
+    });
+  }, []);
 
-  const [currentlyWorkingApplication, setCurrentlyWorkingApplication] = useState("")
+  const [currentlyWorkingApplication, setCurrentlyWorkingApplication] =
+    useState("");
 
   useEffect(() => {
     electronApi.receiveStartTaskFromMain((data) => {
-        if(data.currentlyTrackingApplication.appName != currentlyWorkingApplication) {
-          setCurrentlyWorkingApplication(data.currentlyTrackingApplication.appName)
-          console.log(data.currentlyTrackingApplication.appName)
+      if (
+        data.currentlyTrackingApplication.appName != currentlyWorkingApplication
+      ) {
+        setCurrentlyWorkingApplication(
+          data.currentlyTrackingApplication.appName
+        );
+        updateDatabase(
+          "Teams/" +
+            auth.currentUser.uid +
+            "/" +
+            data.team.teamCode +
+            "/teamMemberList/" +
+            data.teamMemberIndex +
+            "/taskList/" +
+            parseInt(data.taskIndex - 1) +
+            "/progress",
+          { lastApplication: data.currentlyTrackingApplication.appName }
+        ).then(() => {
           updateDatabase(
             "Teams/" +
-              auth.currentUser.uid +
+              data.team.teamLeader.UID +
               "/" +
               data.team.teamCode +
               "/teamMemberList/" +
               data.teamMemberIndex +
               "/taskList/" +
-              parseInt(data.taskIndex - 1) + "/progress",
-            {lastApplication: data.currentlyTrackingApplication.appName}
-          ).then(() => {
-            updateDatabase(
-              "Teams/" +
-                data.team.teamLeader.UID +
-                "/" +
-                data.team.teamCode +
-                "/teamMemberList/" +
-                data.teamMemberIndex +
-                "/taskList/" +
-                parseInt(data.taskIndex - 1) + "/progress",
-              {lastApplication: data.currentlyTrackingApplication.appName}
-            )
-          })
-        }
-    })
-  }, [])
+              parseInt(data.taskIndex - 1) +
+              "/progress",
+            { lastApplication: data.currentlyTrackingApplication.appName }
+          );
+        });
+      }
+    });
+  }, []);
 
   useEffect(() => {
     electronApi.receiveUrlFromMain((data) => {
-        let URL = data.URL
-        uploadVersion(URL, data.task, data.taskIndex, data.team, data.teamMemberIndex).then(() => {
-          electronApi.sendUploadVersion(data)
-        })
-    })
-  }, [])
+      let URL = data.URL;
+      uploadVersion(
+        URL,
+        data.task,
+        data.taskIndex,
+        data.team,
+        data.teamMemberIndex
+      ).then(() => {
+        electronApi.sendUploadVersion(data);
+      });
+    });
+  }, []);
 
   useEffect(() => {
     electronApi.receivePauseStatusFromMain((data) => {
-      PauseTask(data.task, parseInt(data.taskIndex - 1), data.team, data.teamMemberIndex, data.trackedApplications, (boolean) => {
-        
-      })
-    })
-  }, [])
-
+      PauseTask(
+        data.task,
+        parseInt(data.taskIndex - 1),
+        data.team,
+        data.teamMemberIndex,
+        data.trackedApplications,
+        (boolean) => {}
+      );
+    });
+  }, []);
 
   let [notifications, setNotifications] = useState([]);
 
-  const [playNotification] = useSound(notificationSound, { volume: 0.7 })
-  const [playError] = useSound(errorSound, { volume: 0.7 })
-  const [playSucces] = useSound(successSound, { volume: 0.7 })
+  const [playNotification] = useSound(notificationSound, { volume: 0.7 });
+  const [playError] = useSound(errorSound, { volume: 0.7 });
+  const [playSucces] = useSound(successSound, { volume: 0.7 });
 
   useEffect(() => {
-    if(user != null) {
+    if (user != null) {
+      try {
+        let taskDetails =
+          JSON.parse(
+            localStorage.getItem(auth.currentUser.uid + "previousTask")
+          ) || null;
+        console.log(taskDetails);
+        if (taskDetails != "") {
+          PauseTask(
+            taskDetails.task,
+            parseInt(taskDetails.taskIndex - 1),
+            taskDetails.team,
+            taskDetails.teamMemberIndex,
+            {},
+            (boolean) => {}
+          );
+        }
+      } catch (e) {}
+
       fetchNotification((notification) => {
-        for(let i = 0; i < notification.length; i++) {
-          if(notifications.some((item) => item.title === notification[i].title && item.message === notification[i].message)) {
-            
+        for (let i = 0; i < notification.length; i++) {
+          if (
+            notifications.some(
+              (item) =>
+                item.title === notification[i].title &&
+                item.message === notification[i].message
+            )
+          ) {
           } else {
-            if(notification.length < 5) {
-              showNotification(notification[i]["title"], notification[i]["message"], notification[i]["type"])
-              if(Status === "Offline" || Status === "Busy") {
-                  try{
-                    electronApi.sendNotificationToMain([notification[i]["title"], notification[i]["message"]])
-                  } catch(e) {
-  
-                  }
+            if (notification.length < 5) {
+              showNotification(
+                notification[i]["title"],
+                notification[i]["message"],
+                notification[i]["type"]
+              );
+              if (Status === "Offline" || Status === "Busy") {
+                try {
+                  electronApi.sendNotificationToMain([
+                    notification[i]["title"],
+                    notification[i]["message"],
+                  ]);
+                } catch (e) {}
               }
             } else {
-              if(i == 0) {
-                showNotification( notification.length + " New Notifications From SYNK", "You can view all you notifications from the notification center", "info", auth.currentUser.uid)
-              try{
-                electronApi.sendNotificationToMain([notification.length + " New Notifications Found", "You can view all you notifications from the notification center"])
-              } catch(e) {
-    
-              }
+              if (i == 0) {
+                showNotification(
+                  notification.length + " New Notifications From SYNK",
+                  "You can view all you notifications from the notification center",
+                  "info",
+                  auth.currentUser.uid
+                );
+                try {
+                  electronApi.sendNotificationToMain([
+                    notification.length + " New Notifications Found",
+                    "You can view all you notifications from the notification center",
+                  ]);
+                } catch (e) {}
               }
             }
             setTimeout(() => {
-              deleteNotification(notification, i)
-            }, 50)
-            if(notification[i].type != "success" && notification[i].type != "danger" && notification[i].type != "warning") {
-              let notificationDict = {...notification[i], seen: false }
-              Notifications.push(notificationDict)
+              deleteNotification(notification, i);
+            }, 50);
+            if (
+              notification[i].type != "success" &&
+              notification[i].type != "danger" &&
+              notification[i].type != "warning"
+            ) {
+              let notificationDict = { ...notification[i], seen: false };
+              Notifications.push(notificationDict);
             }
           }
         }
-        setNotifications(Notifications)
-        try{
-          let notificationsList = JSON.parse(localStorage.getItem("notifications") || "[]");
-          let newNotificationsList = [...new Set([...notificationsList, ...Notifications])];
-          let uniqueArray = newNotificationsList.filter((value, index, self) => 
-            index === self.findIndex((t) => (
-                JSON.stringify(t) === JSON.stringify(value)
-            ))
-        );
+        setNotifications(Notifications);
+        try {
+          let notificationsList = JSON.parse(
+            localStorage.getItem(auth.currentUser.uid + "notifications") || "[]"
+          );
+          let newNotificationsList = [
+            ...new Set([...notificationsList, ...Notifications]),
+          ];
+          let uniqueArray = newNotificationsList.filter(
+            (value, index, self) =>
+              index ===
+              self.findIndex((t) => JSON.stringify(t) === JSON.stringify(value))
+          );
 
-          localStorage.setItem("notifications", JSON.stringify(uniqueArray));
-        } catch(e) {
-          let uniqueArray = Notifications.filter((value, index, self) => 
-            index === self.findIndex((t) => (
-                JSON.stringify(t) === JSON.stringify(value)
-            ))
-        );
-          localStorage.setItem("notifications", JSON.stringify(uniqueArray));
+          localStorage.setItem(
+            auth.currentUser.uid + "notifications",
+            JSON.stringify(uniqueArray)
+          );
+        } catch (e) {
+          let uniqueArray = Notifications.filter(
+            (value, index, self) =>
+              index ===
+              self.findIndex((t) => JSON.stringify(t) === JSON.stringify(value))
+          );
+          localStorage.setItem(
+            auth.currentUser.uid + "notifications",
+            JSON.stringify(uniqueArray)
+          );
         }
 
-        try{
-          let AllFeedList = Notifications.filter(notification => notification.notificationType.includes("feed"))
-          let feedList = JSON.parse(localStorage.getItem("feedList") || "[]");
+        try {
+          let AllFeedList = Notifications.filter((notification) =>
+            notification.notificationType.includes("feed")
+          );
+          let feedList = JSON.parse(
+            localStorage.getItem(auth.currentUser.uid + "feedList") || "[]"
+          );
           let newFeedList = [...new Set([...feedList, ...AllFeedList])];
-          let uniqueFeedList = newFeedList.filter((value, index, self) => 
-            index === self.findIndex((t) => (
-                JSON.stringify(t) === JSON.stringify(value)
-            ))
+          let uniqueFeedList = newFeedList.filter(
+            (value, index, self) =>
+              index ===
+              self.findIndex((t) => JSON.stringify(t) === JSON.stringify(value))
           );
-          localStorage.setItem("feedList", JSON.stringify(uniqueFeedList));
-        } catch(e) {
-          let AllFeedList = Notifications.filter(notification => notification.notificationType.includes("feed"))
-          let uniqueFeedList = AllFeedList.filter((value, index, self) => 
-          index === self.findIndex((t) => (
-              JSON.stringify(t) === JSON.stringify(value)
-          ))
+          localStorage.setItem(
+            auth.currentUser.uid + "feedList",
+            JSON.stringify(uniqueFeedList)
           );
-          localStorage.setItem("feedList", JSON.stringify(uniqueFeedList));
+        } catch (e) {
+          let AllFeedList = Notifications.filter((notification) =>
+            notification.notificationType.includes("feed")
+          );
+          let uniqueFeedList = AllFeedList.filter(
+            (value, index, self) =>
+              index ===
+              self.findIndex((t) => JSON.stringify(t) === JSON.stringify(value))
+          );
+          localStorage.setItem(
+            auth.currentUser.uid + "feedList",
+            JSON.stringify(uniqueFeedList)
+          );
         }
-      })
+      });
     }
-  }, user)
-
+  }, user);
 
   const [userData, setUserData] = useState({});
 
   useEffect(() => {
-    if(user != null) {
-      read_OneValue_from_Database("Users/" + auth.currentUser.uid, (UserData) => {
-        setUserData(UserData)
-      })
+    if (user != null) {
+      read_OneValue_from_Database(
+        "Users/" + auth.currentUser.uid,
+        (UserData) => {
+          setUserData(UserData);
+        }
+      );
     }
-  }, user)
+  }, user);
 
   const showNotification = (title, message, type) => {
-
-    let duration =5000;
-    if(type === "success" || title.includes("New Join Request @") || title.includes("Task assigned @")) {
-      duration = 10000; 
-    } else if(type == "danger") {
+    let duration = 5000;
+    if (
+      type === "success" ||
+      title.includes("New Join Request @") ||
+      title.includes("Task assigned @")
+    ) {
+      duration = 10000;
+    } else if (type == "danger") {
       duration = 8000;
     }
 
@@ -360,73 +465,91 @@ function App() {
       animationOut: ["animate__animated", "animate__fadeOut"],
       dismiss: {
         duration: duration,
-        showIcon: true
-      } 
+        showIcon: true,
+      },
     });
 
-    if(type == "danger" || type == "warning") {
-      playError()
-    } else if(type == "success") {
-      playSucces()
+    if (type == "danger" || type == "warning") {
+      playError();
+    } else if (type == "success") {
+      playSucces();
     } else {
-      playNotification()
+      playNotification();
     }
+  };
+
+  let interval = setTimeout(() => {
+    if (user == null && loggedIn) {
+      localStorage.setItem("loggedIN", "false");
+      setIsLoggedIn(false);
     }
+  }, 7000);
+
+  const handleSetLoading = () => {
+    setLoading(false);
+  };
+
+  const [isLoading, setLoading] = useState(false);
 
   if (user == null && loggedIn) {
+    clearTimeout(interval);
     return (
       <>
-        <Loading message="Loading contents" background = {true} />
+        <Loading message="Loading contents" background={true} />
       </>
     );
-  }
-
-  else if (user === null && !isLoggedIn) {
+  } else if (user === null && !isLoggedIn) {
     return (
       <>
         <div className="titleBar"></div>
-        <Router>
-          <Routes>
-            <Route
-              path="/"
-              exact
-              element={
-                <Login setUser={setUser} setIsLoggedIn={setIsLoggedIn} />
-              }
-            />
-            <Route
-              path="/createAccount"
-              element={
-                <CreateAccount
-                  setUser={setUser}
-                  setIsLoggedIn={setIsLoggedIn}
-                />
-              }
-            />
-          </Routes>
-        </Router>
+        {isLoading ? (
+          <Loading message="Signing In" background={true} />
+        ) : (
+          <HashRouter>
+            <Routes>
+              <Route
+                path="/"
+                exact
+                element={
+                  <Login
+                    setUser={setUser}
+                    setIsLoggedIn={setIsLoggedIn}
+                    loadingTrigger={setLoading}
+                  />
+                }
+              />
+              <Route
+                path="/createAccount"
+                element={
+                  <CreateAccount
+                    setUser={setUser}
+                    setIsLoggedIn={setIsLoggedIn}
+                    loadingTrigger={setLoading}
+                  />
+                }
+              />
+            </Routes>
+          </HashRouter>
+        )}
       </>
     );
-  } else if(user != null && isLoggedIn) {
+  } else if (user != null && isLoggedIn) {
+    clearTimeout(interval);
     return (
       <>
         {isLogoutClicked ? (
-          <Loading message="signing out"  background = {true}/>
+          <Loading message="signing out" background={true} />
         ) : (
           <div className="mainFrame" id="mainFrame">
             <div className="titleBar"></div>
             <div className="tw-overflow-y-scroll">
-            <ReactNotifications />
+              <ReactNotifications />
             </div>
             <div className="main" id="main">
-              <Router>
+              <HashRouter>
                 <SideBar user={user} setOpen={setIsOpen} isOpen={isOpen} />
                 <Routes>
-                  <Route
-                    path="/"
-                    exact
-                    element={<Activity user={user} />}
-                  />
+                  <Route path="/" exact element={<Activity user={user} />} />
                   <Route path="/Chats" element={<Chat />} />
                   <Route path="/Teams" element={<Teams />} />
                   <Route
@@ -435,23 +558,36 @@ function App() {
                   />
                   <Route
                     path="/notifications"
-                    element={<NotificationsCenter className="notifications"/>}
+                    element={<NotificationsCenter className="notifications" />}
                   />
                   <Route
                     path="/profileUpdate"
-                    element={<ProfileSettings user = {user} className="notifications" userData={userData}/>}
+                    element={
+                      <ProfileSettings
+                        user={user}
+                        className="notifications"
+                        userData={userData}
+                      />
+                    }
+                  />
+                  <Route
+                    path="*"
+                    element={<Navigate to="/" replace={true} />}
                   />
                 </Routes>
-              </Router>
+              </HashRouter>
               <div className={result}>
                 <Tooltip title="Logout">
                   <div>
-                  <MDIcons.MdOutlineLogout
-                  className="SettingIcon"
-                  onClick={(event) => {
-                    electronApi.sendConfirmBoxSignalToMain(["Are your Sure..??", "Are you sure you want to sign out..?"])
-                  }}
-                />
+                    <MDIcons.MdOutlineLogout
+                      className="SettingIcon"
+                      onClick={(event) => {
+                        electronApi.sendConfirmBoxSignalToMain([
+                          "Are your Sure..??",
+                          "Are you sure you want to sign out..?",
+                        ]);
+                      }}
+                    />
                   </div>
                 </Tooltip>
               </div>
@@ -479,18 +615,14 @@ function App() {
               ) : null}
 
               <div className={SideBarResult}>
-                    
-              <IOSIcons.IoClose
-                    className="tw-w-[30px] tw-h-[30px] tw-absolute tw-right-0 tw-cursor-pointer hover:tw-text-[#A7A7A7] tw-m-[30px]"
-                    onClick={(event) => {
-                      setIsOpen(!isOpen);
-                    }}
-                  />
-
+                <IOSIcons.IoClose
+                  className="tw-w-[30px] tw-h-[30px] tw-absolute tw-right-0 tw-cursor-pointer hover:tw-text-[#A7A7A7] tw-m-[30px]"
+                  onClick={(event) => {
+                    setIsOpen(!isOpen);
+                  }}
+                />
               </div>
-              
             </div>
-
           </div>
         )}
       </>
@@ -498,7 +630,7 @@ function App() {
   } else {
     auth.signOut();
     localStorage.setItem("loggedIN", "false");
-    window.location.reload()
+    window.location.reload();
   }
 }
 

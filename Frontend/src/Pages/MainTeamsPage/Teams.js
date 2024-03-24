@@ -5,13 +5,13 @@ import React, { useEffect, useRef, useState } from "react";
 import * as AIIcons from "react-icons/ai";
 import * as IOIcons from "react-icons/io";
 import * as IOSIcons from "react-icons/io5";
-import { auth } from "../../../../Backend/src/firebase";
+import { auth } from "../../utils/firebase";
 import {
   createTeam,
   fetchTeams,
   joinTeam,
   sendNotification,
-} from "../../../../Backend/src/teamFunctions";
+} from "../../utils/teamFunctions";
 import loader from "../../assets/images/loader.gif";
 import TeamComponent from "../../components/TeamComponent/TeamComponent.jsx";
 import { cn } from "../../shadCN-UI/lib/utils";
@@ -24,7 +24,7 @@ import {
   PopoverTrigger,
 } from "../../shadCN-UI/ui/popover";
 import "./Teams.css";
-import { readOnceFromDatabase, read_OneValue_from_Database } from "../../../../Backend/src/firebaseCRUD";
+import { readOnceFromDatabase, read_OneValue_from_Database } from "../../utils/firebaseCRUD";
 import Loading from "../LoadingPage/LoadingPage";
 const electronApi = window?.electronApi;
 
@@ -97,6 +97,8 @@ function Teams() {
     fetchAllTeams(true);
   }, []);
 
+  let git = false
+
   const [isOpen, setIsOpen] = useState(false);
 
   const SideBarResult = isOpen
@@ -115,7 +117,7 @@ function Teams() {
 
   const [inviteHtml, setInviteHtml] = useState("");
 
-  const [projectType, setProjectType] = useState("collaborativeProject");
+  const [projectType, setProjectType] = useState("induvidualasked");
 
   const [gitConnected, setGitConnected] = useState("notConnected");
 
@@ -147,7 +149,37 @@ function Teams() {
     e.preventDefault();
 
     if (projectType === "induvidualasked") {
-      if (date < new Date()) {
+      if(isRecurring) {
+        createTeam(
+          teamCode,
+          teamName,
+          "",
+          teamDescription,
+          "",
+          projectType,
+          useGit
+        ).then(() => {
+          let popupLayout = document.getElementById("popupLayout");
+          let joinPopup = document.getElementById("JoinTeamPopup");
+          let createPopup = document.getElementById("createTeamPopup");
+          if (!isOpen) {
+            popupLayout.style.visibility = "visible";
+          } else {
+            popupLayout.style.visibility = "hidden";
+            joinPopup.style.visibility = "hidden";
+            createPopup.style.visibility = "hidden";
+            popupLayout.style.background = "rgba(0,0,0,0)";
+          }
+
+          sendNotification("Team Created Successfully", "Team " + teamName + " was created successfully. You can now view the team in the teams panel", "success", auth.currentUser.uid, "success", auth.currentUser.uid)
+          setIsOpen(!isOpen);
+          setTeamName("");
+          setReamDescription("")
+          setDate(new Date())
+          setInviteHtml("")
+        });
+      } else {
+        if (date < new Date()) {
         alert("project deadlines cannot be past");
         return;
       }
@@ -181,7 +213,12 @@ function Teams() {
 
         sendNotification("Team Created Successfully", "Team " + teamName + " was created successfully. You can now view the team in the teams panel", "success", auth.currentUser.uid, "success", auth.currentUser.uid)
         setIsOpen(!isOpen);
+        setTeamName("");
+        setReamDescription("")
+        setDate(new Date())
+        setInviteHtml("")
       });
+      }
     }
   };
 
@@ -204,6 +241,7 @@ function Teams() {
         }
 
         setIsOpen(!isOpen);
+        setJoinTeamCode("");
 
         sendNotification("Sent Successfully", "Join Request successfuly sent to team admin", "success", auth.currentUser.uid, "success", auth.currentUser.uid)
 
@@ -466,6 +504,7 @@ function Teams() {
                   <h4 className="tw-text-[15px]">Team Name</h4>
                   <input
                     type="text"
+                    value={teamName}
                     required
                     className="tw-bg-zinc-900 tw-text-white tw-mt-[15px]"
                     name="teamName"
@@ -484,6 +523,7 @@ function Teams() {
                   <textarea
                     rows={5}
                     required
+                    value={teamDescription}
                     className="tw-bg-zinc-900 tw-text-white tw-mt-[15px] tw-w-full "
                     name="teamDescription"
                     onChange={(event) => {
@@ -501,6 +541,7 @@ function Teams() {
                     <input
                       type="checkbox"
                       id="recurring"
+                      value={isRecurring}
                       name="recurring"
                       onChange={handleRecurring}
                       className="tw-w-[12px] tw-h-[12px] tw-mr-[10px] tw-mt-0"
@@ -537,7 +578,9 @@ function Teams() {
 
                   {/* github intergration UI */}
 
-                  <h4 className="tw-text-[15px] tw-mt-[20px] tw-mb-[10px]">
+                  {git && (
+                    <>
+                      <h4 className="tw-text-[15px] tw-mt-[20px] tw-mb-[10px]">
                     Project Type
                   </h4>
                   <div className="tw-flex tw-items-center tw-mb-[20px]">
@@ -949,6 +992,8 @@ function Teams() {
                       <hr></hr>
                     </>
                   ) : null}
+                    </>
+                  )}
 
                   <div className="tw-flex t-items-center tw-mt-[20px]">
                     <h3 className="tw-flex-1">Team Code</h3>

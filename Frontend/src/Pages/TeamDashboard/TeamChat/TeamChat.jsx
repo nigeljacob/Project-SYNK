@@ -2,24 +2,24 @@ import { useEffect, useRef, useState } from "react";
 import ReceiveMessage from "../../../components/ChatComponents/ReceiveMessage";
 import SendMessage from "../../../components/ChatComponents/SendMessage.jsx";
 import { IoSend } from "react-icons/io5";
-import { sendTeamMessage, fetchMessage, decrypt } from "../../../../../Backend/src/chat";
+import { sendTeamMessage, fetchMessage, decrypt } from "../../../utils/chat";
 
 import React from "react";
 
-import { auth } from "../../../../../Backend/src/firebase";
+import { auth } from "../../../utils/firebase";
 import { fireEvent } from "@testing-library/react";
-import { sendNotification } from "../../../../../Backend/src/teamFunctions";
+import { sendNotification } from "../../../utils/teamFunctions";
 
 const TeamChat = ({ user, team }) => {
   let [messageList, setMessageList] = useState([]);
 
-  const messagesEndRef = useRef(null)
+  const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
-  scrollToBottom()
+  scrollToBottom();
 
   let firstTime = true;
 
@@ -29,25 +29,23 @@ const TeamChat = ({ user, team }) => {
         data[i].message = decrypt(data[i].message);
       }
       setMessageList(data);
-      scrollToBottom()
-
-    }
+      scrollToBottom();
+    };
 
     fetchMessage(onDataReceived, team.teamCode);
   }, [messageList.length]);
 
   const [message, setMessage] = useState("");
 
-  let teamMembers = []
+  let teamMembers = [];
 
   for (let i = 0; i < team.teamMemberList.length; i++) {
     if (team.teamMemberList[i]["UID"] != team.teamLeader.UID) {
-      if(!teamMembers.includes(team.teamMemberList[i].UID)) {
+      if (!teamMembers.includes(team.teamMemberList[i].UID)) {
         teamMembers.push(team.teamMemberList[i].UID);
       }
     }
   }
-
 
   const handleSendMessage = (e) => {
     e.preventDefault();
@@ -64,16 +62,22 @@ const TeamChat = ({ user, team }) => {
 
     setMessage("");
 
-    let teamMembers = []
+    let teamMembers = [];
 
     for (let i = 0; i < team.teamMemberList.length; i++) {
       if (team.teamMemberList[i]["UID"] != auth.currentUser.uid) {
         teamMembers.push(team.teamMemberList[i].UID);
-     }
+      }
     }
 
-    sendNotification("New Chat" + " @ " + team.teamName, user.displayName + ": " + message, "info", teamMembers, "chat", auth.currentUser.uid)
-
+    sendNotification(
+      "New Chat" + " @ " + team.teamName,
+      user.displayName + ": " + message,
+      "info",
+      teamMembers,
+      "chat",
+      auth.currentUser.uid
+    );
   };
 
   return (
@@ -86,9 +90,7 @@ const TeamChat = ({ user, team }) => {
               <SendMessage key={index} message={message} />
             );
           } else {
-            return (
-              <ReceiveMessage key={index} message={message} />
-            );
+            return <ReceiveMessage key={index} message={message} />;
           }
         })}
         <div ref={messagesEndRef} />

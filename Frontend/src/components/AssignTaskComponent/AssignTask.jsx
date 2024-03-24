@@ -13,9 +13,13 @@ import { Calendar } from "../../shadCN-UI/ui/calendar";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { cn } from "../../shadCN-UI/lib/utils";
-import { Popover, PopoverContent, PopoverTrigger } from "../../shadCN-UI/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "../../shadCN-UI/ui/popover";
 import React, { useState } from "react";
-import {assignTask } from "../../../../Backend/src/AssignTask/taskFunctions"
+import { assignTask } from "../../utils/AssignTask/taskFunctions";
 
 export default function AssignTask(props) {
   const [date, setDate] = useState(new Date());
@@ -28,20 +32,31 @@ export default function AssignTask(props) {
     console.log("`props.trigger` is now false");
   };
 
-  const handleSubmit=()=>{
-    let month = date.getMonth() + 1
+  const handleSubmit = () => {
+    let month = date.getMonth() + 1;
     let hours = date.getHours();
     if (hours < 10) hours = "0" + hours;
     let minutes = date.getMinutes();
     if (minutes < 10) minutes = "0" + minutes;
-    const onSuccess = (boolean)=>{
-      handleClose()
-    }
+    const onSuccess = (boolean) => {
+      handleClose();
+    };
 
-    console.log(props.currentTeam)
+    console.log(props.currentTeam);
 
-    assignTask(props.currentUser.UID, props.currentTeam, props.index, taskName, taskDesc, [date.getDate() + "/" + month + "/" + date.getFullYear(), hours + ":" + minutes], onSuccess)
-  }
+    assignTask(
+      props.currentUser.UID,
+      props.currentTeam,
+      props.index,
+      taskName,
+      taskDesc,
+      [
+        date.getDate() + "/" + month + "/" + date.getFullYear(),
+        hours + ":" + minutes,
+      ],
+      onSuccess
+    );
+  };
 
   return props.trigger ? (
     <div className="tw-justify-center tw-items-center tw-shadow-[0_0_16px_#5bbfff]">
@@ -65,7 +80,7 @@ export default function AssignTask(props) {
                   <Label htmlFor="framework">Task description:</Label>
                   <Textarea value={taskDesc} onChange={event=>{setTaskDesc(event.target.value)}} className="tw-bg-transparent tw-text-gray-300"></Textarea>
 
-                  {/* <Select>
+                {/* <Select>
                     <SelectTrigger id="framework">
                       <SelectValue placeholder="Select" />
                     </SelectTrigger>

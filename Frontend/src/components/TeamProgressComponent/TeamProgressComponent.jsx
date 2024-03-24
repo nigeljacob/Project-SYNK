@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from "react";
 import reactElementToJSXString from "react-element-to-jsx-string";
-import {
-  getProfilePicture,
-  getStatus,
-} from "../../../../Backend/src/UserAccount";
+import { getProfilePicture, getStatus } from "../../utils/UserAccount";
 import timeClock from "../../assets/images/timeClock.svg";
 import TeamYourProgress from "../../Pages/TeamDashboard/TeamPersonalProgress/TeamYourProgress";
 import MemberProgress from "../../Pages/TeamDashboard/MemberProgress/MemberProgress";
 
-const TeamProgressComponent = ({ photo, member, tasks, currentTeam, elementTrigger }) => {
+const TeamProgressComponent = ({
+  photo,
+  member,
+  tasks,
+  currentTeam,
+  elementTrigger,
+  elementStringTrigger
+}) => {
   const [status, setStatus] = useState("Offline");
   const [profilePic, setProfilePic] = useState("");
 
@@ -142,6 +146,13 @@ const TeamProgressComponent = ({ photo, member, tasks, currentTeam, elementTrigg
                   </div>
                   <div className="tw-flex tw-gap-[8px]">
                     <img src={timeClock} alt="time clock" />
+                    {tasks[
+                        parseInt(
+                          member.status.split(" ")[
+                            member.status.split(" ").length - 1
+                          ] - 1
+                        )]
+                      .progress.lastApplication != "" && (
                     <p className="tw-text-[14px]">
                       Lastly worked on{" "}
                       <span className="tw-text-[#5BCEFF]">
@@ -156,6 +167,7 @@ const TeamProgressComponent = ({ photo, member, tasks, currentTeam, elementTrigg
                         }{" "}
                       </span>
                     </p>
+                     )}
                   </div>
                 </>
               )}
@@ -206,13 +218,15 @@ const TeamProgressComponent = ({ photo, member, tasks, currentTeam, elementTrigg
             //   elementTrigger={elementTrigger}
             //   UID={member.UID}
             // />
-            <MemberProgress 
+            <MemberProgress
               team={currentTeam}
               elementTrigger={elementTrigger}
+              elementStringTrigger={elementStringTrigger}
               UID={member.UID}
               name={member.name}
             />
           );
+          elementStringTrigger("TEAM_MEMBER_PROGRESS");
         }}
       >
         View Progress

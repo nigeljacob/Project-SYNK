@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getCurrentUser, loginUser } from "../../../../Backend/src/UserAccount";
-import { auth } from "../../../../Backend/src/firebase";
+import { getCurrentUser, loginUser } from "../../utils/UserAccount";
+import { auth } from "../../utils/firebase";
 import "./Login.css";
 import React from "react";
 const electronApi = window?.electronApi;
@@ -14,20 +14,26 @@ function Login(props) {
     e.preventDefault(); // Prevent form submission
 
     if (!username.includes("@")) {
-      electronApi.sendShowAlertSignamToMain(["Ooops!!", "Entered Email is Invalid"])
-      return
+      electronApi.sendShowAlertSignamToMain([
+        "Ooops!!",
+        "Entered Email is Invalid",
+      ]);
+      return;
     }
 
     await loginUser(username, password).catch((e) => {
       const errorMessage = e.message;
-      const errorCode = errorMessage.match(/\(auth\/([^)]+)\)/)[1]; 
-      const formattedErrorCode = errorCode.replace(/-/g, ' ');
-      const message = formattedErrorCode.charAt(0).toUpperCase() + formattedErrorCode.slice(1);
-      electronApi.sendShowAlertSignamToMain(["Ooops!!", message])
+      const errorCode = errorMessage.match(/\(auth\/([^)]+)\)/)[1];
+      const formattedErrorCode = errorCode.replace(/-/g, " ");
+      const message =
+        formattedErrorCode.charAt(0).toUpperCase() +
+        formattedErrorCode.slice(1);
+      electronApi.sendShowAlertSignamToMain(["Ooops!!", message]);
       return;
     });
 
     if (auth.currentUser != null) {
+      props.loadingTrigger(true);
       props.setIsLoggedIn(true);
       localStorage.setItem("loggedIN", "true");
       localStorage.setItem("currentUser", getCurrentUser);

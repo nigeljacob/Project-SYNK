@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { auth } from "../../../../../Backend/src/firebase.js";
-import { read_OneValue_from_Database } from "../../../../../Backend/src/firebaseCRUD.js";
+import { auth } from "../../../utils/firebase.js";
+import { read_OneValue_from_Database } from "../../../utils/firebaseCRUD.js";
 import PieChart from "../../../components/PieChartComponent/PieChart.jsx";
 import PieDetails from "../../../components/PieChartComponent/PieDeatils.jsx";
 import TaskDetails from "../../../components/TaskComponent/TaskDetails.jsx";
@@ -8,9 +8,8 @@ import ProgressVersionHistory from "../TeamPersonalProgress/ProgressVersionHisto
 import "../../MainActivity/Activity.css";
 
 const MemberProgress = (props) => {
-  
-let [currentTeam, setCurrentTeam] = useState(props.team);
-let [isProgressClicked, setIsProgressClicked] = useState(false);
+  let [currentTeam, setCurrentTeam] = useState(props.team);
+  let [isProgressClicked, setIsProgressClicked] = useState(false);
 
   useEffect(() => {
     // update when there is a change
@@ -28,7 +27,7 @@ let [isProgressClicked, setIsProgressClicked] = useState(false);
 
   for (let i = 0; i < currentTeam.teamMemberList.length; i++) {
     if (currentTeam.teamMemberList[i]["UID"] === props.UID) {
-      if(currentTeam.teamMemberList[i]["taskList"][0] != "") {
+      if (currentTeam.teamMemberList[i]["taskList"][0] != "") {
         tasksList = currentTeam.teamMemberList[i]["taskList"];
         teamMemberIndex = i;
       }
@@ -51,9 +50,13 @@ let [isProgressClicked, setIsProgressClicked] = useState(false);
       labels: StartedTasks[progressIndex].progress.applicationTimeList.map(
         (data) => {
           // Check if the name length is greater than 15 characters
-          if(data.name.length > 20) {
+          if (data.name.length > 20) {
             // If yes, format the name and time length
-            return data.name.substring(0,20) + "... - " + formatMilliseconds(data.timeLength);
+            return (
+              data.name.substring(0, 20) +
+              "... - " +
+              formatMilliseconds(data.timeLength)
+            );
           } else {
             // If not, simply format the time length
             return data.name + " - " + formatMilliseconds(data.timeLength);
@@ -79,11 +82,14 @@ let [isProgressClicked, setIsProgressClicked] = useState(false);
   }
 
   const handleVersionHistoryClick = () => {
+    props.elementStringTrigger("TEAM_MEMBER_VERSION");
     props.elementTrigger(
       <ProgressVersionHistory
         setElement={props.elementTrigger}
         team={props.team}
         sideBarStatus={props.sideBarStatus}
+        previous = {"TEAM_MEMBER_PROGRESS"}
+        elementStringTrigger = {props.elementStringTrigger}
         index={progressIndex}
         UID={props.UID}
       />
@@ -128,7 +134,11 @@ let [isProgressClicked, setIsProgressClicked] = useState(false);
                 }}
               />
               <div className="tw-w-full tw-h-full tw-flex tw-justify-center tw-items-center tw-text-4xl tw-font-semibold">
-                <h3>Click on <span className="tw-text-cyan-500">View Progress</span> Button to View Details</h3>
+                <h3>
+                  Click on{" "}
+                  <span className="tw-text-cyan-500">View Progress</span> Button
+                  to View Details
+                </h3>
               </div>
             </div>
           )}
@@ -159,27 +169,27 @@ let [isProgressClicked, setIsProgressClicked] = useState(false);
 };
 
 function formatMilliseconds(milliseconds) {
-    // Convert milliseconds to hours, minutes, and seconds
-    let hours = Math.floor(milliseconds / 3600000);
-    milliseconds = milliseconds % 3600000;
-    let minutes = Math.floor(milliseconds / 60000);
-  
-    // Build the formatted string
-    let formattedTime = "";
-    if (hours > 0) {
-      formattedTime += hours + " hour";
-      if (hours > 1) formattedTime += "s"; // pluralize 'hour' if necessary
-    }
-    if (minutes > 0) {
-      if (formattedTime !== "") formattedTime += " ";
-      formattedTime += minutes + " minute";
-      if (minutes > 1) formattedTime += "s"; // pluralize 'minute' if necessary
-    }
-  
-    // Handle the case where milliseconds are less than 1 minute
-    if (formattedTime === "") formattedTime = "less than a minute";
-  
-    return formattedTime;
+  // Convert milliseconds to hours, minutes, and seconds
+  let hours = Math.floor(milliseconds / 3600000);
+  milliseconds = milliseconds % 3600000;
+  let minutes = Math.floor(milliseconds / 60000);
+
+  // Build the formatted string
+  let formattedTime = "";
+  if (hours > 0) {
+    formattedTime += hours + " hour";
+    if (hours > 1) formattedTime += "s"; // pluralize 'hour' if necessary
   }
+  if (minutes > 0) {
+    if (formattedTime !== "") formattedTime += " ";
+    formattedTime += minutes + " minute";
+    if (minutes > 1) formattedTime += "s"; // pluralize 'minute' if necessary
+  }
+
+  // Handle the case where milliseconds are less than 1 minute
+  if (formattedTime === "") formattedTime = "less than a minute";
+
+  return formattedTime;
+}
 
 export default MemberProgress;

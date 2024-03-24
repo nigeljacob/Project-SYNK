@@ -24,21 +24,15 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "chart.js": "^4.4.2",
-    "child_process": "^1.0.2",
     "chonky": "^2.3.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "cmdk": "^0.2.1",
-    "concurrently": "^8.2.2",
-    "cross-env": "^7.0.3",
+    "jszip": "^3.10.1",
     "date-fns": "^3.3.1",
     "downloadjs": "^1.4.7",
-    "electron": "^29.0.1",
-    "electron-packager": "^17.1.2",
-    "electron-window-state": "^5.0.3",
     "eslint-config-react-app": "6",
-    "https": "^1.0.0",
-    "jszip": "^3.10.1",
+    "firebase": "^10.8.0",
     "lucide-react": "^0.325.0",
     "node-notifier": "^10.0.1",
     "path-browserify": "^1.0.1",
@@ -65,7 +59,6 @@
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
     "use-sound": "^4.0.1",
-    "wait-on": "^7.2.0",
     "web-vitals": "^2.1.4"
   },
   "browser": {
@@ -74,25 +67,19 @@
     "path": false,
     "child_process": false
   },
+  "homepage": "./",
   "scripts": {
-    "start": "craco start",
-    "build": "craco build",
-    "test": "craco test",
-    "eject": "craco eject",
-    "electron:start": "electron .",
-    "electron:serve": "concurrently -k \"cross-env BROWSER=none yarn start\" \"yarn electron:start\""
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
   },
-  "build": {
-    "appId": "com.clueluessJellybiens.SYNK",
-    "productName": "SYNK",
-    "icon": "public/icon.png"
-  },
-  "main": "public/main.js",
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@craco/craco": "^7.1.0",
+    "prettier": "^2.2.1",
+    "wait-on": "^7.2.0",
     "webpack": "^5.90.3",
     "webpack-cli": "^5.1.4"
   }

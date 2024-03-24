@@ -4,15 +4,19 @@ const {
   BrowserWindow,
   Menu,
   ipcMain,
-  Notification,
   dialog,
-  screen
+  screen,
+  Notification,
+  nativeImage,
+  shell,
+  session
 } = require("electron");
+const isDev = true;
 const windowStateKeeper = require("electron-window-state");
 const path = require("path");
 const {
   getappsfunc,
-} = require("../../Backend/src/electronFunctions/viewTaskFunctions");
+} = require("../Backend/src/viewTaskFunctions");
 const os = require("node:os");
 const {
   openFileDialog,
@@ -20,9 +24,11 @@ const {
   getFocusedWindow,
   idleDetection,
   getDateTime
-} = require("../../Backend/src/electronFunctions/ProgressTrackerFunctions");
+} = require("../Backend/src/ProgressTrackerFunctions");
 const chokidar = require('chokidar');
-const { common } = require("@mui/material/colors");
+const trayWindow = require("electron-tray-window");
+const { systemPreferences } = require('electron')
+const { exec } = require('child_process');
 
 function createWindow() {
   let mainWindowState = windowStateKeeper({
@@ -42,12 +48,12 @@ function createWindow() {
     minWidth: 1300,
     title: "SYNK",
     minHeight: 600,
-    // titleBarStyle: "hidden",
+    titleBarStyle: "hidden",
     titleBarOverlay: {
       color: "rgba(0,0,0,0)",
       symbolColor: "#ffffff",
     },
-    // frame: false,
+    frame: false,
     show: false,
     icon: path.join(__dirname, "icon.png"),
     webPreferences: {
@@ -68,13 +74,18 @@ function createWindow() {
     alwaysOnTop: true,
     resizable: false,
     fullscreen: false,
+    fullscreenable: false,
 
     webPreferences: {
       webSecurity: false,
     },
   });
 
-  splashScreen.loadFile("./public/preload.html");
+  splashScreen.loadFile(
+    isDev
+      ? './Frontend/public/preload.html'
+      : './Frontend/build/preload.html'
+    )
   splashScreen.setIcon(path.join(__dirname, "icon.png"));
   splashScreen.center();
   splashScreen.show();
@@ -84,7 +95,12 @@ function createWindow() {
 
   setTimeout(function () {
     splashScreen.close();
-    win.loadURL("http://localhost:3000");
+    win.loadURL(
+    isDev
+      ? 'http://localhost:3000'
+      : `file://${path.join(__dirname, '../Frontend/build/index.html')}`
+    )
+    console.log(`file://${path.join(__dirname, '../Frontend/build/index.html')} `)
     win.setIcon(path.join(__dirname, "logo.png"));
     win.show();
     // if(os.platform() != "darwin") {
@@ -141,6 +157,40 @@ function createWindow() {
       });
   });
 
+
+  if(os.platform() == "darwin") {
+    setTimeout(() => {
+    const permission = ""
+
+    session.defaultSession.setPermissionRequestHandler((webContents, permission, callback) => {
+      return callback(false);
+    })
+
+    systemPreferences.isTrustedAccessibilityClient(true)
+
+    win.webContents
+    .executeJavaScript('localStorage.getItem("notificationPermission");', true)
+    .then(result => {
+      if(result == null) {
+      dialog.showMessageBox(win, {
+        type: 'warning',
+        icon: path.join(__dirname, 'icon.png'),
+        message: 'Notification permissions denied',
+        detail: 'To enable notifications, please go to your system settings. Click "Notifications" and enable notifications for SYNK.',
+        buttons: ['Open Settings', 'Deny'],
+        defaultId: 0
+      }).then(({ response }) => {
+        if (response === 0) {
+         shell.openExternal('x-apple.systempreferences:com.apple.preference.notifications')
+         win.webContents
+          .executeJavaScript('localStorage.setItem("notificationPermission", true);', true)
+        }
+      });
+    }
+    });
+  }, 10000)
+  }
+
   ipcMain.on("notification", (event, notification) => {
     const NOTIFICATION_TITLE = notification[0];
     const NOTIFICATION_BODY = notification[1];
@@ -151,6 +201,63 @@ function createWindow() {
       icon: path.join(__dirname, "icon.png"),
     }).show();
   });
+
+  let trayMenu = null;
+
+  function showTrayMenu() {
+    if(trayMenu === null) {
+      trayMenu = new BrowserWindow({
+        width: 300,
+        height: 300,
+        frame: false,
+        margin_x : 10,
+        margin_y : 10,
+        alwaysOnTop: true,
+        resizable: false,
+        fullscreen: false,
+    
+        webPreferences: {
+          webSecurity: false,
+          enableRemoteModule: true,
+          contextIsolation: true,
+          nodeIntegration: false,
+          preload: path.join(__dirname, "preload.js"),
+        }
+      })
+
+      trayMenu.loadFile(
+      isDev
+        ? './Frontend/public/Popups/tray.html'
+        : './Frontend/build/Popups/tray.html'
+      )
+      trayMenu.setSkipTaskbar(true);
+
+      const image = nativeImage.createFromPath(path.join(__dirname, "icon.png"));
+
+      let tray = new Tray(image.resize({width: 16, height: 16}));
+
+      trayWindow.setOptions({
+        tray: tray,
+        window: trayMenu
+      });
+    } else {
+      trayMenu.loadFile(
+      isDev
+        ? './Frontend/public/Popups/tray.html'
+        : './Frontend/build/Popups/tray.html'
+      )
+    }
+
+  }
+
+  function hideTrayMenu() {
+    trayMenu.loadFile(
+      isDev
+        ? './Frontend/public/Popups/trayNoTask.html'
+        : './Frontend/build/Popups/trayNoTask.html'
+      )
+    
+  }
 
   let idlePopupShown = false;
 
@@ -296,6 +403,7 @@ win.on("close", (e) => {
     .then((URL) => {
         console.log(URL);
         win.webContents.send("sendFileUrlFromMain", {...TaskDetails, URL: URL})
+        win.webContents.send("lastUpdated", getDateTime());
     })
     .catch(error => {
         console.error('Error:', error);
@@ -328,6 +436,10 @@ win.on("close", (e) => {
 
     folderPath = Task.task.filePath
 
+    showTrayMenu()
+
+    win.webContents.send("sendTaskDetails", "heloooo")
+
     directoryWatcher = chokidar.watch(folderPath, {
       ignored: (folderPath) => {
         return commonIgnorePatterns.some(pattern => folderPath.includes(pattern));
@@ -336,7 +448,7 @@ win.on("close", (e) => {
     })
     
     directoryWatcher.on('all', (event, path) => {
-      console.log(event, path);
+      // console.log(event, path);
       if(event === "error") {
         dialog.showErrorBox("Ünable to find Task Folder", "The task folder was not found in the specified path: " + folderPath);
         try{
@@ -375,6 +487,7 @@ win.on("close", (e) => {
           .then((URL) => {
               console.log(URL);
               win.webContents.send("sendFileUrlFromMain", {...Task, URL: URL})
+              win.webContents.send("lastUpdated", getDateTime());
           })
           .catch(error => {
               console.error('Error:', error);
@@ -407,7 +520,11 @@ win.on("close", (e) => {
                 },
               });
     
-              lastModifiedPopup.loadFile("./public/Popups/lastModifiedPopup.html");
+              lastModifiedPopup.loadFile(
+                isDev
+                  ? './Frontend/public/Popups/lastModifiedPopup.html'
+                  : './Frontend/build/Popups/lastModifiedPopup.html'
+                )
               lastModifiedPopup.setIcon(path.join(__dirname, "icon.png"));
               lastModifiedPopup.center();
               lastModifiedPopup.show();
@@ -443,7 +560,11 @@ win.on("close", (e) => {
                 },
               });
     
-              lastModifiedPopup.loadFile("./public/Popups/noWorkPopup.html");
+              lastModifiedPopup.loadFile(
+                isDev
+                  ? './Frontend/public/Popups/noWorkPopup.html'
+                  : './Frontend/build/Popups/noWorkPopup.html'
+                )
               lastModifiedPopup.setIcon(path.join(__dirname, "icon.png"));
               lastModifiedPopup.center();
               lastModifiedPopup.show();
@@ -456,16 +577,51 @@ win.on("close", (e) => {
     }, 900000)
 
     appTrackingInterval = setInterval(() => {
-      let currentWindow = getFocusedWindow();
+
+      let currentWindow;
+
+      try{
+        currentWindow = getFocusedWindow();
+      } catch(e) {
+            dialog.showMessageBox(win, {
+              type: 'error',
+              icon: path.join(__dirname, 'icon.png'),
+              message: 'Tracking Permission denied',
+              detail: 'Accept the permission to allow SYNK to track your task activity. Start the task again after successfull permission.',
+              buttons: ['Ok'],
+              defaultId: 0
+            })
+            clearInterval(idleTrackingInterval)
+            clearInterval(appTrackingInterval)
+            clearInterval(lastModifiedInterval)
+
+            win.webContents.send("sendIntervalsPaused", {...TaskDetails, trackedApplications: trackedApplications})
+      }
         if(!idleDetected) {
-          idleDetection("start", (data) => {
-            // console.log("detected");
+          try{
+            idleDetection("start", (data) => {
+            console.log("detected");
             idleDetected = true
             if(idlePopupShown) {
               idlePopup.destroy()
               idlePopupShown = false
             }
           })
+          } catch(e) {
+            dialog.showMessageBox(win, {
+              type: 'error',
+              icon: path.join(__dirname, 'icon.png'),
+              message: 'Tracking Permission denied',
+              detail: 'Accept the permission to allow SYNK to track your task activity. Start the task again after successfull permission.',
+              buttons: ['Ok'],
+              defaultId: 0
+            })
+            clearInterval(idleTrackingInterval)
+            clearInterval(appTrackingInterval)
+            clearInterval(lastModifiedInterval)
+
+            win.webContents.send("sendIntervalsPaused", {...TaskDetails, trackedApplications: trackedApplications})
+          }
         } else {
           idleDetection("stop", (data) => {
             // console.log("stopped")
@@ -569,7 +725,11 @@ win.on("close", (e) => {
             },
           });
 
-          idlePopup.loadFile("./public/Popups/idlePopup.html");
+          idlePopup.loadFile(
+                isDev
+                  ? './Frontend/public/Popups/idlePopup.html'
+                  : './Frontend/build/Popups/idlePopup.html'
+                )
           idlePopup.setIcon(path.join(__dirname, "icon.png"));
           idlePopup.center();
           idlePopup.show();
@@ -593,6 +753,8 @@ ipcMain.on("sendPauseTaskToMain", (event, message) => {
     clearInterval(idleTrackingInterval)
     clearInterval(appTrackingInterval)
     clearInterval(lastModifiedInterval)
+
+    hideTrayMenu()
     
     directoryWatcher.close().then(console.log("watcher closed"))
 
@@ -643,6 +805,8 @@ ipcMain.on("idleCloseClicked", (event, data) => {
     lastModifiedPopupShown = false;
   }
 });
+
+app.setAccessibilitySupportEnabled(true)
 
 }
 

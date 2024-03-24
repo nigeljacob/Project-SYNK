@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
-import reactElementToJSXString from "react-element-to-jsx-string";
 import * as IOIcons from "react-icons/io";
 import { useLocation } from "react-router";
-import {
-  acceptMembers,
-  fetchPendingInvites,
-} from "../../../../Backend/src/teamFunctions";
+import { acceptMembers, fetchPendingInvites } from "../../utils/teamFunctions";
 import AssignTask from "../../components/AssignTaskComponent/AssignTask";
 import ViewTask from "../../components/ViewTaskComponent/ViewTask";
 import Loading from "../LoadingPage/LoadingPage";
@@ -15,15 +11,24 @@ import "./TeamDashboard.css";
 import TeamLeaderDashboard from "./TeamLeaderActivity/TeamLeaderDashboard";
 import TeamMemberDashboard from "./TeamMemberActivity/TeamMemberDashboard";
 import TeamYourProgress from "./TeamPersonalProgress/TeamYourProgress";
-import { read_OneValue_from_Database, read_from_Database_onChange } from "../../../../Backend/src/firebaseCRUD";
-import { auth } from "../../../../Backend/src/firebase";
+import {
+  read_OneValue_from_Database,
+  read_from_Database_onChange,
+} from "../../utils/firebaseCRUD";
+import { auth } from "../../utils/firebase";
 import UserComponent from "../../components/UserComponent/UserComponent";
-import PieData1 from "../../components/PieChartComponent/PieData/PieData1"
-import PieData2 from "../../components/PieChartComponent/PieData/PieData2"
-import PieData3 from "../../components/PieChartComponent/PieData/PieData3"
-import { all } from "axios";
 
-const MemberComponent = ({ info, currentTeam, buttonClass, setTeamMemberIndex, setAssignTaskOpen, setAssignTaskPopup, setSelectedUser, index, isAssignTaskOpen}) => {
+const MemberComponent = ({
+  info,
+  currentTeam,
+  buttonClass,
+  setTeamMemberIndex,
+  setAssignTaskOpen,
+  setAssignTaskPopup,
+  setSelectedUser,
+  index,
+  isAssignTaskOpen,
+}) => {
   const [isHovering, setIsHovering] = useState(false);
 
   const handleMouseOver = () => {
@@ -34,44 +39,61 @@ const MemberComponent = ({ info, currentTeam, buttonClass, setTeamMemberIndex, s
     setIsHovering(false);
   };
 
-  return(
+  return (
     <>
-    <div>
-    <div className="memberContainer tw-flex tw-items-center tw-w-full tw-justify-between">
-    {isHovering && <UserComponent UID={info.UID} type="Single" setTriger={setIsHovering}/>}
-      {info.UID === currentTeam.teamLeader.UID ? (
-        <h3 className="Leader tw-cursor-pointer" onMouseOver={handleMouseOver} onMouseOut={handleMouseOut}>{info.name} (L)</h3>
-      ) : (
-        <p className="side-text tw-cursor-pointer" onMouseOver={handleMouseOver} onMouseOut={handleMouseOut}>{info.name}</p>
-      )}
-      <IOIcons.IoIosAdd
-        className={buttonClass}
-        onClick={(event) => {
-          setTeamMemberIndex(index)
-          let popupLayout =
-            document.getElementById("popupLayout");
-          if (isAssignTaskOpen) {
-            popupLayout.style.background = "rgba(0,0,0,0)";
-          } else {
-            popupLayout.style.visibility = "visible";
-            setTimeout(() => {
-              popupLayout.style.background = "rgba(0,0,0,0.7)";
-            }, 100);
-          }
+      <div>
+        <div className="memberContainer tw-flex tw-items-center tw-w-full tw-justify-between">
+          {isHovering && (
+            <UserComponent
+              UID={info.UID}
+              type="Single"
+              setTriger={setIsHovering}
+            />
+          )}
+          {info.UID === currentTeam.teamLeader.UID ? (
+            <h3
+              className="Leader tw-cursor-pointer"
+              onMouseOver={handleMouseOver}
+              onMouseOut={handleMouseOut}
+            >
+              {info.name} (L)
+            </h3>
+          ) : (
+            <p
+              className="side-text tw-cursor-pointer"
+              onMouseOver={handleMouseOver}
+              onMouseOut={handleMouseOut}
+            >
+              {info.name}
+            </p>
+          )}
+          <IOIcons.IoIosAdd
+            className={buttonClass}
+            onClick={(event) => {
+              setTeamMemberIndex(index);
+              let popupLayout = document.getElementById("popupLayout");
+              if (isAssignTaskOpen) {
+                popupLayout.style.background = "rgba(0,0,0,0)";
+              } else {
+                popupLayout.style.visibility = "visible";
+                setTimeout(() => {
+                  popupLayout.style.background = "rgba(0,0,0,0.7)";
+                }, 100);
+              }
 
-          setAssignTaskOpen(!isAssignTaskOpen);
-          setAssignTaskPopup(true);
-          setSelectedUser(info);
-        }}
-      />
-    </div>
-    <div className="line"></div>
-  </div>
-  </>
-  )
+              setAssignTaskOpen(!isAssignTaskOpen);
+              setAssignTaskPopup(true);
+              setSelectedUser(info);
+            }}
+          />
+        </div>
+        <div className="line"></div>
+      </div>
+    </>
+  );
 };
 
-const PendingMemberComponent = ({info, handleAcceptMembers, index}) => {
+const PendingMemberComponent = ({ info, handleAcceptMembers, index }) => {
   const [isHovering, setIsHovering] = useState(false);
 
   const handleIN = () => {
@@ -83,24 +105,36 @@ const PendingMemberComponent = ({info, handleAcceptMembers, index}) => {
   };
 
   return (
-  <div className="tw-w-full">
-    <div className="line"></div>
-    <div className="memberContainer tw-flex tw-items-center tw-w-full tw-justify-between">
-      {isHovering && <UserComponent UID={info.UID} type="Single" setTriger={setIsHovering}/>}
-      <p className="side-text tw-cursor-pointer" onMouseOver={handleIN} onMouseOut={handleOut}>{info.name}</p>
-      <button
-        className="tw-py-[5px] tw-px-[10px] tw-cursor-pointer tw-bg-[#5bceff] tw-text-black tw-mr-[15px] tw-text-[12px] tw-rounded-lg"
-        onClick={(event) => {
-          handleAcceptMembers(info, index);
-        }}
-      >
-        Accept
-      </button>
+    <div className="tw-w-full">
+      <div className="line"></div>
+      <div className="memberContainer tw-flex tw-items-center tw-w-full tw-justify-between">
+        {isHovering && (
+          <UserComponent
+            UID={info.UID}
+            type="Single"
+            setTriger={setIsHovering}
+          />
+        )}
+        <p
+          className="side-text tw-cursor-pointer"
+          onMouseOver={handleIN}
+          onMouseOut={handleOut}
+        >
+          {info.name}
+        </p>
+        <button
+          className="tw-py-[5px] tw-px-[10px] tw-cursor-pointer tw-bg-[#5bceff] tw-text-black tw-mr-[15px] tw-text-[12px] tw-rounded-lg"
+          onClick={(event) => {
+            handleAcceptMembers(info, index);
+          }}
+        >
+          Accept
+        </button>
+      </div>
+      <div className="line"></div>
     </div>
-    <div className="line"></div>
-  </div>
-)
-}
+  );
+};
 
 const TeamDashboard = ({ user }) => {
   const [assignTaskPopup, setAssignTaskPopup] = useState(false);
@@ -120,21 +154,21 @@ const TeamDashboard = ({ user }) => {
 
   const location = useLocation();
   const state = location.state;
-  const [currentTeam, setCurrentTeam] = useState(state["Team"])
+  const [currentTeam, setCurrentTeam] = useState(state["Team"]);
 
-  const [selectedTask, setSelectedTask] = useState({})
+  const [selectedTask, setSelectedTask] = useState({});
 
-  const [isTaskClicked, setTaskClicked] = useState(false)
+  const [isTaskClicked, setTaskClicked] = useState(false);
 
   useEffect(() => {
-
     // update when there is a change
-    read_OneValue_from_Database("Teams/" + auth.currentUser.uid + "/" + currentTeam.teamCode, (data) => {
-        setCurrentTeam(data)
-    })
-
-  }, [])
-
+    read_OneValue_from_Database(
+      "Teams/" + auth.currentUser.uid + "/" + currentTeam.teamCode,
+      (data) => {
+        setCurrentTeam(data);
+      }
+    );
+  }, []);
 
   // const [pendingInvites, setPendingInvites] = useState(
   //   currentTeam.teamPendingInvites
@@ -165,7 +199,7 @@ const TeamDashboard = ({ user }) => {
     sideBarStatus = true;
   }
 
-  const [isOpen, setIsOpen] = useState(sideBarStatus);
+  const [isOpen, setIsOpen] = useState(true);
   const SideBarResult = isOpen
     ? "sideBar show_SideBar"
     : "sideBar hide_SideBar";
@@ -180,24 +214,28 @@ const TeamDashboard = ({ user }) => {
 
   const [element, setElement] = useState(null);
 
+  const [elementString, setElementString] = useState(null);
+
   try {
     if (
-      reactElementToJSXString(element).includes("<TeamMemberDashboard") ||
-      reactElementToJSXString(element).includes("<TeamLeaderDashboard") || 
-      reactElementToJSXString(element).includes("<MemberProgress") || 
-      reactElementToJSXString(element).includes("<ProgressVersionHistory")
+      elementString === "TEAM_MEMBER_DASHBOARD" ||
+      elementString === "TEAM_LEADER_DASHBOARD" ||
+      elementString === "TEAM_MEMBER_PROGRESS" ||
+      elementString === "TEAM_MEMBER_VERSION" || elementString === null
     ) {
       document.getElementById("teamActivity").style.color = "#5bceff";
       document
         .getElementById("teamActivity")
         .querySelector("#dot").style.visibility = "visible";
-    } else if (reactElementToJSXString(element).includes("<TeamChat")) {
+    } else if (elementString === "TEAM_CHAT") {
       document.getElementById("teamChat").style.color = "#5bceff";
       document
         .getElementById("teamChat")
         .querySelector("#dot").style.visibility = "visible";
-    } else if (reactElementToJSXString(element).includes("<TeamYourProgress")
-    || reactElementToJSXString(element).includes("<ProgressVersionHistory")) {
+    } else if (
+      elementString === "TEAM_PERSONAL_PROGRESS" ||
+      elementString === "TEAM_PERSONAL_VERSION"
+    ) {
       document.getElementById("teamProgress").style.color = "#5bceff";
       document
         .getElementById("teamProgress")
@@ -212,26 +250,42 @@ const TeamDashboard = ({ user }) => {
         <TeamMemberDashboard
           viewTaskTrigger={viewTaskPopup}
           setViewTaskTrigger={setViewTaskPopup}
-          taskTrigger = {setSelectedTask}
-          className = "tw-z-[-1000]"
+          taskTrigger={setSelectedTask}
+          className="tw-z-[-1000]"
         />
       ),
+      elementString: "TEAM_MEMBER_DASHBOARD",
       className: "teamActivity",
     },
     {
       title: "Chat",
-      element: <Chat user={user} team={currentTeam} className = "tw-z-[-2000]" />,
+      element: <Chat user={user} team={currentTeam} className="tw-z-[-2000]" />,
+      elementString: "TEAM_CHAT",
       className: "teamChat",
     },
     {
       title: "Your Progress",
-      element: <TeamYourProgress team={currentTeam} sideBarStatus={isOpen} elementTrigger = {setElement} UID = {auth.currentUser.uid}/>,
+      element: (
+        <TeamYourProgress
+          team={currentTeam}
+          sideBarStatus={isOpen}
+          elementTrigger={setElement}
+          elementStringTrigger={setElementString}
+          UID={auth.currentUser.uid}
+        />
+      ),
+      elementString: "TEAM_PERSONAL_PROGRESS",
       className: "teamProgress",
     },
   ];
 
   let dashboard = (
-    <TeamLeaderDashboard team={currentTeam} sideBarStatus={isOpen} elementTrigger = {setElement}/>
+    <TeamLeaderDashboard
+      team={currentTeam}
+      sideBarStatus={isOpen}
+      elementTrigger={setElement}
+      elementStringTrigger={setElementString}
+    />
   );
 
   if (currentUser.uid === currentTeam["teamLeader"]["UID"]) {
@@ -239,22 +293,25 @@ const TeamDashboard = ({ user }) => {
       <TeamLeaderDashboard
         viewTaskTrigger={viewTaskPopup}
         setViewTaskTrigger={setViewTaskPopup}
-        taskTrigger = {setSelectedTask}
+        taskTrigger={setSelectedTask}
         team={currentTeam}
         sideBarStatus={isOpen}
-        className = "tw-z-[-1000]"
-        elementTrigger = {setElement}
+        className="tw-z-[-1000]"
+        elementTrigger={setElement}
+        elementStringTrigger={setElementString}
       />
     );
+    infoData[0].elementString = "TEAM_LEADER_DASHBOARD";
     dashboard = (
       <TeamLeaderDashboard
         viewTaskTrigger={viewTaskPopup}
         setViewTaskTrigger={setViewTaskPopup}
-        taskTrigger = {setSelectedTask}
+        taskTrigger={setSelectedTask}
         team={currentTeam}
         sideBarStatus={isOpen}
-        className = "tw-z-[-1000]"
-        elementTrigger = {setElement}
+        className="tw-z-[-1000]"
+        elementTrigger={setElement}
+        elementStringTrigger={setElementString}
       />
     );
     buttonClass =
@@ -264,16 +321,17 @@ const TeamDashboard = ({ user }) => {
       <TeamMemberDashboard
         viewTaskTrigger={viewTaskPopup}
         setViewTaskTrigger={setViewTaskPopup}
-        taskTrigger = {setSelectedTask}
-        className = "tw-z-[-1000]"
+        taskTrigger={setSelectedTask}
+        className="tw-z-[-1000]"
       />
     );
+    infoData[0].elementString = "TEAM_MEMBER_DASHBOARD";
     dashboard = (
       <TeamMemberDashboard
         viewTaskTrigger={viewTaskPopup}
         setViewTaskTrigger={setViewTaskPopup}
-        taskTrigger = {setSelectedTask}
-        className = "tw-z-[-1000]"
+        taskTrigger={setSelectedTask}
+        className="tw-z-[-1000]"
       />
     );
     buttonClass =
@@ -281,8 +339,8 @@ const TeamDashboard = ({ user }) => {
   }
 
   useEffect(() => {
-    setElement(dashboard)
-  }, [])
+    setElement(dashboard);
+  }, []);
 
   return (
     <>
@@ -290,7 +348,12 @@ const TeamDashboard = ({ user }) => {
         <Loading message="Loading Team Details" />
       ) : (
         <div className="teamDashboard">
-          <div className={SideBarResult + " sidebar-main tw-max-h-screen tw-overflow-y-scroll tw-z-1000"}>
+          <div
+            className={
+              SideBarResult +
+              " sidebar-main tw-max-h-screen tw-overflow-y-scroll tw-z-1000"
+            }
+          >
             <p className="tw-text-[20px]">{currentTeam["teamName"]}</p>
             <p className="info-text">{currentTeam.teamCode}</p>
 
@@ -304,31 +367,27 @@ const TeamDashboard = ({ user }) => {
                 className={info.className}
                 id={info.className}
                 onClick={(event) => {
-                  console.log(reactElementToJSXString(element));
+                  console.log(elementString);
                   if (
-                    reactElementToJSXString(element).includes(
-                      "<TeamMemberDashboard"
-                    ) ||
-                    reactElementToJSXString(element).includes(
-                      "<TeamLeaderDashboard"
-                    ) ||
-                    reactElementToJSXString(element).includes("<MemberProgress") 
-                    || reactElementToJSXString(element).includes("<ProgressVersionHistory")
+                    elementString === "TEAM_MEMBER_DASHBOARD" ||
+                    elementString === "TEAM_LEADER_DASHBOARD" ||
+                    elementString === "TEAM_MEMBER_PROGRESS" ||
+                    elementString === "TEAM_MEMBER_PROGRESS" ||
+                    elementString === null
                   ) {
                     document.getElementById("teamActivity").style.color =
                       "#ffffff";
                     document
                       .getElementById("teamActivity")
                       .querySelector("#dot").style.visibility = "hidden";
-                  } else if (
-                    reactElementToJSXString(element).includes("<TeamChat")
-                  ) {
+                  } else if (elementString === "TEAM_CHAT") {
                     document.getElementById("teamChat").style.color = "#ffffff";
                     document
                       .getElementById("teamChat")
                       .querySelector("#dot").style.visibility = "hidden";
                   } else if (
-                    reactElementToJSXString(element).includes("<TeamYourProgress") || reactElementToJSXString(element).includes("<ProgressVersionHistory")
+                    elementString === "TEAM_PERSONAL_PROGRESS" ||
+                    elementString === "TEAM_PERSONAL_VERSION"
                   ) {
                     document.getElementById("teamProgress").style.color =
                       "#ffffff";
@@ -338,6 +397,7 @@ const TeamDashboard = ({ user }) => {
                   }
 
                   handleItemClick(info.element);
+                  setElementString(info.elementString);
                 }}
               >
                 <div className="barContent">
@@ -356,33 +416,46 @@ const TeamDashboard = ({ user }) => {
               <div className="line"></div>
 
               <div className="tw-w-full tw-max-h-[300px] tw-overflow-y-scroll">
-              {currentTeam["teamMemberList"].map((info, index) => {
-
-                return(
-                  <>
-                    <MemberComponent info={info} currentTeam={currentTeam} buttonClass={buttonClass} setTeamMemberIndex = {setTeamMemberIndex} setAssignTaskOpen = {setAssignTaskOpen} setAssignTaskPopup = {setAssignTaskPopup} setSelectedUser  = {setSelectedUser} index={index} isAssignTaskOpen={isAssignTaskOpen}/>
-                </>
-                )
-              })}
+                {currentTeam["teamMemberList"].map((info, index) => {
+                  return (
+                    <>
+                      <MemberComponent
+                        info={info}
+                        currentTeam={currentTeam}
+                        buttonClass={buttonClass}
+                        setTeamMemberIndex={setTeamMemberIndex}
+                        setAssignTaskOpen={setAssignTaskOpen}
+                        setAssignTaskPopup={setAssignTaskPopup}
+                        setSelectedUser={setSelectedUser}
+                        index={index}
+                        isAssignTaskOpen={isAssignTaskOpen}
+                      />
+                    </>
+                  );
+                })}
               </div>
 
               <div className="tw-w-full tw-max-h-[300px] tw-overflow-y-scroll">
                 {currentTeam.teamPendingInvites[0] !== "" && (
-                <>
-                  <h2 className="tw-mt-[50px] tw-mb-[10px]">Pending Invites</h2>
+                  <>
+                    <h2 className="tw-mt-[50px] tw-mb-[10px]">
+                      Pending Invites
+                    </h2>
 
-                  {currentTeam.teamPendingInvites.map((info, index) => {
-                    
-                    return(
-                      <div>
-                        <PendingMemberComponent info={info} handleAcceptMembers={handleAcceptMembers} index={index} />
-                      </div>
-                    )
+                    {currentTeam.teamPendingInvites.map((info, index) => {
+                      return (
+                        <div>
+                          <PendingMemberComponent
+                            info={info}
+                            handleAcceptMembers={handleAcceptMembers}
+                            index={index}
+                          />
+                        </div>
+                      );
                     })}
-                </>
+                  </>
                 )}
               </div>
-
             </div>
 
             <div
@@ -392,7 +465,7 @@ const TeamDashboard = ({ user }) => {
                 sidebarToggler(!isOpen);
               }}
             >
-              <IOIcons.IoMdArrowDropleft className={IconResult} />
+              {/* <IOIcons.IoMdArrowDropleft className={IconResult} /> */}
             </div>
           </div>
 
@@ -424,11 +497,10 @@ const TeamDashboard = ({ user }) => {
           >
             {viewTaskPopup ? (
               <ViewTask
-              trigger={viewTaskPopup}
-              setTrigger={setViewTaskPopup}
-              task={selectedTask}
-              
-            ></ViewTask>
+                trigger={viewTaskPopup}
+                setTrigger={setViewTaskPopup}
+                task={selectedTask}
+              ></ViewTask>
             ) : null}
           </div>
         </div>
