@@ -24,3 +24,7 @@ RUN yarn electron:build
 
 # Copy the Electron application source code into the container
 COPY . .
+
+EXPOSE 8080
+
+CMD ["npm", "electron:serve"]
