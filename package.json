@@ -69,7 +69,13 @@
     "icon": "Frontend/public/icon.png",
     "directories": {
       "buildResources": "Frontend/src/assets"
-    }
+    },
+    "publish": {
+    "provider": "github",
+    "owner": "nigeljacob",
+    "repo": "project-synk",
+    "private": true
+  }
   },
   "browserslist": {
     "production": [
