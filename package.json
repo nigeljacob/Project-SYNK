@@ -40,7 +40,7 @@
     "electron:build-windows": "cd Frontend && yarn build && cd .. && electron-builder --windows -c.extraMetadata.main=Electron/main.js",
     "electron:build": "cd Frontend && yarn build && cd .. && electron-builder -c.extraMetadata.main=Electron/main.js",
     "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/icons/mac/icon.icns --prune=true --out=release-builds",
-    "test":"cd Backend && jest && cd .. && cd Frontend && jest"
+    "test": "cd Backend && jest"
   },
   "electronWebpack": {
     "main": {
@@ -72,11 +72,11 @@
       "buildResources": "Frontend/src/assets"
     },
     "publish": {
-    "provider": "github",
-    "owner": "nigeljacob",
-    "repo": "project-synk",
-    "private": true
-  }
+      "provider": "github",
+      "owner": "nigeljacob",
+      "repo": "project-synk",
+      "private": true
+    }
   },
   "browserslist": {
     "production": [

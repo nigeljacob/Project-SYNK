@@ -1,4 +1,4 @@
-name: Build and Release Electron App
+name: Test Build SYNK
 
 on:
   push:
@@ -6,8 +6,8 @@ on:
       - main
 
 jobs:
-  build-and-release:
-    runs-on: ubuntu-latest
+  TEST-BUILD:
+    runs-on: macos-latest
 
     steps:
       - name: Checkout repository
@@ -24,46 +24,22 @@ jobs:
       - name: Install dependencies on frontEnd
         run: cd Frontend && yarn
 
-      - name: Install dependencies on Main
+      - name: Install dependencies on Backend
         run: cd Backend && yarn
 
       - name: Upgrade dependencies on Main
         run: yarn upgrade
 
       - run: |
-          npm run electron:build
+          npm run electron:build-mac
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           mac_certs: ${{ secrets.mac_certs }}
           mac_certs_password: ${{ secrets.mac_certs_password }}
 
-      - name: Archive built artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: SYNK-1.0.0.dmg
-          path: ./dist
-
-      - name: Create GitHub Release
-        id: create_release
-        uses: actions/create-release@v1
+      - run: |
+          npm run electron:build-windows
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
-        with:
-          tag_name: v1.0.0  # Replace with your tag name
-          release_name: Release v1.0.0  # Replace with your release name
-          body: Release description goes here  # Replace with your release description
-          draft: false
-          prerelease: false
-
-      - name: Upload release assets
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist  # Replace with the path to your artifacts
-          asset_name: SYNK-1.0.0.dmg  # Replace with the name of your artifact
-          asset_content_type: application/dmg
