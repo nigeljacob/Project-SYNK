@@ -566,10 +566,6 @@ function App() {
                       />
                     }
                   />
-                  <Route
-                    path="*"
-                    element={<Navigate to="/" replace={true} />}
-                  />
                 </Routes>
               </HashRouter>
               <div className={result}>
