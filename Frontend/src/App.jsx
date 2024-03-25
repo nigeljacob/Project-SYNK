@@ -502,35 +502,31 @@ function App() {
     return (
       <>
         <div className="titleBar"></div>
-        {isLoading ? (
-          <Loading message="Signing In" background={true} />
-        ) : (
-          <HashRouter>
-            <Routes>
-              <Route
-                path="/"
-                exact
-                element={
-                  <Login
-                    setUser={setUser}
-                    setIsLoggedIn={setIsLoggedIn}
-                    loadingTrigger={setLoading}
-                  />
-                }
-              />
-              <Route
-                path="/createAccount"
-                element={
-                  <CreateAccount
-                    setUser={setUser}
-                    setIsLoggedIn={setIsLoggedIn}
-                    loadingTrigger={setLoading}
-                  />
-                }
-              />
-            </Routes>
-          </HashRouter>
-        )}
+        <HashRouter>
+          <Routes>
+            <Route
+              path="/"
+              exact
+              element={
+                <Login
+                  setUser={setUser}
+                  setIsLoggedIn={setIsLoggedIn}
+                  loadingTrigger={setLoading}
+                />
+              }
+            />
+            <Route
+              path="/createAccount"
+              element={
+                <CreateAccount
+                  setUser={setUser}
+                  setIsLoggedIn={setIsLoggedIn}
+                  loadingTrigger={setLoading}
+                />
+              }
+            />
+          </Routes>
+        </HashRouter>
       </>
     );
   } else if (user != null && isLoggedIn) {
