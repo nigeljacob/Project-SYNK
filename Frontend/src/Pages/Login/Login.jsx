@@ -33,7 +33,6 @@ function Login(props) {
     });
 
     if (auth.currentUser != null) {
-      props.loadingTrigger(true);
       props.setIsLoggedIn(true);
       localStorage.setItem("loggedIN", "true");
       localStorage.setItem("currentUser", getCurrentUser);
