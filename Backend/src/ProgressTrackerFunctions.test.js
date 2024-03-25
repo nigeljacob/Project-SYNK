@@ -37,7 +37,7 @@ describe("progress tracker functions",  () => {
 
             //awaits the promise to check whether isIdle is false, meaning that the user interaction was detected
             // expect(await isIdle).toBe(false);
-            expect(false).toBe(false);
+            expect(await isIdle).toBe(false);
 
         }, 3000);
 
