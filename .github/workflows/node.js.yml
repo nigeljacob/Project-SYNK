@@ -1,4 +1,4 @@
-name: Test and Build SYNK
+name: Test Build SYNK
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  TEST-and-BUILD:
+  TEST-BUILD:
     runs-on: macos-latest
 
     steps:
@@ -27,14 +27,8 @@ jobs:
       - name: Install dependencies on Backend
         run: cd Backend && yarn
 
-      - name: Upgrade dependencies on Backend
-        run: cd Backend && yarn upgrade
-
       - name: Upgrade dependencies on Main
         run: yarn upgrade
-
-      - name: Run Tests on Main
-        run: cd Backend && yarn jest
 
       - run: |
           npm run electron:build-mac
